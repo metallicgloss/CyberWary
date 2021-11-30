@@ -1,0 +1,2 @@
+Django==3.2.9
+python-dotenv==0.19.2
