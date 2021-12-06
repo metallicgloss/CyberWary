@@ -17,22 +17,37 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from django.contrib import admin
-from django.urls import path, include
+from django.conf.urls import include
+from django.contrib.auth import views as auth_views
+from django.urls import path
+from cyber_wary_site import views
 
 urlpatterns = [
+    # ----------------------------------------------------------------------- #
+    #                                Core URLs                                #
+    # ----------------------------------------------------------------------- #
+
     path(
         '',
-        include('cyber_wary_site.urls')
+        views.index,
+        name='index'
     ),
 
     path(
-        'portal/',
-        include('cyber_wary_portal.urls')
+        'software/',
+        views.software,
+        name='software'
     ),
 
     path(
-        'admin/',
-        admin.site.urls
+        'pp/',
+        views.pp,
+        name='pp'
+    ),
+
+    path(
+        'tos/',
+        views.tos,
+        name='tos'
     ),
 ]

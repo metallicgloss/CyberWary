@@ -17,22 +17,6 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from django.contrib import admin
-from django.urls import path, include
+from django.test import TestCase
 
-urlpatterns = [
-    path(
-        '',
-        include('cyber_wary_site.urls')
-    ),
 
-    path(
-        'portal/',
-        include('cyber_wary_portal.urls')
-    ),
-
-    path(
-        'admin/',
-        admin.site.urls
-    ),
-]

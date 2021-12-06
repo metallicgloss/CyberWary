@@ -17,22 +17,9 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from django.contrib import admin
-from django.urls import path, include
 
-urlpatterns = [
-    path(
-        '',
-        include('cyber_wary_site.urls')
-    ),
+from django.apps import AppConfig
 
-    path(
-        'portal/',
-        include('cyber_wary_portal.urls')
-    ),
-
-    path(
-        'admin/',
-        admin.site.urls
-    ),
-]
+class CyberWaryPublicConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'cyber_wary_site'
