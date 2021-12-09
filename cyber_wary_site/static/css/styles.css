@@ -1,0 +1,187 @@
+:root {
+    --background: #1D1C28;
+    --primary: #272727;
+    --alt: #FFFFFF;
+    --alt-background: #F4F4F4;
+    --success: #34CC96;
+    --warning: #E9A464;
+    --danger: #F54B4B;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: var(--background);
+    color: var(--primary);
+    max-width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+}
+
+.blur-effect {
+    filter: blur(100px);
+    z-index: -1;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-family: 'Space Mono', monospace;
+    font-weight: bold;
+}
+
+a {
+    text-decoration: none;
+}
+
+.success {
+    background-color: var(--success);
+}
+
+.warning {
+    background-color: var(--warning);
+}
+
+.danger {
+    background-color: var(--danger);
+}
+
+.homepage-header #homepage-laptop {
+    width: 1300px;
+    z-index: 1;
+}
+
+.homepage-header h1 {
+    font-size: 48px;
+    line-height: 70px;
+    color: var(--alt);
+    padding: 75px 0;
+    z-index: 2;
+    position: relative;
+}
+
+.homepage-header h1 span {
+    border-bottom: 6px solid var(--success);
+    height: 56px;
+}
+
+.homepage-header .call-to-action {
+    height: 190px;
+}
+
+.homepage-header .call-to-action a {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 22px;
+    color: var(--alt);
+    text-transform: uppercase;
+    width: 148px;
+    z-index: 2;
+}
+
+.homepage-header .call-to-action .secondary-action {
+    margin-top: -25px
+}
+
+.homepage-details {
+    background-color: var(--alt);
+    padding: 100px 0;
+}
+
+.homepage-details h2 {
+    font-size: 36px;
+    line-height: 53px;
+    margin-bottom: 25px;
+}
+
+.homepage-details p {
+    font-size: 16px;
+    line-height: 22px;
+    max-width: 400px;
+}
+
+.homepage-details .intro-pane a {
+    font-family: 'Space Mono', monospace;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 27px;
+    color: var(--primary);
+    text-decoration: none;
+    border-bottom: 1px solid var(--success);
+}
+
+.homepage-details .intro-pane .flex-container {
+    z-index: 3
+}
+
+.homepage-details .notification-pane {
+    padding-top: 100px;
+}
+
+.homepage-details .notification-pane .notification {
+    height: 68px;
+    background: var(--alt-background);
+}
+
+.homepage-details .notification-pane .notification .details p {
+    margin-bottom: 0;
+    font-size: 16px;
+    line-height: 18px;
+}
+
+.homepage-details .notification-pane .notification .details p:first-of-type {
+    font-weight: bold;
+}
+
+.homepage-details .notification-pane .notification .status {
+    padding-top: 5px;
+}
+
+.homepage-details .notification-pane .notification span {
+    font-family: 'Space Mono', monospace;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.homepage-details .notification-pane #fader {
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(30%, rgba(255, 255, 255, 0)), color-stop(100%, rgba(255, 255, 255, 1)));
+    background: -o-linear-gradient(top, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 1) 100%);
+    background: -ms-linear-gradient(top, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 1) 100%);
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 1) 100%);
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+}
+
+.homepage-features {
+    padding: 100px 0;
+}
+
+.homepage-features svg:first-of-type {
+    right: 20%
+}
+
+.homepage-features .run-scan h2 {
+    font-size: 48px;
+    line-height: 71px;
+}
+
+.homepage-features .run-scan p {
+    font-size: 16px;
+    line-height: 22px;
+}
+
+.homepage-features .run-scan .primary {
+    background-color: var(--success);
+    text-transform: uppercase;
+    border: 0;
+}
+
+.homepage-features .run-scan .scan {
+    background-color: rgba(255, 255, 255, 0.1);
+    text-transform: uppercase;
+    border: 0;
+}
