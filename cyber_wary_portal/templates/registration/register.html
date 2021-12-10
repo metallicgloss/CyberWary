@@ -1,0 +1,149 @@
+{% extends "layout.html" %}
+
+{% load static %}
+
+{% comment %}
+GNU General Public License v3.0
+Cyber Wary - <https://github.com/metallicgloss/CyberWary>
+Copyright (C) 2021 - William P - <hello@metallicgloss.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+{% endcomment %}
+
+
+{% block page_content %}
+    <div class="page-header text-white">
+        <div class="container"> 
+            <div class="row text-center my-5">
+                <div class="col">
+                    <h1>Industry Leading Features</h1>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>     
+            </div>  
+        </div>
+    </div>
+    <div class="user-auth text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h1 class="mb-5">Account Registration</h1>
+                </div>
+            </div>
+            <div class="row justify-content-center text-start">
+                <div class="col-xs-12 col-lg-9">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {{ form.non_field_errors }}
+
+                        {% for hidden in form.hidden_fields %}
+                            {{ hidden }}
+                        {% endfor %}
+
+                        <div class="row">
+                            <div class="col">
+                                <p class="label"><i class="icofont-id me-2"></i> {{ form.username.label }}<span class="required">*</span></p>
+                                <div class="position-relative">
+                                    {{ form.username }}
+                                    <span class="focus-border">
+                                    <i></i>
+                                </div>
+                                {% for error in field.username.errors %}
+                                    <p class="text-red">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col">
+                                <p class="mt-4 label"><i class="icofont-ui-password me-2"></i> {{ form.password1.label }}<span class="required">*</span></p>
+                                <div class="position-relative">
+                                    {{ form.password1 }}
+                                    <span class="focus-border">
+                                    <i></i>
+                                </div>
+                                {% for error in field.password1.errors %}
+                                    <p class="text-red">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                            <div class="col">
+                                <p class="mt-4 label"><i class="icofont-ui-password me-2"></i> {{ form.password2.label }}<span class="required">*</span></p>
+                                <div class="position-relative mb-4">
+                                    {{ form.password2 }}
+                                    <span class="focus-border">
+                                    <i></i>
+                                </div>
+                                {% for error in field.password2.errors %}
+                                    <p class="text-red">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col">
+                                <p class="mt-4 label"><i class="icofont-ui-user me-2"></i> {{ form.first_name.label }}<span class="required">*</span></p>
+                                <div class="position-relative">
+                                    {{ form.first_name }}
+                                    <span class="focus-border">
+                                    <i></i>
+                                </div>
+                                {% for error in field.first_name.errors %}
+                                    <p class="text-red">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                            <div class="col">
+                                <p class="mt-4 label"><i class="icofont-ui-user me-2"></i> {{ form.last_name.label }}<span class="required">*</span></p>
+                                <div class="position-relative">
+                                    {{ form.last_name }}
+                                    <span class="focus-border">
+                                    <i></i>
+                                </div>
+                                {% for error in field.last_name.errors %}
+                                    <p class="text-red">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col">
+                                <p class="mt-4 label"><i class="icofont-ui-email me-2"></i> {{ form.email.label }}<span class="required">*</span></p>
+                                <div class="position-relative">
+                                    {{ form.email }}
+                                    <span class="focus-border">
+                                    <i></i>
+                                </div>
+                                {% for error in field.email.errors %}
+                                    <p class="text-red">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-lg-6">
+                                <button type="submit" class="success">Register</button>
+                            </div>
+                            <div class="col-lg-6">
+                                <a href="{% url 'login' %}">
+                                    <button type="button" class="alt-button">Already have an account? Login Now</button>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

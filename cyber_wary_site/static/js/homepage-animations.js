@@ -1,86 +1,88 @@
 var played = false;
 
-$(window).scroll(function() {
-    function elementScrolled(elem) {
-        var docViewTop = $(window).scrollTop();
-        var elemTop = $(elem).offset().top;
-        return ((elemTop <= docViewTop + $(window).height()) && (elemTop >= docViewTop));
-    }
+if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
+    $(window).scroll(function() {
+        function elementScrolled(elem) {
+            var docViewTop = $(window).scrollTop();
+            var elemTop = $(elem).offset().top;
+            return ((elemTop <= docViewTop + $(window).height()) && (elemTop >= docViewTop));
+        }
 
-    if (elementScrolled('#last-feature') && !played) {
-        notifications.play()
-        played = true;
-    }
-});
+        if (elementScrolled('#trigger-feature') && !played) {
+            notifications.play()
+            played = true;
+        }
+    });
 
-var notifications = anime.timeline({
-    duration: 500,
-    autoplay: false,
-    easing: 'easeInOutSine',
-    loop: false,
-});
+    var notifications = anime.timeline({
+        duration: 400,
+        autoplay: false,
+        easing: 'easeInOutSine',
+        loop: false,
+    });
 
-notifications.add({
-    targets: document.querySelectorAll('.notification-pane .notification')[3],
-    keyframes: [{
-            translateY: -258,
+    notifications.add({
+        targets: document.querySelectorAll('.notification-pane .notification')[3],
+        keyframes: [{
+                translateY: -258,
+                opacity: [
+                    0,
+                    1
+                ]
+            },
+            {
+                translateY: [-258,
+                    0
+                ]
+            }
+        ],
+    })
+
+    notifications.add({
+        targets: document.querySelectorAll('.notification-pane .notification')[2],
+        keyframes: [{
+                translateY: -172,
+                opacity: [
+                    0,
+                    1
+                ]
+            },
+            {
+                translateY: [-172,
+                    0
+                ]
+            }
+        ],
+    })
+
+    notifications.add({
+        targets: document.querySelectorAll('.notification-pane .notification')[1],
+        keyframes: [{
+                translateY: -86,
+                opacity: [
+                    0,
+                    1
+                ]
+            },
+            {
+                translateY: [-86,
+                    0
+                ]
+            }
+        ],
+    })
+
+    notifications.add({
+        targets: document.querySelectorAll('.notification-pane .notification')[0],
+        keyframes: [{
             opacity: [
                 0,
                 1
             ]
-        },
-        {
-            translateY: [-258,
-                0
-            ]
-        }
-    ],
-})
-
-notifications.add({
-    targets: document.querySelectorAll('.notification-pane .notification')[2],
-    keyframes: [{
-            translateY: -172,
-            opacity: [
-                0,
-                1
-            ]
-        },
-        {
-            translateY: [-172,
-                0
-            ]
-        }
-    ],
-})
-
-notifications.add({
-    targets: document.querySelectorAll('.notification-pane .notification')[1],
-    keyframes: [{
-            translateY: -86,
-            opacity: [
-                0,
-                1
-            ]
-        },
-        {
-            translateY: [-86,
-                0
-            ]
-        }
-    ],
-})
-
-notifications.add({
-    targets: document.querySelectorAll('.notification-pane .notification')[0],
-    keyframes: [{
-        opacity: [
-            0,
-            1
-        ]
-    }],
-    duration: 300
-})
+        }],
+        duration: 300
+    })
+}
 
 $(".scan-button").click(function() {
     anime({

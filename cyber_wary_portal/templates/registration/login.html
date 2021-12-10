@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+
+{% load static %}
+
+{% comment %}
+GNU General Public License v3.0
+Cyber Wary - <https://github.com/metallicgloss/CyberWary>
+Copyright (C) 2021 - William P - <hello@metallicgloss.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% block page_content %}
+<div class="page-header text-white">
+    <div class="container"> 
+        <div class="row text-center my-5">
+            <div class="col">
+                <h1>Industry Leading Features</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>     
+        </div>  
+    </div>
+</div>
+<div class="user-auth text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="mb-5">Client Account Login</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center text-start">
+            <div class="col-xs-12 col-lg-9">
+                <form method="post">
+                    {% csrf_token %}
+
+                    {{ form.non_field_errors }}
+
+                    <div class="row">
+                        <div class="col">
+                            <p class="mt-4 label"><i class="icofont-id me-2"></i> {{ form.username.label }}<span class="required">*</span></p>
+                            <div class="position-relative">
+                                {{ form.username }}
+                                <span class="focus-border">
+                                <i></i>
+                            </div>
+                            {% for error in field.username.errors %}
+                                <p class="text-red">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <p class="mt-4 label"><i class="icofont-ui-password me-2"></i> {{ form.password.label }}<span class="required">*</span></p>
+                            <div class="position-relative">
+                                {{ form.password }}
+                                <span class="focus-border">
+                                <i></i>
+                            </div>
+                            {% for error in field.password.errors %}
+                                <p class="text-red">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    {% if form.errors %}
+                    <p style="color: red">Your username and password didn't match. Please try again.</p>
+                    {% endif %}
+
+                    <div class="row mt-4">
+                        <div class="col-lg-6">
+                            <button type="submit" class="success">Log in</button>
+                        </div>
+                        <div class="col-lg-6">
+                            <a href="{% url 'register' %}">
+                                <button type="button" class="alt-button">Don't have an account? Register Now</button>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

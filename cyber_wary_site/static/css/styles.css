@@ -414,6 +414,112 @@ a {
     border: 0;
 }
 
+.page-header {
+    margin-top: 150px;
+    margin-bottom: 100px;
+}
+
+.user-auth {
+    padding: 100px 0;
+    background-color: var(--alt)
+}
+
+.user-auth h1 {
+    font-size: 48px;
+}
+
+.user-auth input {
+    width: 100%;
+    border: 1px solid #D4D4D4;
+    padding: 10px 15px;
+    font-size: 14px;
+}
+
+.user-auth input:focus {
+    outline: none;
+}
+
+.user-auth button {
+    width: 100%;
+    border: 0;
+    color: var(--alt);
+    padding: 10px;
+    text-decoration: none;
+}
+
+.user-auth p {
+    margin-bottom: 0.3rem;
+}
+
+.user-auth .label {
+    font-weight: bold;
+}
+
+.user-auth .required {
+    font-weight: normal;
+    color: var(--danger);
+}
+
+.user-auth .alt-button {
+    background-color: var(--secondary);
+}
+
+.form-input-animation~.focus-border:before,
+.form-input-animation~.focus-border:after {
+    background-color: var(--success);
+    content: "";
+    height: 2px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    transition: 0.3s;
+    width: 0;
+}
+
+.form-input-animation~.focus-border:after {
+    bottom: 0;
+    left: auto;
+    right: 0;
+    top: auto;
+}
+
+.form-input-animation~.focus-border i:before,
+.form-input-animation~.focus-border i:after {
+    background-color: var(--success);
+    content: "";
+    height: 0;
+    left: 0;
+    position: absolute;
+    top: 0;
+    transition: 0.4s;
+    width: 2px;
+}
+
+.form-input-animation~.focus-border i:after {
+    bottom: 0;
+    left: auto;
+    right: 0;
+    top: auto;
+}
+
+.form-input-animation:focus~.focus-border:before,
+.form-input-animation:focus~.focus-border:after {
+    transition: 0.3s;
+    width: 100%;
+}
+
+.form-input-animation:focus~.focus-border i:before,
+.form-input-animation:focus~.focus-border i:after {
+    height: 100%;
+    transition: 0.4s;
+}
+
+.form-button {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%)
+}
+
 @media only screen and (max-width: 600px) {
     .blur-effect {
         display: none !important;
@@ -439,5 +545,8 @@ a {
     }
     .feature-breakdown .feature-comment .comment {
         margin: 25px 0;
+    }
+    .user-auth .alt-button {
+        margin-top: 20px;
     }
 }

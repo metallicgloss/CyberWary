@@ -17,18 +17,47 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
+from .forms import RegistrationForm
 
 def index(request):
     return render(request, 'portal.html')
+
 
 # --------------------------------------------------------------------------- #
 #                           5. Account Registration                           #
 # --------------------------------------------------------------------------- #
 
+
 def register(request):
-    pass
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+
+        if form.is_valid():
+            # Form contains all required values - save as new user.
+            form.save()
+
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+
+            # Authenticate user session with provided details.
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+
+            return redirect('portal')
+
+    else:
+        form = RegistrationForm()
+
+    return render(
+        request,
+        'registration/register.html',
+        {
+            'form': form
+        }
+    )
 
 
 # --------------------------------------------------------------------------- #
