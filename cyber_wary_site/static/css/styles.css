@@ -49,7 +49,7 @@ a {
 }
 
 .btn,
-.nav-pills .nav-link {
+.navbar-dark .navbar-nav .nav-link {
     border-radius: 0;
 }
 
@@ -58,13 +58,16 @@ a {
     border-color: var(--secondary);
 }
 
+.navbar-dark .navbar-nav .nav-link {
+    color: var(--alt)
+}
+
 .btn-check:focus+.btn-success,
 .btn-success:focus {
     box-shadow: none
 }
 
-.nav-pills .nav-link.active,
-.nav-pills .show>.nav-link {
+.navbar-dark .navbar-nav .active {
     background: none;
     border-bottom: 1px solid var(--success);
 }
@@ -548,5 +551,9 @@ a {
     }
     .user-auth .alt-button {
         margin-top: 20px;
+    }
+    .page-header {
+        margin-top: 51px;
+        margin-bottom: 75px;
     }
 }

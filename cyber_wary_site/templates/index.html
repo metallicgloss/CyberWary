@@ -33,24 +33,24 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     </linearGradient>
                 </defs>
             </svg>
-            <img src="{% static 'imgs/laptop.png' %}" id="homepage-laptop" class="float-end position-absolute d-none d-lg-block" />
+            <img src="{% static 'imgs/laptop.png' %}" id="homepage-laptop" class="float-end position-absolute d-none d-lg-block" alt="Floating laptop." />
             <div class="row align-items-start">
                 <div class="col">
                     <h1>Improve your computer<br><span class="d-inline-block">security</span> today.</h1>
                 </div>     
             </div>
             <div class="d-flex align-items-start call-to-action">
-                <a href="#" class="scan-button">
+                <a href="{% url 'portal' %}" class="scan-button">
                     <svg width="144" height="144" xmlns="http://www.w3.org/2000/svg" class="position-absolute primary" fill="none">
                         <path fill="#34CC96" d="m10.01497,10.0109l124,0l0,124l-124,0l0,-124z"/>
-                        <path id="scan-now" fill="#34CC96" d="m0.01296,133.99798l10,0l0,10l-10,0l0,-10z"/>
+                        <path class="scan-now" fill="#34CC96" d="m0.01296,133.99798l10,0l0,10l-10,0l0,-10z"/>
                     </svg>
                     <span class="position-relative d-block ps-4 mt-3">Scan Your<br>PC Now</span>
                     <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg" class="position-relative primary-arrow">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M12.979 5.94478L8.07319 0.785197L8.81976 0L15 6.5L8.81976 13L8.07319 12.2148L12.979 7.05522H0V5.94478H12.979Z" fill="white"/>
                     </svg>
                 </a>
-                <a href="#" class="learn-button">
+                <a href="{% url 'software' %}" class="learn-button">
                     <svg width="148" height="182" xmlns="http://www.w3.org/2000/svg" fill="none" class="position-absolute secondary">
                          <path fill="#3A3850" d="m0,34l124,0l0,124l-124,0l0,-124z"/>
                          <path id="learn-more" fill="#3A3850" d="m124,10l24,0l0,24l-24,0l0,-24z"/>
@@ -331,10 +331,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <div class="col-xs-12 col-lg-6 call-to-action">
                     <h2 class="mb-3">Frequently Asked Questions</h2>
                     <p class="pe-5 pb-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio tristique semper consectetur lorem elit tempus tincidunt integer. Nibh facilisi aliquet quis integer dignissim.</p>
-                    <a href="#" class="scan-button">
+                    <a href="{% url 'portal' %}" class="scan-button">
                         <svg width="144" height="144" xmlns="http://www.w3.org/2000/svg" class="position-absolute primary" fill="none">
                             <path fill="#34CC96" d="m10.01497,10.0109l124,0l0,124l-124,0l0,-124z"/>
-                            <path id="scan-now" fill="#34CC96" d="m0.01296,133.99798l10,0l0,10l-10,0l0,-10z"/>
+                            <path class="scan-now" fill="#34CC96" d="m0.01296,133.99798l10,0l0,10l-10,0l0,-10z"/>
                         </svg>
                         <span class="position-relative d-block ps-4 pt-2 mt-4">Scan Your<br>PC Now</span>
                         <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg" class="position-relative primary-arrow">

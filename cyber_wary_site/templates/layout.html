@@ -48,28 +48,42 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <body>
     <header class="p-3 text-white">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <button class="navbar-toggler mb-5" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCyberWary" aria-controls="navbarCyberWary" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCyberWary">
+                    <a href="/" class="navbar-brand me-auto header-logo">
+                        <svg width="116" height="27" viewBox="0 0 116 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="27" height="27" fill="white"/>
+                            <path d="M57.5 0L74 27H41L57.5 0Z" fill="white"/>
+                            <circle cx="101.5" cy="13.5" r="13.5" fill="white"/>
+                            <rect y="9" width="116" height="3" fill="#1D1C28"/>
+                            <rect y="14" width="116" height="3" fill="#1D1C28"/>
+                        </svg>
+                    </a>
+                    <ul class="navbar-nav text-white mt-4 mt-lg-0">
+                        <li class="nav-item {% if request.path == "/" %}active{% endif %}">
+                            <a href="{% url 'index' %}" class="nav-link px-lg-3">Home</a>
+                        </li>
+                        <li class="nav-item {% if request.path == "/software/" %}active{% endif %}">
+                            <a href="{% url 'software' %}" class="nav-link px-lg-3">Features</a>
+                        </li>
+                        <li class="nav-item ps-lg-5 pe-lg-3">
+                            <a href="{% url 'login' %}" class="nav-link">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'register' %}" class="btn btn-secondary mt-1 mt-lg-0 w-100 w-lg-0">Register</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
         <div class="container">
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark header-logo">
-                    <svg width="116" height="27" viewBox="0 0 116 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="27" height="27" fill="white"/>
-                        <path d="M57.5 0L74 27H41L57.5 0Z" fill="white"/>
-                        <circle cx="101.5" cy="13.5" r="13.5" fill="white"/>
-                        <rect y="9" width="116" height="3" fill="#1D1C28"/>
-                        <rect y="14" width="116" height="3" fill="#1D1C28"/>
-                    </svg>
-                </a>
     
-                <ul class="nav nav-pills">
-                    <li><a href="{% url 'index' %}" class="nav-link px-3 text-white {% if request.path == "/" %}active{% endif %}">Home</a></li>
-                    <li><a href="{% url 'software' %}" class="nav-link px-3 text-white {% if request.path == "/software/" %}active{% endif %}">Features</a></li>
-                    <li class="ps-5 pe-2"><a href="{% url 'login' %}" class="nav-link text-white">Login</a></li>
-                    <li>
-                        <div class="text-end">
-                            <a href="{% url 'register' %}"><button type="button" class="btn btn-secondary">Register</button></a>
-                        </div>
-                    </li>
-                </ul>
+                
                 
             </div>
         </div>

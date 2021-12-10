@@ -86,7 +86,7 @@ if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
 
 $(".scan-button").click(function() {
     anime({
-        targets: document.querySelectorAll('#scan-now'),
+        targets: document.querySelectorAll('.scan-now'),
         keyframes: [{
                 translateY: -134
             },
