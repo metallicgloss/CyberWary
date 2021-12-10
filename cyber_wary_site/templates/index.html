@@ -24,7 +24,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% block page_content %}
     <div class="homepage-header my-5 text-white">
         <div class="container">
-            <svg width="1369" height="837" viewBox="0 0 1369 837" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto d-block position-absolute blur-effect">
+            <svg width="1369" height="837" viewBox="0 0 1369 837" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto d-block position-absolute blur-effect d-none d-lg-block">
                 <path opacity="0.2" d="M1271.15 238.66C1195.87 114.6 1248.62 -18.1307 1161.81 2.04575C1154.74 5.38069 859.495 134.51 715.826 56.0719C536.24 -41.9755 279.783 18.0535 65.0754 178.131C-149.633 338.208 224.781 665.367 354.666 669.368C484.551 673.37 856.314 691.879 1200.91 811.937C1545.5 931.995 1271.15 587.829 1161.81 474.274C1052.47 360.719 1365.25 393.735 1271.15 238.66Z" fill="url(#linear_gradient_header)"/>
                 <defs>
                     <linearGradient id="linear_gradient_header" x1="1405.01" y1="393.735" x2="334.41" y2="174.614" gradientUnits="userSpaceOnUse">
@@ -33,7 +33,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     </linearGradient>
                 </defs>
             </svg>
-            <img src="{% static 'imgs/laptop.png' %}" id="homepage-laptop" class="float-end position-absolute" />
+            <img src="{% static 'imgs/laptop.png' %}" id="homepage-laptop" class="float-end position-absolute d-none d-lg-block" />
             <div class="row align-items-start">
                 <div class="col">
                     <h1>Improve your computer<br><span class="d-inline-block">security</span> today.</h1>
@@ -72,7 +72,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             <path d="M33 18C33 16.0302 32.612 14.0796 31.8582 12.2597C31.1044 10.4399 29.9995 8.78628 28.6066 7.3934C27.2137 6.00052 25.5601 4.89563 23.7403 4.14181C21.9204 3.38799 19.9698 3 18 3C14.0218 3 10.2064 4.58035 7.3934 7.3934C4.58035 10.2064 3 14.0218 3 18C3 21.9782 4.58035 25.7936 7.3934 28.6066C10.2064 31.4196 14.0218 33 18 33C21.9782 33 25.7936 31.4196 28.6066 28.6066C31.4196 25.7936 33 21.9782 33 18ZM29.895 16.5H25.5C25.2526 12.9722 24.0439 9.57953 22.005 6.69C24.0997 7.43395 25.9466 8.74511 27.3397 10.4773C28.7329 12.2094 29.6175 14.2945 29.895 16.5ZM13.62 19.5H22.5C22.1161 23.2059 20.5366 26.6861 18 29.415C15.4651 26.6975 13.9218 23.2039 13.62 19.5ZM13.62 16.5C13.9693 12.8127 15.5064 9.33857 18 6.6C20.5571 9.30918 22.1402 12.7921 22.5 16.5H13.62ZM14.16 6.645C12.1103 9.55053 10.8822 12.9551 10.605 16.5H6.105C6.38836 14.2672 7.29391 12.1592 8.71825 10.4166C10.1426 8.67393 12.0283 7.367 14.16 6.645ZM6.105 19.5H10.605C10.852 23.0419 12.0718 26.4469 14.13 29.34C12.006 28.6145 10.128 27.3078 8.7094 25.5684C7.29083 23.829 6.38852 21.7266 6.105 19.5ZM21.93 29.325C23.9826 26.431 25.216 23.0366 25.5 19.5H29.925C29.6413 21.7204 28.7423 23.8171 27.3295 25.5533C25.9166 27.2895 24.0464 28.596 21.93 29.325Z" fill="#34CC96"/>
                         </svg>
                     </div>
-                    <div class="col-5">
+                    <div class="col-xs-12 col-lg-5">
                         <h2>Large Heading Text</h2>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio tristique semper consectetur lorem elit tempus tincidunt integer. Nibh facilisi aliquet quis integer dignissim.</p>
                         <a href="https://google.com">
@@ -83,7 +83,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             </div>
             <div class="notification-pane">
                 <div class="row">
-                    <div class="col position-relative">
+                    <div class="col-xs-12 col-lg-6 position-relative">
                         <div id="fader"></div>
                         <div class="notification my-3">
                             <div class="d-flex align-items-start">
@@ -94,7 +94,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     <p>Firewall Breach</p>
                                     <p>Insecure thing here....</p>
                                 </div>
-                                <div class="ms-auto status m-3">
+                                <div class="ms-auto status m-3 d-none d-lg-block">
                                     <span class="py-1 px-4 success">Secured</span>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     <p>Firewall Breach</p>
                                     <p>Insecure thing here....</p>
                                 </div>
-                                <div class="ms-auto status m-3">
+                                <div class="ms-auto status m-3 d-none d-lg-block">
                                     <span class="py-1 px-4 warning">Action Needed</span>
                                 </div>
                             </div>
@@ -122,7 +122,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     <p>Firewall Breach</p>
                                     <p>Insecure thing here....</p>
                                 </div>
-                                <div class="ms-auto status m-3">
+                                <div class="ms-auto status m-3 d-none d-lg-block">
                                     <span class="py-1 px-4 success">Secured</span>
                                 </div>
                             </div>
@@ -136,13 +136,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     <p>Firewall Breach</p>
                                     <p>Insecure thing here....</p>
                                 </div>
-                                <div class="ms-auto status m-3">
+                                <div class="ms-auto status m-3 d-none d-lg-block">
                                     <span class="py-1 px-4 warning">Review Required</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-xs-12 col-lg-6">
                         <h2>Large Heading Text</h2>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio tristique semper consectetur lorem elit tempus tincidunt integer. Nibh facilisi aliquet quis integer dignissim.</p>
                         <div class="d-flex align-items-start">
@@ -180,7 +180,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         </div>
     </div>
     <div class="homepage-features mt-5 text-white">
-        <svg width="1246" height="521" viewBox="0 0 1246 521" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto d-block position-absolute blur-effect">
+        <svg width="1246" height="521" viewBox="0 0 1246 521" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto d-block position-absolute blur-effect d-none d-lg-block">
             <path d="M207.381 118.575C301.841 10.5414 596.77 6.2067 732.427 17.5436C868.883 12.542 1160.98 2.03877 1237.69 0.0381419C1333.59 -2.46264 1447.47 118.575 1497.22 196.6C1537.02 259.02 1431.89 334.31 1374.35 364.152C1308.42 413.501 1144.07 513.9 1014.13 520.702C851.701 529.204 629.935 353.149 451.323 352.149C272.712 351.148 297.286 522.702 88.7057 476.188C-119.874 429.673 89.3051 253.618 207.381 118.575Z" fill="url(#paint0_linear_3_696)"/>
             <defs>
                 <linearGradient id="paint0_linear_3_696" x1="2209.87" y1="62.0576" x2="188.943" y2="-306.945" gradientUnits="userSpaceOnUse">
@@ -189,7 +189,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </linearGradient>
             </defs>
         </svg> 
-        <svg width="872" height="521" viewBox="0 0 872 521" fill="none" xmlns="http://www.w3.org/2000/svg" class="position-absolute blur-effect secondary-blur">
+        <svg width="872" height="521" viewBox="0 0 872 521" fill="none" xmlns="http://www.w3.org/2000/svg" class="position-absolute blur-effect secondary-blur d-none d-lg-block">
             <path d="M664.619 402.425C570.159 510.459 275.23 514.793 139.573 503.457C3.11658 508.458 -288.975 518.961 -365.695 520.962C-461.593 523.463 -575.474 402.425 -625.221 324.4C-665.019 261.981 -559.89 186.69 -502.351 156.848C-436.42 107.499 -272.073 7.10055 -142.13 0.298434C20.2985 -8.20424 242.065 167.851 420.676 168.851C599.288 169.852 574.714 -1.70211 783.294 44.8125C991.874 91.3272 782.695 267.382 664.619 402.425Z" fill="url(#paint0_linear_3_719)"/>
             <defs>
                 <linearGradient id="paint0_linear_3_719" x1="-1337.87" y1="458.942" x2="683.057" y2="827.946" gradientUnits="userSpaceOnUse">
@@ -203,17 +203,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <h2>Run a scan in 3 minutes</h2>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Massa mollis non sit dolor sit nullam eget.</p>
                 <div class="feature-buttons mt-5">
-                    <a href="" class="primary text-white py-1 px-5 mx-2">
+                    <a href="" class="primary text-white py-1 px-5 me-4">
                     Get Started
                     </a>
-                    <a href="" class="scan text-white py-1 px-5 mx-2">
+                    <a href="" class="scan text-white py-1 px-5">
                     Scan Now
                     </a>
                 </div>
             </div>
             <div class="features">
-                <div class="d-flex align-items-start">
-                    <div class="col-6 pe-5">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-6 pe-5">
                         <div class="d-flex align-items-start">
                             <div>
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="mt-4 me-4">
@@ -226,16 +226,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             </div>
                         </div>
                     </div>
-                    <div class="col-6 pt-3 ps-5">
+                    <div class="col-xs-12 col-lg-6 pt-3 ps-5">
                         <div class="row mb-5">
-                            <div class="col-6">
+                            <div class="col-xs-12 col-lg-6">
                                 <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect width="38" height="38" fill="#34CC96"/>
                                 </svg>
                                 <h5 class="mt-3">Small Title</h5>
                                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                             </div>
-                            <div class="col-6">
+                            <div class="col-xs-12 col-lg-6">
                                 <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect width="38" height="38" fill="#34CC96"/>
                                 </svg>
@@ -244,14 +244,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-xs-12 col-lg-6">
                                 <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect width="38" height="38" fill="#34CC96"/>
                                 </svg>
                                 <h5 class="mt-3">Small Title</h5>
                                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                             </div>
-                            <div class="col-6">
+                            <div class="col-xs-12 col-lg-6">
                                 <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect width="38" height="38" fill="#34CC96"/>
                                 </svg>
@@ -266,19 +266,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div class="stats position-relative text-center">
             <div class="container"> 
                 <div class="row">
-                    <div class="col">
+                    <div class="col-xs-12 col-lg-4">
                         <div class="alt-stats-box p-5 position-relative">
                             <h5><span>99.99%</span></h5>
                             <p>Statistic</p>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-xs-12 col-lg-4">
                         <div class="p-5 position-relative">
                             <h5><span>99.99%</span></h5>
                             <p>Statistic</p>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-xs-12 col-lg-4">
                         <div class="p-5 position-relative">
                             <h5><span>99.99%</span></h5>
                             <p>Statistic</p>
@@ -328,7 +328,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <div class="homepage-ready">
         <div class="container">
             <div class="row">
-                <div class="col call-to-action">
+                <div class="col-xs-12 col-lg-6 call-to-action">
                     <h2 class="mb-3">Frequently Asked Questions</h2>
                     <p class="pe-5 pb-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio tristique semper consectetur lorem elit tempus tincidunt integer. Nibh facilisi aliquet quis integer dignissim.</p>
                     <a href="#" class="scan-button">
@@ -342,8 +342,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         </svg>
                     </a>
                 </div>
-                <div class="col text-center">
-                    <svg width="509" height="448" viewBox="0 0 509 448" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="col-xs-12 col-lg-6 text-center">
+                    <svg width="509" height="448" viewBox="0 0 509 448" fill="none" xmlns="http://www.w3.org/2000/svg" id="interface-design" class="d-none d-lg-block">
                         <path d="M0 24C0 10.7452 10.7452 0 24 0H485C498.255 0 509 10.7452 509 24V448H0V24Z" fill="#1E1D29"/>
                         <path d="M157 0H485C498.255 0 509 10.7452 509 24V448H157V0Z" fill="#EEEEEE"/>
                         <rect x="21" y="17" width="13.7328" height="13.7328" fill="white"/>

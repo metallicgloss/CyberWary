@@ -413,3 +413,31 @@ a {
     text-transform: uppercase;
     border: 0;
 }
+
+@media only screen and (max-width: 600px) {
+    .blur-effect {
+        display: none !important;
+    }
+    .feature-buttons a {
+        width: 100%;
+        display: block;
+    }
+    .homepage-ready {
+        padding-bottom: 300px;
+    }
+    .feature-header {
+        margin-bottom: 140px;
+    }
+    .code-generation {
+        padding-bottom: 50px;
+    }
+    .feature-highlight {
+        margin-top: 150px !important;
+    }
+    .feature-breakdown .feature-comment {
+        margin-bottom: 50px;
+    }
+    .feature-breakdown .feature-comment .comment {
+        margin: 25px 0;
+    }
+}
