@@ -60,12 +60,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </a>
     
                 <ul class="nav nav-pills">
-                    <li><a href="#" class="nav-link px-3 text-white active">Home</a></li>
-                    <li><a href="#" class="nav-link px-3 text-white">Features</a></li>
-                    <li class="ps-5 pe-2"><a href="#" class="nav-link text-white">Login</a></li>
+                    <li><a href="{% url 'index' %}" class="nav-link px-3 text-white {% if request.path == "/" %}active{% endif %}">Home</a></li>
+                    <li><a href="{% url 'software' %}" class="nav-link px-3 text-white {% if request.path == "/software/" %}active{% endif %}">Features</a></li>
+                    <li class="ps-5 pe-2"><a href="{% url 'login' %}" class="nav-link text-white">Login</a></li>
                     <li>
                         <div class="text-end">
-                            <button type="button" class="btn btn-secondary">Register</button>
+                            <a href="{% url 'register' %}"><button type="button" class="btn btn-secondary">Register</button></a>
                         </div>
                     </li>
                 </ul>
@@ -79,8 +79,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <div class="footer text-white">
         <div class="container">
             <div class="d-flex justify-content-left">
-                <a href="" class="pe-2">Privacy Policy</a>
-                <a href="" class="px-2">Terms of Service</a>
+                <a href="{% url 'pp' %}" class="pe-2">Privacy Policy</a>
+                <a href="{% url 'tos' %}" class="px-2">Terms of Service</a>
             </div>
             <hr>
             <div class="copyright">

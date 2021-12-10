@@ -18,6 +18,23 @@
 #
 
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     return render(request, 'portal.html')
+
+# --------------------------------------------------------------------------- #
+#                           5. Account Registration                           #
+# --------------------------------------------------------------------------- #
+
+def register(request):
+    pass
+
+
+# --------------------------------------------------------------------------- #
+#                           6. Account Modification                           #
+# --------------------------------------------------------------------------- #
+
+@login_required
+def modify(request):
+    pass

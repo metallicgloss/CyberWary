@@ -32,4 +32,33 @@ urlpatterns = [
         views.index,
         name='portal'
     ),
+
+    # ----------------------------------------------------------------------- #
+    #                      Authentication & Account URLs                      #
+    # ----------------------------------------------------------------------- #
+
+    path(
+        '',
+        include('django.contrib.auth.urls')
+    ),
+
+    path(
+        'register/',
+        views.register,
+        name='register'
+    ),
+
+    path(
+        'login/',
+        auth_views.LoginView.as_view(
+            template_name="registration/login.html",
+        ),
+        name='login'
+    ),
+
+    path(
+        'modify/',
+        views.modify,
+        name='modify'
+    ),
 ]

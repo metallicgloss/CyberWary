@@ -17,8 +17,10 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+from django.contrib.staticfiles.handlers import StaticFilesHandler
 from django.core.wsgi import get_wsgi_application
 import os
+import sys
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cyber_wary.settings')
-application = get_wsgi_application()
+application = StaticFilesHandler(get_wsgi_application())
