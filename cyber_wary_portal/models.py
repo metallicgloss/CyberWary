@@ -19,6 +19,7 @@
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+import hashlib
 
 # --------------------------------------------------------------------------- #
 #                        1.1 Default Fields Class                             #
@@ -40,4 +41,5 @@ class DefaultFields(models.Model):
 # --------------------------------------------------------------------------- #
 
 class SystemUser(AbstractUser):
-    pass
+    def get_gravatar_image(self):
+        return 'http://www.gravatar.com/avatar/{}'.format(hashlib.md5(self.email.encode()).hexdigest())

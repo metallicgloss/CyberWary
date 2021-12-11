@@ -1,0 +1,72 @@
+:root {
+    --primary-dark: #1D1C28;
+    --secondary-dark: #272727;
+    --alt-dark: #3A3850;
+    --primary-light: #FFFFFF;
+    --alt-light: #F4F4F4;
+    --success: #34CC96;
+    --warning: #E9A464;
+    --danger: #F54B4B;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    color: var(--secondary-dark);
+    max-width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+}
+
+.blur-effect {
+    filter: blur(100px);
+    z-index: -1;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-family: 'Space Mono', monospace;
+    font-weight: bold;
+}
+
+a {
+    text-decoration: none;
+}
+
+.success {
+    background-color: var(--success);
+}
+
+.warning {
+    background-color: var(--warning);
+}
+
+.danger {
+    background-color: var(--danger);
+}
+
+.btn {
+    border-radius: 0;
+}
+
+.btn-secondary {
+    background-color: var(--alt-dark);
+    border-color: var(--alt-dark);
+}
+
+.btn-check:focus+.btn,
+.btn:focus,
+.btn-check:focus+.btn-success,
+.btn-success:focus,
+.btn-check:focus+.btn-secondary,
+.btn-secondary:focus,
+.btn-check:focus+.btn-warning,
+.btn-warning:focus,
+.btn-check:focus+.btn-danger,
+.btn-danger:focus,
+.btn-check:focus+.btn-info,
+.btn-info:focus {
+    box-shadow: none;
+}

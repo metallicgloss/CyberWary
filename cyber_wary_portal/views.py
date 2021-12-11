@@ -23,7 +23,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import RegistrationForm
 
 def index(request):
-    return render(request, 'portal.html')
+    print(request.user.get_gravatar_image())
+    return render(request, 'dashboard.html')
 
 
 # --------------------------------------------------------------------------- #

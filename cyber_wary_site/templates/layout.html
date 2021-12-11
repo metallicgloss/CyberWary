@@ -21,105 +21,97 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>CyberWary - Windows Vulnerability Detection</title>
 
-    <title>CyberWary - Windows Vulnerability Detection</title>
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'imgs/favicon/apple-touch-icon.png' %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static 'imgs/favicon/favicon-32x32.png' %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'imgs/favicon/favicon-16x16.png' %}">
+        <link rel="manifest" href="{% static 'imgs/favicon/site.webmanifest' %}">
+        <link rel="mask-icon" href="{% static 'imgs/favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#34cc96">
+        <meta name="theme-color" content="#ffffff">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'imgs/favicon/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'imgs/favicon/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'imgs/favicon/favicon-16x16.png' %}">
-    <link rel="manifest" href="{% static 'imgs/favicon/site.webmanifest' %}">
-    <link rel="mask-icon" href="{% static 'imgs/favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#34cc96">
-    <meta name="theme-color" content="#ffffff">
+        {% block page_head %}{% endblock %}
 
-
-    {% block page_head %}{% endblock %}
-
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.css" integrity="sha256-o+AsfCHj7A1M5Xgm1kJmZiGEIvMQEzQqrXz2072Gkkg=" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'css/icofont.css' %}">
-</head>
-
-<body>
-    <header class="p-3 text-white">
-        <nav class="navbar navbar-expand-lg navbar-dark">
-            <div class="container">
-                <button class="navbar-toggler mb-5" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCyberWary" aria-controls="navbarCyberWary" aria-expanded="false" aria-label="Toggle navigation">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.css" integrity="sha256-o+AsfCHj7A1M5Xgm1kJmZiGEIvMQEzQqrXz2072Gkkg=" crossorigin="anonymous">
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+        <link rel="stylesheet" href="{% static 'css/shared.css' %}">
+        <link rel="stylesheet" href="{% static 'css/icofont.css' %}">
+    </head>
+    <body>
+        <header class="p-3 text-white">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container">
+                    <button class="navbar-toggler mb-5" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCyberWary" aria-controls="navbarCyberWary" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCyberWary">
-                    <a href="/" class="navbar-brand me-auto header-logo">
-                        <svg width="116" height="27" viewBox="0 0 116 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="27" height="27" fill="white"/>
-                            <path d="M57.5 0L74 27H41L57.5 0Z" fill="white"/>
-                            <circle cx="101.5" cy="13.5" r="13.5" fill="white"/>
-                            <rect y="9" width="116" height="3" fill="#1D1C28"/>
-                            <rect y="14" width="116" height="3" fill="#1D1C28"/>
-                        </svg>
-                    </a>
-                    <ul class="navbar-nav text-white mt-4 mt-lg-0">
-                        <li class="nav-item {% if request.path == "/" %}active{% endif %}">
-                            <a href="{% url 'index' %}" class="nav-link px-lg-3">Home</a>
-                        </li>
-                        <li class="nav-item {% if request.path == "/software/" %}active{% endif %}">
-                            <a href="{% url 'software' %}" class="nav-link px-lg-3">Features</a>
-                        </li>
-                        <li class="nav-item ps-lg-5 pe-lg-3">
-                            <a href="{% url 'login' %}" class="nav-link">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'register' %}" class="btn btn-secondary mt-1 mt-lg-0 w-100 w-lg-0">Register</a>
-                        </li>
-                    </ul>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarCyberWary">
+                        <a href="/" class="navbar-brand me-auto header-logo">
+                            <svg width="116" height="27" viewBox="0 0 116 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="27" height="27" fill="white"/>
+                                <path d="M57.5 0L74 27H41L57.5 0Z" fill="white"/>
+                                <circle cx="101.5" cy="13.5" r="13.5" fill="white"/>
+                                <rect y="9" width="116" height="3" fill="#1D1C28"/>
+                                <rect y="14" width="116" height="3" fill="#1D1C28"/>
+                            </svg>
+                        </a>
+                        <ul class="navbar-nav text-white mt-4 mt-lg-0">
+                            <li class="nav-item {% if request.path == "/" %}active{% endif %}">
+                                <a href="{% url 'index' %}" class="nav-link px-lg-3">Home</a>
+                            </li>
+                            <li class="nav-item {% if request.path == "/software/" %}active{% endif %}">
+                                <a href="{% url 'software' %}" class="nav-link px-lg-3">Features</a>
+                            </li>
+                            <li class="nav-item ps-lg-5 pe-lg-3">
+                                <a href="{% url 'login' %}" class="nav-link">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'register' %}" class="btn btn-secondary mt-1 mt-lg-0 w-100 w-lg-0">Register</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        {% block page_content %}{% endblock %}
+
+        <div class="footer text-white">
+            <div class="container">
+                <div class="d-flex justify-content-left">
+                    <a href="{% url 'pp' %}" class="pe-2">Privacy Policy</a>
+                    <a href="{% url 'tos' %}" class="px-2">Terms of Service</a>
+                </div>
+                <hr>
+                <div class="copyright">
+                    &copy; {% now 'Y' %} William P. All Rights Reserved.<br>
+                    All trademarks and registered trademarks are the property of their respective owners.<br>
+                    Developed by <a href="https://www.metallicgloss.com" class="author">Metallic</a>.
                 </div>
             </div>
-        </nav>
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-    
-                
-                
-            </div>
         </div>
-    </header>
-          
-    {% block page_content %}{% endblock %}
 
-    <div class="footer text-white">
-        <div class="container">
-            <div class="d-flex justify-content-left">
-                <a href="{% url 'pp' %}" class="pe-2">Privacy Policy</a>
-                <a href="{% url 'tos' %}" class="px-2">Terms of Service</a>
-            </div>
-            <hr>
-            <div class="copyright">
-                &copy; {% now 'Y' %} William P. All Rights Reserved.<br>
-                All trademarks and registered trademarks are the property of their respective owners.<br>
-                Developed by <a href="https://www.metallicgloss.com" class="author">Metallic</a>.
-            </div>
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.js" integrity="sha256-htsAUOIgN8xkootpQUzmvaCbQo6x2PNMTD7kLWI6yYQ=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/highlightjs@9.16.2/highlight.pack.min.js" integrity="sha256-yeMmUlHbk3Q2fuSCxKTJOAcO+KSYnzaHv/phSqz4NLo=" crossorigin="anonymous"></script>
-    <script>
-        $(document).ready(function(){
-            $('.required').tooltip({title: "This is a required field." });
-            
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
-            })    
-        });
-    </script>
-    {% block page_scripts %}{% endblock %}
-</body>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.js" integrity="sha256-htsAUOIgN8xkootpQUzmvaCbQo6x2PNMTD7kLWI6yYQ=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+        <script>
+            $(document).ready(function(){
+                $('.required').tooltip({title: "This is a required field." });
+                
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl)
+                })    
+            });
+        </script>
 
+        {% block page_scripts %}{% endblock %}
+
+    </body>
 </html>

@@ -1,0 +1,124 @@
+body {
+    background-color: var(--primary-light);
+}
+
+.wrapper {
+    display: flex;
+    align-items: stretch;
+}
+
+#sidebar {
+    min-width: 330px;
+    max-width: 330px;
+    background: linear-gradient(0deg, #34CC96 -5.51%, #1D1C28 48.98%);
+    color: #fff;
+}
+
+#sidebar.active {
+    min-width: 100px;
+    max-width: 100px;
+    text-align: center;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    transition: all 0.2s;
+}
+
+#sidebar .sidebar-header .small {
+    display: none;
+}
+
+#sidebar.active .sidebar-header .small {
+    display: block;
+}
+
+#sidebar.active .sidebar-header .expanded {
+    display: none;
+}
+
+#sidebar .sidebar-list a {
+    color: var(--primary-light);
+}
+
+#sidebar.active .sidebar-list li {
+    text-align: center;
+}
+
+#sidebar.active .sidebar-list a {
+    font-size: 12px;
+}
+
+#sidebar.active .sidebar-list i {
+    margin-right: 0 !important;
+    display: block;
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.nav a {
+    color: var(--primary-dark);
+}
+
+.nav .user-details #user-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--primary-dark);
+}
+
+.nav .user-details #user-plan {
+    font-size: 12px;
+    line-height: 16px;
+    color: #545454;
+}
+
+.nav .dropdown-menu[data-bs-popper] {
+    left: auto;
+    right: 0 !important;
+}
+
+.nav .dropdown-toggle::after {
+    display: none;
+}
+
+#content {
+    width: 100%;
+    min-height: 100vh;
+    padding: 15px;
+}
+
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+
+@media (max-width: 768px) {
+    #sidebar {
+        min-width: 80px;
+        max-width: 80px;
+        text-align: center;
+        margin-left: -80px !important;
+    }
+    #sidebar.active {
+        margin-left: 0 !important;
+    }
+    #sidebar .sidebar-header .expanded {
+        display: none;
+    }
+    #sidebar .sidebar-header .small {
+        display: block;
+    }
+    #sidebar .sidebar-list a span {
+        font-size: 0.85em;
+    }
+    #sidebar .sidebar-list a i {
+        margin-right: 0;
+        display: block;
+        font-size: 1.3em;
+    }
+    #sidebar {
+        margin-left: 0;
+    }
+    #sidebarCollapse span {
+        display: none;
+    }
+}

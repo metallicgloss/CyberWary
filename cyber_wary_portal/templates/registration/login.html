@@ -50,7 +50,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             <div class="position-relative">
                                 {{ form.username }}
                                 <span class="focus-border">
-                                <i></i>
+                                    <i></i>
+                                </span>
                             </div>
                             {% for error in field.username.errors %}
                                 <p class="text-red">{{ error }}</p>
@@ -64,7 +65,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             <div class="position-relative">
                                 {{ form.password }}
                                 <span class="focus-border">
-                                <i></i>
+                                    <i></i>
+                                </span>
                             </div>
                             {% for error in field.password.errors %}
                                 <p class="text-red">{{ error }}</p>
@@ -73,7 +75,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     </div>
 
                     {% if form.errors %}
-                    <p class="text-danger mt-4">Your username and password didn't match. Please try again.</p>
+                        <p class="text-danger mt-4">Your username and password didn't match. Please try again.</p>
                     {% endif %}
 
                     <div class="row mt-4">
