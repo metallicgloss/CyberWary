@@ -132,8 +132,8 @@ STATIC_ROOT = '/static/'
 # Authentication Settings
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth
 AUTH_USER_MODEL = 'cyber_wary_portal.SystemUser'
-LOGIN_URL = '/account/login'
-LOGIN_REDIRECT_URL = 'index'
+LOGIN_URL = '/portal/login'
+LOGIN_REDIRECT_URL = 'portal'
 LOGOUT_REDIRECT_URL = 'index'
 
 # Default primary key field type

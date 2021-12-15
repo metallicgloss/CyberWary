@@ -1,3 +1,44 @@
+/*-----------------------------------------------------------------------*\
+
+    GNU General Public License v3.0
+    Cyber Wary - <https://github.com/metallicgloss/CyberWary>
+    Copyright (C) 2021 - William P - <hello@metallicgloss.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+\*-----------------------------------------------------------------------*/
+
+
+/*-----------------------------------------------------------------------*\
+    
+    Shared Styles
+
+    CSS rules, colours and styles that are used frequently throughout both
+    the public front-end website and back-end user portal.
+
+    1. Colours
+    2. Defaults
+    3. Bootstrap Overrides
+    4. Custom
+
+\*-----------------------------------------------------------------------*/
+
+
+/*-------------------------------------------*\
+    1. Colours
+\*-------------------------------------------*/
+
 :root {
     --primary-dark: #1D1C28;
     --secondary-dark: #272727;
@@ -9,17 +50,17 @@
     --danger: #F54B4B;
 }
 
+
+/*-------------------------------------------*\
+    2. Defaults
+\*-------------------------------------------*/
+
 body {
     font-family: 'Open Sans', sans-serif;
     color: var(--secondary-dark);
     max-width: 100%;
     min-height: 100%;
     overflow-x: hidden;
-}
-
-.blur-effect {
-    filter: blur(100px);
-    z-index: -1;
 }
 
 h1,
@@ -35,17 +76,10 @@ a {
     text-decoration: none;
 }
 
-.success {
-    background-color: var(--success);
-}
 
-.warning {
-    background-color: var(--warning);
-}
-
-.danger {
-    background-color: var(--danger);
-}
+/*-------------------------------------------*\
+    3. Bootstrap Overrides
+\*-------------------------------------------*/
 
 .btn {
     border-radius: 0;
@@ -69,4 +103,38 @@ a {
 .btn-check:focus+.btn-info,
 .btn-info:focus {
     box-shadow: none;
+}
+
+.text-danger {
+    color: var(--success) !important;
+}
+
+.text-warning {
+    color: var(--warning) !important;
+}
+
+.text-danger {
+    color: var(--danger) !important;
+}
+
+.bg-success {
+    background-color: var(--success) !important;
+}
+
+.bg-warning {
+    background-color: var(--warning) !important;
+}
+
+.bg-danger {
+    background-color: var(--danger) !important;
+}
+
+
+/*-------------------------------------------*\
+    4. Custom
+\*-------------------------------------------*/
+
+.blur-effect {
+    filter: blur(100px);
+    z-index: -1;
 }

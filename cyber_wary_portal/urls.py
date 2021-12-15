@@ -34,6 +34,24 @@ urlpatterns = [
         name='portal'
     ),
 
+    path(
+        'create',
+        views.create,
+        name='create'
+    ),
+
+    path(
+        'report',
+        views.report,
+        name='report'
+    ),
+
+    path(
+        'scans',
+        views.scans,
+        name='scans'
+    ),
+
     # ----------------------------------------------------------------------- #
     #                      Authentication & Account URLs                      #
     # ----------------------------------------------------------------------- #

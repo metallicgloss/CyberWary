@@ -52,9 +52,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         {% endfor %}
 
                         <div class="row">
-                            <div class="col">
+                            <div class="col {% if form.username.errors %}field-error{% endif %}">
                                 <p class="label">
-                                    <i class="icofont-id me-2"></i> {{ form.username.label }}<span class="required">*</span>
+                                    <i class="icofont-id me-2"></i> {{ form.username.label }}<span class="text-danger">*</span>
                                 </p>
                                 <div class="position-relative">
                                     {{ form.username }}
@@ -62,16 +62,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <i></i>
                                     </span>
                                 </div>
-                                {% for error in field.username.errors %}
-                                    <p class="text-red">{{ error }}</p>
-                                {% endfor %}
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-xs-12 col-lg-6">
+                            <div class="col-xs-12 col-lg-6 {% if form.password1.errors or form.password2.errors %}field-error{% endif %}">
                                 <p class="mt-4 label">
-                                    <i class="icofont-ui-password me-2"></i> {{ form.password1.label }}<span class="required">*</span>
+                                    <i class="icofont-ui-password me-2"></i> {{ form.password1.label }}<span class="text-danger">*</span>
                                 </p>
                                 <div class="position-relative">
                                     {{ form.password1 }}
@@ -79,13 +76,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <i></i>
                                     </span>
                                 </div>
-                                {% for error in field.password1.errors %}
-                                    <p class="text-red">{{ error }}</p>
-                                {% endfor %}
                             </div>
-                            <div class="col-xs-12 col-lg-6">
+                            <div class="col-xs-12 col-lg-6 {% if form.password1.errors or form.password2.errors %}field-error{% endif %}">
                                 <p class="mt-4 label">
-                                    <i class="icofont-ui-password me-2"></i> {{ form.password2.label }}<span class="required">*</span>
+                                    <i class="icofont-ui-password me-2"></i> {{ form.password2.label }}<span class="text-danger">*</span>
                                 </p>
                                 <div class="position-relative mb-4">
                                     {{ form.password2 }}
@@ -93,18 +87,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <i></i>
                                     </span>
                                 </div>
-                                {% for error in field.password2.errors %}
-                                    <p class="text-red">{{ error }}</p>
-                                {% endfor %}
                             </div>
                         </div>
 
                         <hr>
 
                         <div class="row">
-                            <div class="col-xs-12 col-lg-6">
+                            <div class="col-xs-12 col-lg-6 {% if form.first_name.errors %}field-error{% endif %}">
                                 <p class="mt-4 label">
-                                    <i class="icofont-ui-user me-2"></i> {{ form.first_name.label }}<span class="required">*</span>
+                                    <i class="icofont-ui-user me-2"></i> {{ form.first_name.label }}<span class="text-danger">*</span>
                                 </p>
                                 <div class="position-relative">
                                     {{ form.first_name }}
@@ -112,13 +103,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <i></i>
                                     </span>
                                 </div>
-                                {% for error in field.first_name.errors %}
-                                    <p class="text-red">{{ error }}</p>
-                                {% endfor %}
                             </div>
-                            <div class="col-xs-12 col-lg-6">
+                            <div class="col-xs-12 col-lg-6 {% if form.last_name.errors %}field-error{% endif %}">
                                 <p class="mt-4 label">
-                                    <i class="icofont-ui-user me-2"></i> {{ form.last_name.label }}<span class="required">*</span>
+                                    <i class="icofont-ui-user me-2"></i> {{ form.last_name.label }}<span class="text-danger">*</span>
                                 </p>
                                 <div class="position-relative">
                                     {{ form.last_name }}
@@ -126,16 +114,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <i></i>
                                     </span>
                                 </div>
-                                {% for error in field.last_name.errors %}
-                                    <p class="text-red">{{ error }}</p>
-                                {% endfor %}
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col">
+                            <div class="col {% if form.email.errors %}field-error{% endif %}">
                                 <p class="mt-4 label">
-                                    <i class="icofont-ui-email me-2"></i> {{ form.email.label }}<span class="required">*</span>
+                                    <i class="icofont-ui-email me-2"></i> {{ form.email.label }}<span class="text-danger">*</span>
                                 </p>
                                 <div class="position-relative">
                                     {{ form.email }}
@@ -143,15 +128,25 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <i></i>
                                     </span>
                                 </div>
-                                {% for error in field.email.errors %}
-                                    <p class="text-red">{{ error }}</p>
-                                {% endfor %}
                             </div>
                         </div>
 
+                        {% if form.errors %}
+                            <div class="form-errors my-5">
+                                <h5 class="text-danger">Sorry! There was a problem with your registration.</h5>
+                                <ul>
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
                         <div class="row mt-4">
                             <div class="col-xs-12 col-lg-6">
-                                <button type="submit" class="success">Register</button>
+                                <button type="submit" class="bg-success">Register</button>
                             </div>
                             <div class="col-xs-12 col-lg-6">
                                 <a href="{% url 'login' %}">

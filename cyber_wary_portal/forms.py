@@ -115,3 +115,4 @@ class RegistrationForm(UserCreationForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-input-animation'
             field.required = True
+            field.widget.attrs.pop("autofocus", None)

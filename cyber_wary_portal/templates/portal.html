@@ -65,19 +65,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </div>
                 <ul class="sidebar-list list-unstyled py-5">
                     <li class="py-5">
-                        <a href="#">
+                        <a href="{% url 'portal' %}">
                         <i class="icofont-ui-home me-3"></i>
                         Dashboard
                         </a>
                     </li>
                     <li class="py-2">
-                        <a href="#">
+                        <a href="{% url 'scans' %}">
                         <i class="icofont-law-document me-3"></i>
                         Scan History
                         </a>
                     </li>
                     <li class="py-2">
-                        <a href="#">
+                        <a href="{% url 'create' %}">
                         <i class="icofont-search-2 me-3"></i>
                         New Scan
                         </a>
@@ -101,11 +101,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <img src="{{ request.user.get_gravatar_image }}" alt="Profile Photo" width="48" height="48" class="rounded-circle ms-4">
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-dark text-small shadow mt-3" aria-labelledby="userProfileDropdown">
-                                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'modify' %}">Profile</a></li>
                                         <li>
                                             <hr class="dropdown-divider">
                                         </li>
-                                        <li><a class="dropdown-item" href="#">Sign out</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
                                     </ul>
                                 </div>
                             </div>

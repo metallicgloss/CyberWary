@@ -22,7 +22,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endcomment %}
 
 {% block page_content %}
-    <div class="feature-header text-white">
+    <!-- Software Header -->
+    <section class="feature-header text-white">
         <div class="container">
             <svg width="1317" height="471" viewBox="0 0 1317 471" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto d-block position-absolute blur-effect d-none d-lg-block">
                 <ellipse cx="658.5" cy="235.295" rx="658.5" ry="235.295" fill="url(#gradient_header)" />
@@ -41,8 +42,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             </div>
             <img src="{% static 'imgs/interface.png' %}" class="w-100 mt-5 d-none d-lg-block" alt="Graphical user interface of software." />
         </div>
-    </div>
-    <div class="feature-stats">
+    </section>
+    <!-- Statistics Panel -->
+    <section class="statistics">
         <div class="container">
             <div class="row text-center my-5">
                 <div class="col-xs-12 col-lg-12">
@@ -118,11 +120,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             </defs>
                         </svg>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="feature-breakdown text-white">
+                </div> <!-- End of Row -->
+            </div> <!-- End of Code Generation Section -->
+        </div> <!-- End of Container -->
+    </section>
+    <!-- Feature List -->
+    <section class="feature-breakdown text-white">
         <div class="container d-none d-lg-block">
             <div class="row">
                 <div class="col-xs-12 col-lg-5">
@@ -190,8 +193,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </div>
             </div>
         </div>
-    </div>
-    <div class="feature-run">
+    </section>
+    <!-- Call To Action -->
+    <section class="feature-run">
         <div class="container">
             <div class="run-scan text-center">
                 <h2>Run a scan in 3 minutes</h2>
@@ -206,7 +210,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 {% endblock %}
 
 {% block page_scripts %}

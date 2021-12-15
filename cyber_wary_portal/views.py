@@ -22,9 +22,22 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import RegistrationForm
 
+@login_required
 def index(request):
-    print(request.user.get_gravatar_image())
     return render(request, 'dashboard.html')
+
+@login_required
+def create(request):
+    return render(request, 'create.html')
+
+@login_required
+def report(request):
+    return render(request, 'report.html')
+
+@login_required
+def scans(request):
+    return render(request, 'scans.html')
+
 
 
 # --------------------------------------------------------------------------- #

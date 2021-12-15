@@ -1,19 +1,31 @@
 var played = false;
 
 if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
-    $(window).scroll(function() {
-        function elementScrolled(elem) {
-            var docViewTop = $(window).scrollTop();
-            var elemTop = $(elem).offset().top;
-            return ((elemTop <= docViewTop + $(window).height()) && (elemTop >= docViewTop));
-        }
+    // If on a portable device (targetting mobile devices).
 
-        if (elementScrolled('#trigger-feature') && !played) {
+    function elementInView(element) {
+        // Function to check if the element is in the browser view.
+        return (
+            (
+                $(element).offset().top <= $(window).scrollTop() + $(window).height()
+            ) &&
+            (
+                $(element).offset().top >= $(window).scrollTop()
+            )
+        );
+    }
+
+
+    $(window).scroll(function() {
+        // When page scrolls, check if the trigger feature element is in view.
+        if (elementInView('#trigger-feature') && !played) {
+            // If in view, and animation hasn't played before, execute play for animejs animation.
             notifications.play()
             played = true;
         }
     });
 
+    // Define new animejs animation - timeline (bouncing in notifications)
     var notifications = anime.timeline({
         duration: 400,
         autoplay: false,
@@ -21,8 +33,9 @@ if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
         loop: false,
     });
 
+    // Target bottom notification, bounce to the top, and then back into place.
     notifications.add({
-        targets: document.querySelectorAll('.notification-pane .notification')[3],
+        targets: document.querySelectorAll('.notification-box .notification')[3],
         keyframes: [{
                 translateY: -258,
                 opacity: [
@@ -38,8 +51,9 @@ if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
         ],
     })
 
+    // Target 2nd to bottom notification, bounce to the top, and then back into place.
     notifications.add({
-        targets: document.querySelectorAll('.notification-pane .notification')[2],
+        targets: document.querySelectorAll('.notification-box .notification')[2],
         keyframes: [{
                 translateY: -172,
                 opacity: [
@@ -55,8 +69,9 @@ if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
         ],
     })
 
+    // Target second notification, bounce to the top, and then back into place.
     notifications.add({
-        targets: document.querySelectorAll('.notification-pane .notification')[1],
+        targets: document.querySelectorAll('.notification-box .notification')[1],
         keyframes: [{
                 translateY: -86,
                 opacity: [
@@ -72,19 +87,23 @@ if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
         ],
     })
 
+    // Target first notification, bounce into view.
     notifications.add({
-        targets: document.querySelectorAll('.notification-pane .notification')[0],
+        targets: document.querySelectorAll('.notification-box .notification')[0],
         keyframes: [{
             opacity: [
                 0,
                 1
             ]
         }],
-        duration: 300
+        duration: 300 // Define shorter animation as no movement required.
     })
 }
 
 $(".scan-button").click(function() {
+    // When scan-button animation is executed.
+
+    // Define new animejs animation to move the button SVG around the box.
     anime({
         targets: document.querySelectorAll('.scan-now'),
         keyframes: [{
@@ -96,10 +115,11 @@ $(".scan-button").click(function() {
         ],
         duration: 600,
         autoplay: true,
-        easing: 'cubicBezier(0.895, 0.030, 0.145, 0.995)',
+        easing: 'cubicBezier(0.895, 0.030, 0.145, 0.995)', // Use Cubic Bezier curve for bounce animation style.
         loop: false
     });
 
+    // Prevent href redirect for 0.7 seconds until animation has completed to appear like a smooth transition.
     var href = $(this).attr('href');
     setTimeout(function() {
         window.location = href
@@ -108,7 +128,10 @@ $(".scan-button").click(function() {
     return false;
 })
 
-$(".learn-button").click(function() {
+$(".learn-more-button").click(function() {
+    // When learn-more-button animation is executed.
+
+    // Define new animejs animation to move the button SVG to the bottom of the box.
     anime({
         targets: document.querySelectorAll('#learn-more'),
         translateY: 148,
@@ -118,6 +141,7 @@ $(".learn-button").click(function() {
         loop: false
     });
 
+    // Prevent href redirect for 0.7 seconds until animation has completed to appear like a smooth transition.
     var href = $(this).attr('href');
     setTimeout(function() {
         window.location = href
@@ -126,10 +150,14 @@ $(".learn-button").click(function() {
     return false;
 })
 
-$('.scan-button, .learn-button').mouseover(function() {
+
+$('.scan-button, .learn-more-button').mouseover(function() {
+    // When mouseover, apply filter css to SVG to alter the brightness of the box, and rotate the arrow around.
     $(this).closest('a').find('svg').eq(0).css("filter", "brightness(0.8)")
     $(this).closest('a').find('svg').eq(1).css("transform", "rotate(360deg)");
+
 }).mouseout(function() {
+    // When mouseout, undo effect.
     $(this).closest('a').find('svg').eq(0).css("filter", "none")
     $(this).closest('a').find('svg').eq(1).css("transform", "rotate(0deg)");
 });

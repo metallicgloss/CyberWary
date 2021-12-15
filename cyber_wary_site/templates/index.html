@@ -22,7 +22,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endcomment %}
 
 {% block page_content %}
-    <div class="homepage-header my-5 text-white">
+    <!-- Homepage Header -->
+    <section class="overview my-5 text-white">
         <div class="container">
             <svg width="1369" height="837" viewBox="0 0 1369 837" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto d-block position-absolute blur-effect d-none d-lg-block">
                 <path opacity="0.2" d="M1271.15 238.66C1195.87 114.6 1248.62 -18.1307 1161.81 2.04575C1154.74 5.38069 859.495 134.51 715.826 56.0719C536.24 -41.9755 279.783 18.0535 65.0754 178.131C-149.633 338.208 224.781 665.367 354.666 669.368C484.551 673.37 856.314 691.879 1200.91 811.937C1545.5 931.995 1271.15 587.829 1161.81 474.274C1052.47 360.719 1365.25 393.735 1271.15 238.66Z" fill="url(#linear_gradient_header)" />
@@ -33,13 +34,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     </linearGradient>
                 </defs>
             </svg>
-            <img src="{% static 'imgs/laptop.png' %}" id="homepage-laptop" class="float-end position-absolute d-none d-lg-block" alt="Floating laptop." />
+            <img src="{% static 'imgs/laptop.png' %}" id="laptop" class="float-end position-absolute d-none d-lg-block" alt="Floating laptop." />
             <div class="row align-items-start">
                 <div class="col">
                     <h1>Improve your computer<br><span class="d-inline-block">security</span> today.</h1>
                 </div>
             </div>
             <div class="d-flex align-items-start call-to-action">
+                <!-- Scan Now Button -->
                 <a href="{% url 'portal' %}" class="scan-button">
                     <svg width="144" height="144" xmlns="http://www.w3.org/2000/svg" class="position-absolute primary" fill="none">
                         <path fill="#34CC96" d="m10.01497,10.0109l124,0l0,124l-124,0l0,-124z" />
@@ -50,7 +52,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M12.979 5.94478L8.07319 0.785197L8.81976 0L15 6.5L8.81976 13L8.07319 12.2148L12.979 7.05522H0V5.94478H12.979Z" fill="white" />
                     </svg>
                 </a>
-                <a href="{% url 'software' %}" class="learn-button">
+                <!-- Learn More Button -->
+                <a href="{% url 'software' %}" class="learn-more-button">
                     <svg width="148" height="182" xmlns="http://www.w3.org/2000/svg" fill="none" class="position-absolute secondary">
                         <path fill="#3A3850" d="m0,34l124,0l0,124l-124,0l0,-124z" />
                         <path id="learn-more" fill="#3A3850" d="m124,10l24,0l0,24l-24,0l0,-24z" />
@@ -62,10 +65,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </a>
             </div>
         </div>
-    </div>
-    <div class="position-relative homepage-details">
+    </section>
+    <!-- Product Details Section -->
+    <section class="details position-relative">
         <div class="container">
-            <div class="intro-pane">
+            <div class="intro">
                 <div class="d-flex align-items-start flex-container">
                     <div>
                         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-4">
@@ -81,7 +85,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     </div>
                 </div>
             </div>
-            <div class="notification-pane">
+            <div class="notification-box">
                 <div class="row">
                     <div class="col-xs-12 col-lg-6 position-relative">
                         <div id="fader"></div>
@@ -90,12 +94,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="m-3">
                                     <path d="M15.9994 1.58722L15.2924 2.29424C15.2924 2.29424 11.5551 6.00107 5.99976 6.00107H4.9998V16.0007C4.9998 21.3338 7.71598 24.9046 10.3746 27.0315C13.0332 29.1584 15.7123 29.9571 15.7123 29.9571L15.9994 30.0452L16.2865 29.9571C16.2865 29.9571 18.9655 29.1584 21.6241 27.0315C24.2828 24.9046 26.9989 21.3338 26.9989 16.0007V6.00107H25.999C20.4436 6.00107 16.7064 2.29424 16.7064 2.29424L15.9994 1.58722ZM12.7065 11.2938L15.9994 14.5867L19.2922 11.2938L20.7062 12.7078L17.4134 16.0007L20.7062 19.2935L19.2922 20.7075L15.9994 17.4146L12.7065 20.7075L11.2925 19.2935L14.5854 16.0007L11.2925 12.7078L12.7065 11.2938Z" fill="black" />
                                 </svg>
-                                <div class="details m-3">
+                                <div class="info m-3">
                                     <p>Firewall Breach</p>
                                     <p>Insecure thing here....</p>
                                 </div>
-                                <div class="ms-auto status m-3 d-none d-lg-block">
-                                    <span class="py-1 px-4 success">Secured</span>
+                                <div class="status ms-auto m-3 d-none d-lg-block">
+                                    <span class="py-1 px-4 bg-success">Secured</span>
                                 </div>
                             </div>
                         </div>
@@ -104,12 +108,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="m-3">
                                     <path d="M15.9994 1.58722L15.2924 2.29424C15.2924 2.29424 11.5551 6.00107 5.99976 6.00107H4.9998V16.0007C4.9998 21.3338 7.71598 24.9046 10.3746 27.0315C13.0332 29.1584 15.7123 29.9571 15.7123 29.9571L15.9994 30.0452L16.2865 29.9571C16.2865 29.9571 18.9655 29.1584 21.6241 27.0315C24.2828 24.9046 26.9989 21.3338 26.9989 16.0007V6.00107H25.999C20.4436 6.00107 16.7064 2.29424 16.7064 2.29424L15.9994 1.58722ZM12.7065 11.2938L15.9994 14.5867L19.2922 11.2938L20.7062 12.7078L17.4134 16.0007L20.7062 19.2935L19.2922 20.7075L15.9994 17.4146L12.7065 20.7075L11.2925 19.2935L14.5854 16.0007L11.2925 12.7078L12.7065 11.2938Z" fill="black" />
                                 </svg>
-                                <div class="details m-3">
+                                <div class="info m-3">
                                     <p>Firewall Breach</p>
                                     <p>Insecure thing here....</p>
                                 </div>
-                                <div class="ms-auto status m-3 d-none d-lg-block">
-                                    <span class="py-1 px-4 warning">Action Needed</span>
+                                <div class="status ms-auto m-3 d-none d-lg-block">
+                                    <span class="py-1 px-4 bg-warning">Action Needed</span>
                                 </div>
                             </div>
                         </div>
@@ -118,12 +122,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="m-3">
                                     <path d="M15.9994 1.58722L15.2924 2.29424C15.2924 2.29424 11.5551 6.00107 5.99976 6.00107H4.9998V16.0007C4.9998 21.3338 7.71598 24.9046 10.3746 27.0315C13.0332 29.1584 15.7123 29.9571 15.7123 29.9571L15.9994 30.0452L16.2865 29.9571C16.2865 29.9571 18.9655 29.1584 21.6241 27.0315C24.2828 24.9046 26.9989 21.3338 26.9989 16.0007V6.00107H25.999C20.4436 6.00107 16.7064 2.29424 16.7064 2.29424L15.9994 1.58722ZM12.7065 11.2938L15.9994 14.5867L19.2922 11.2938L20.7062 12.7078L17.4134 16.0007L20.7062 19.2935L19.2922 20.7075L15.9994 17.4146L12.7065 20.7075L11.2925 19.2935L14.5854 16.0007L11.2925 12.7078L12.7065 11.2938Z" fill="black" />
                                 </svg>
-                                <div class="details m-3">
+                                <div class="info m-3">
                                     <p>Firewall Breach</p>
                                     <p>Insecure thing here....</p>
                                 </div>
-                                <div class="ms-auto status m-3 d-none d-lg-block">
-                                    <span class="py-1 px-4 success">Secured</span>
+                                <div class="status ms-auto m-3 d-none d-lg-block">
+                                    <span class="py-1 px-4 bg-success">Secured</span>
                                 </div>
                             </div>
                         </div>
@@ -132,12 +136,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="m-3">
                                     <path d="M15.9994 1.58722L15.2924 2.29424C15.2924 2.29424 11.5551 6.00107 5.99976 6.00107H4.9998V16.0007C4.9998 21.3338 7.71598 24.9046 10.3746 27.0315C13.0332 29.1584 15.7123 29.9571 15.7123 29.9571L15.9994 30.0452L16.2865 29.9571C16.2865 29.9571 18.9655 29.1584 21.6241 27.0315C24.2828 24.9046 26.9989 21.3338 26.9989 16.0007V6.00107H25.999C20.4436 6.00107 16.7064 2.29424 16.7064 2.29424L15.9994 1.58722ZM12.7065 11.2938L15.9994 14.5867L19.2922 11.2938L20.7062 12.7078L17.4134 16.0007L20.7062 19.2935L19.2922 20.7075L15.9994 17.4146L12.7065 20.7075L11.2925 19.2935L14.5854 16.0007L11.2925 12.7078L12.7065 11.2938Z" fill="black" />
                                 </svg>
-                                <div class="details m-3">
+                                <div class="info m-3">
                                     <p>Firewall Breach</p>
                                     <p>Insecure thing here....</p>
                                 </div>
-                                <div class="ms-auto status m-3 d-none d-lg-block">
-                                    <span class="py-1 px-4 warning">Review Required</span>
+                                <div class="status ms-auto m-3 d-none d-lg-block">
+                                    <span class="py-1 px-4 bg-warning">Review Required</span>
                                 </div>
                             </div>
                         </div>
@@ -175,11 +179,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             <p class="my-1 ms-4">And this</p>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="homepage-features mt-5 text-white">
+                </div> <!-- End of Row -->
+            </div> <!-- End of Notification Pane -->
+        </div> <!-- End of Container -->
+    </section>
+    <!-- Feature List -->
+    <section class="feature-preview mt-5 text-white">
+         <!-- Top Right Blur -->
         <svg width="1246" height="521" viewBox="0 0 1246 521" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto d-block position-absolute blur-effect d-none d-lg-block">
             <path d="M207.381 118.575C301.841 10.5414 596.77 6.2067 732.427 17.5436C868.883 12.542 1160.98 2.03877 1237.69 0.0381419C1333.59 -2.46264 1447.47 118.575 1497.22 196.6C1537.02 259.02 1431.89 334.31 1374.35 364.152C1308.42 413.501 1144.07 513.9 1014.13 520.702C851.701 529.204 629.935 353.149 451.323 352.149C272.712 351.148 297.286 522.702 88.7057 476.188C-119.874 429.673 89.3051 253.618 207.381 118.575Z" fill="url(#paint0_linear_3_696)" />
             <defs>
@@ -189,6 +195,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </linearGradient>
             </defs>
         </svg>
+         <!-- Bottom Left Blur -->
         <svg width="872" height="521" viewBox="0 0 872 521" fill="none" xmlns="http://www.w3.org/2000/svg" class="position-absolute blur-effect secondary-blur d-none d-lg-block">
             <path d="M664.619 402.425C570.159 510.459 275.23 514.793 139.573 503.457C3.11658 508.458 -288.975 518.961 -365.695 520.962C-461.593 523.463 -575.474 402.425 -625.221 324.4C-665.019 261.981 -559.89 186.69 -502.351 156.848C-436.42 107.499 -272.073 7.10055 -142.13 0.298434C20.2985 -8.20424 242.065 167.851 420.676 168.851C599.288 169.852 574.714 -1.70211 783.294 44.8125C991.874 91.3272 782.695 267.382 664.619 402.425Z" fill="url(#paint0_linear_3_719)" />
             <defs>
@@ -260,9 +267,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
+                </div>  <!-- End of Features -->
+            </div> <!-- End of Row -->
+        </div> <!-- End of Container -->
+        
+        <!-- Statistics Bar -->
         <div class="stats position-relative text-center">
             <div class="container">
                 <div class="row">
@@ -287,11 +296,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </div>
             </div>
         </div>
-    </div>
-    <div class="homepage-faq">
+    </section>
+    <!-- FAQ -->
+    <section class="faq">
         <div class="container">
             <h2 class="text-center mb-5">Frequently Asked Questions</h2>
             <div class="accordion accordion-flush" id="faqAccordion">
+                <!-- FAQ Question One -->
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="flush-headingOne">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
@@ -299,9 +310,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         </button>
                     </h2>
                     <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
+                        <div class="accordion-body"></div>
                     </div>
                 </div>
+                <!-- FAQ Question Two -->
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="flush-headingTwo">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
@@ -309,9 +321,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         </button>
                     </h2>
                     <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
+                        <div class="accordion-body"></div>
                     </div>
                 </div>
+                <!-- FAQ Question Three -->
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="flush-headingThree">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
@@ -319,17 +332,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         </button>
                     </h2>
                     <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+                        <div class="accordion-body"></div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="homepage-ready">
+    </section>
+    <!-- Call to Action -->
+    <section class="get-ready">
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 col-lg-6 call-to-action">
-                    <h2 class="mb-3">Frequently Asked Questions</h2>
+                    <h2 class="mb-3">Get Ready Now</h2>
                     <p class="pe-5 pb-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio tristique semper consectetur lorem elit tempus tincidunt integer. Nibh facilisi aliquet quis integer dignissim.</p>
                     <a href="{% url 'portal' %}" class="scan-button">
                         <svg width="144" height="144" xmlns="http://www.w3.org/2000/svg" class="position-absolute primary" fill="none">
@@ -357,7 +371,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 {% endblock %}
 
 {% block page_scripts %}

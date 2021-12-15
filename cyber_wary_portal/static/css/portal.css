@@ -12,11 +12,12 @@ body {
     max-width: 330px;
     background: linear-gradient(0deg, #34CC96 -5.51%, #1D1C28 48.98%);
     color: #fff;
+    transition: all 0.2s;
 }
 
 #sidebar.active {
-    min-width: 100px;
-    max-width: 100px;
+    min-width: 120px;
+    max-width: 120px;
     text-align: center;
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -37,6 +38,7 @@ body {
 
 #sidebar .sidebar-list a {
     color: var(--primary-light);
+    transition: all 0.3s;
 }
 
 #sidebar.active .sidebar-list li {
@@ -45,6 +47,7 @@ body {
 
 #sidebar.active .sidebar-list a {
     font-size: 12px;
+    transition: all 0.3s;
 }
 
 #sidebar.active .sidebar-list i {
@@ -85,11 +88,6 @@ body {
     min-height: 100vh;
     padding: 15px;
 }
-
-
-/* ---------------------------------------------------
-    MEDIAQUERIES
------------------------------------------------------ */
 
 @media (max-width: 768px) {
     #sidebar {
