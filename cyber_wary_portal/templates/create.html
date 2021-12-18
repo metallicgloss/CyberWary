@@ -35,6 +35,93 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </div>
             </div>
             <div>
+                <form>
+                    
+                    <div class="position-relative">
+                        <div class="form-dropdown form-input-animation">
+                            <div class="select">
+                                <span>Select Gender</span>
+                                <i class="icofont-thin-down"></i>
+                            </div>
+                            <input type="hidden" name="gender">
+                            <ul class="form-dropdown-menu">
+                                <li id="male">Male</li>
+                                <li id="female">Female</li>
+                            </ul>
+                        </div>
+                        <span class="focus-border">
+                            <i></i>
+                        </span>
+                    </div>
+                    
+                    
+                    <p>Toggles</p>
+                    <input id="toggle-on" class="form-radio-toggle toggle-left" name="toggle" value="false" type="radio" checked>
+                    <label for="toggle-on" class="form-radio-toggle-btn">Blue Team</label>
+                    <input id="toggle-off" class="form-radio-toggle toggle-right" name="toggle" value="true" type="radio">
+                    <label for="toggle-off" class="form-radio-toggle-btn">Red Team</label>
+
+                    <p>Text Input</p>
+                    <div class="position-relative">
+                        <input type="text" class="form-input-animation" />
+                        <span class="focus-border">
+                            <i></i>
+                        </span>
+                    </div>
+                </form>
+
+                <p>Checkbox</p>
+                <div>
+                    <label class="form-field form-checkbox">
+                        First checkbox
+                            <input type="checkbox" checked="checked" />
+                        <div class="form-checkbox-indicator"></div>
+                    </label>
+                    <label class="form-field form-checkbox">
+                        Second checkbox
+                            <input type="checkbox" />
+                        <div class="form-checkbox-indicator"></div>
+                    </label>
+                    <label class="form-field form-checkbox">
+                        Third checkbox
+                            <input type="checkbox" />
+                        <div class="form-checkbox-indicator"></div>
+                    </label>
+                    <label class="form-field form-checkbox">
+                        Disabled
+                            <input type="checkbox" disabled="disabled" />
+                        <div class="form-checkbox-indicator"></div>
+                    </label>
+                    <label class="form-field form-checkbox">
+                        Disabled & checked
+                            <input type="checkbox" disabled="disabled" checked="checked" />
+                        <div class="form-checkbox-indicator"></div>
+                    </label>
+                </div>
+
+                <p>Radio</p>
+                <div>
+                    <label class="form-field form-radio">
+                        First radio
+                            <input type="radio" name="radio" checked="checked" />
+                        <div class="form-radio-indicator"></div>
+                    </label>
+                    <label class="form-field form-radio">
+                        Second radio
+                            <input type="radio" name="radio" />
+                        <div class="form-radio-indicator"></div>
+                    </label>
+                    <label class="form-field form-radio">
+                        Disabled
+                            <input type="radio" name="radio2" disabled="disabled" />
+                        <div class="form-radio-indicator"></div>
+                    </label>
+                    <label class="form-field form-radio">
+                        Disabled & checked
+                            <input type="radio" name="radio2" disabled="disabled" checked="checked" />
+                        <div class="form-radio-indicator"></div>
+                    </label>
+                </div>
             </div>
         </div>
         <div class="col-xs-12 col-lg-4">
@@ -44,3 +131,22 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         </div>
     </div>
 {% endblock %}
+
+{% block page_scripts %}
+<script>
+    $('.form-dropdown').click(function () {
+        $(this).attr('tabindex', 1).focus();
+        $(this).toggleClass('active');
+        $(this).find('.form-dropdown-menu').slideToggle(300);
+    });
+    $('.form-dropdown').focusout(function () {
+        $(this).removeClass('active');
+        $(this).find('.form-dropdown-menu').slideUp(300);
+    });
+    $('.form-dropdown .form-dropdown-menu li').click(function () {
+        $(this).parents('.form-dropdown').find('span').text($(this).text());
+        $(this).parents('.form-dropdown').find('input').attr('value', $(this).attr('id'));
+    });
+</script>
+    
+{% endblock%}

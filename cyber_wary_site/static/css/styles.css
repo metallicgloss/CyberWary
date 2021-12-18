@@ -452,17 +452,6 @@ body {
     font-size: 48px;
 }
 
-.user-auth input {
-    border: 1px solid #D4D4D4;
-    font-size: 14px;
-    padding: 10px 15px;
-    width: 100%;
-}
-
-.user-auth input:focus {
-    outline: none;
-}
-
 .user-auth button {
     border: 0;
     color: var(--primary-light);
@@ -485,56 +474,6 @@ body {
 
 .user-auth .alt-button {
     background-color: var(--alt-dark);
-}
-
-.form-input-animation~.focus-border:before,
-.form-input-animation~.focus-border:after {
-    background-color: var(--success);
-    content: "";
-    height: 2px;
-    left: 0;
-    position: absolute;
-    top: 0;
-    transition: 0.3s;
-    width: 0;
-}
-
-.form-input-animation~.focus-border:after {
-    bottom: 0;
-    left: auto;
-    right: 0;
-    top: auto;
-}
-
-.form-input-animation~.focus-border i:before,
-.form-input-animation~.focus-border i:after {
-    background-color: var(--success);
-    content: "";
-    height: 0;
-    left: 0;
-    position: absolute;
-    top: 0;
-    transition: 0.4s;
-    width: 2px;
-}
-
-.form-input-animation~.focus-border i:after {
-    bottom: 0;
-    left: auto;
-    right: 0;
-    top: auto;
-}
-
-.form-input-animation:focus~.focus-border:before,
-.form-input-animation:focus~.focus-border:after {
-    transition: 0.3s;
-    width: 100%;
-}
-
-.form-input-animation:focus~.focus-border i:before,
-.form-input-animation:focus~.focus-border i:after {
-    height: 100%;
-    transition: 0.4s;
 }
 
 .form-button {

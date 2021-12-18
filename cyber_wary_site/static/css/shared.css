@@ -31,6 +31,8 @@
     2. Defaults
     3. Bootstrap Overrides
     4. Custom
+        4.1 Elements
+        4.2 Forms
 
 \*-----------------------------------------------------------------------*/
 
@@ -45,6 +47,7 @@
     --alt-dark: #3A3850;
     --primary-light: #FFFFFF;
     --alt-light: #F4F4F4;
+    --border-light: #D4D4D4;
     --success: #34CC96;
     --warning: #E9A464;
     --danger: #F54B4B;
@@ -134,7 +137,80 @@ a {
     4. Custom
 \*-------------------------------------------*/
 
+
+/*-----------------*\
+    4.1 Elements
+\*-----------------*/
+
 .blur-effect {
     filter: blur(100px);
     z-index: -1;
+}
+
+
+/*-----------------*\
+    4.2 Forms
+\*-----------------*/
+
+form input[type=text],
+form input[type=password],
+form select {
+    border: 1px solid #D4D4D4;
+    font-size: 14px;
+    padding: 10px 15px;
+    width: 100%;
+}
+
+form input:focus {
+    outline: none;
+}
+
+.form-input-animation~.focus-border:before,
+.form-input-animation~.focus-border:after {
+    background-color: var(--success);
+    content: "";
+    height: 2px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    transition: 0.3s;
+    width: 0;
+}
+
+.form-input-animation~.focus-border:after {
+    bottom: 0;
+    left: auto;
+    right: 0;
+    top: auto;
+}
+
+.form-input-animation~.focus-border i:before,
+.form-input-animation~.focus-border i:after {
+    background-color: var(--success);
+    content: "";
+    height: 0;
+    left: 0;
+    position: absolute;
+    top: 0;
+    transition: 0.4s;
+    width: 2px;
+}
+
+.form-input-animation~.focus-border i:after {
+    bottom: 0;
+    left: auto;
+    right: 0;
+    top: auto;
+}
+
+.form-input-animation:focus~.focus-border:before,
+.form-input-animation:focus~.focus-border:after {
+    transition: 0.3s;
+    width: 100%;
+}
+
+.form-input-animation:focus~.focus-border i:before,
+.form-input-animation:focus~.focus-border i:after {
+    height: 100%;
+    transition: 0.4s;
 }

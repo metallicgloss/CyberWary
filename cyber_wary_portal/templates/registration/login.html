@@ -34,16 +34,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </div>
 <div class="user-auth text-center">
     <div class="container">
-        <div class="row">
-            <div class="col">
-                <h1 class="mb-5">Client Account Login</h1>
-            </div>
-        </div>
         <div class="row justify-content-center text-start">
             <div class="col-xs-12 col-lg-9">
                 <form method="post">
                     {% csrf_token %}
-
                     <div class="row">
                         <div class="col">
                             <p class="mt-4 label"><i class="icofont-id me-2"></i> {{ form.username.label }}<span class="required">*</span></p>

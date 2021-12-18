@@ -1,17 +1,77 @@
+/*-----------------------------------------------------------------------*\
+
+    GNU General Public License v3.0
+    Cyber Wary - <https://github.com/metallicgloss/CyberWary>
+    Copyright (C) 2021 - William P - <hello@metallicgloss.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+\*-----------------------------------------------------------------------*/
+
+
+/*-----------------------------------------------------------------------*\
+    
+    Shared Styles
+
+    CSS rules, colours and styles that are used frequently throughout both
+    the public front-end website and back-end user portal.
+
+    1. Defaults
+    2. Bootstrap Overrides
+    3. Custom
+        3.1 Sidebar
+        3.2 Navbar
+        3.3 Content Area
+        3.4 Forms
+            3.4.1 Checkbox
+            3.4.2 Radio
+            3.4.3 Toggle
+            3.4.4 Dropdown
+        3.5 Legal
+    4. Mobile Optimisations
+
+\*-----------------------------------------------------------------------*/
+
+
+/*-------------------------------------------*\
+    1. Defaults
+\*-------------------------------------------*/
+
 body {
     background-color: var(--primary-light);
 }
 
-.wrapper {
-    display: flex;
-    align-items: stretch;
-}
+
+/*-------------------------------------------*\
+    2. Bootstrap Overrides
+\*-------------------------------------------*/
+
+
+/*-------------------------------------------*\
+    3. Custom
+\*-------------------------------------------*/
+
+
+/*-----------------*\
+    3.1 Sidebar
+\*-----------------*/
 
 #sidebar {
     min-width: 330px;
     max-width: 330px;
-    background: linear-gradient(0deg, #34CC96 -5.51%, #1D1C28 48.98%);
-    color: #fff;
+    background: linear-gradient(0deg, var(--success) -5.51%, var(--primary-dark) 48.98%);
+    color: var(--primary-light);
     transition: all 0.2s;
 }
 
@@ -57,6 +117,11 @@ body {
     margin-bottom: 5px;
 }
 
+
+/*-----------------*\
+    3.2 Navbar
+\*-----------------*/
+
 .nav a {
     color: var(--primary-dark);
 }
@@ -74,13 +139,23 @@ body {
     color: #545454;
 }
 
-.nav .dropdown-menu[data-bs-popper] {
+.nav .form-dropdown-menu[data-bs-popper] {
     left: auto;
     right: 0 !important;
 }
 
-.nav .dropdown-toggle::after {
+.nav .form-dropdown-toggle::after {
     display: none;
+}
+
+
+/*--------------------*\
+    3.3 Content Area
+\*--------------------*/
+
+.wrapper {
+    display: flex;
+    align-items: stretch;
 }
 
 #content {
@@ -88,6 +163,304 @@ body {
     min-height: 100vh;
     padding: 15px;
 }
+
+
+/*-----------------*\
+    3.3 Forms
+\*-----------------*/
+
+.form-field {
+    display: block;
+    position: Relative;
+    padding-left: 35px;
+    margin-bottom: 5px;
+    padding-top: 3px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.form-field input {
+    position: Absolute;
+    z-index: -1;
+    opacity: 0;
+}
+
+
+/*------------------*\
+    3.4.1 Checkbox
+\*------------------*/
+
+
+/* Reference https://ref.cyberwary.com/9g1m8 */
+
+.form-checkbox-indicator {
+    position: Absolute;
+    top: 2px;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background: var(--primary-light);
+    border: 2px solid var(--primary-dark);
+    border-radius: 0px;
+}
+
+.form-checkbox-indicator:before {
+    /* Reference https://ref.cyberwary.com/bo561 */
+    border: 2px solid white;
+    content: "";
+    position: Absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.control:hover input~.form-checkbox-indicator {
+    background: #e6e6e6;
+}
+
+.form-field input:checked~.form-checkbox-indicator {
+    background: var(--success);
+}
+
+.form-field input:disabled~.form-checkbox-indicator {
+    background: #e6e6e6;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.form-checkbox-indicator:after {
+    box-sizing: unset;
+    content: '';
+    position: Absolute;
+    display: none;
+}
+
+.form-field input:checked~.form-checkbox-indicator:after {
+    display: block;
+}
+
+.form-checkbox .form-checkbox-indicator:after {
+    left: 8px;
+    top: 5px;
+    width: 4px;
+    height: 7px;
+    border: solid var(--primary-dark);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.form-checkbox input:disabled~.form-checkbox-indicator:after {
+    border-color: var(--border-light);
+}
+
+
+/*------------------*\
+    3.4.2 Radio
+\*------------------*/
+
+
+/* Reference https://ref.cyberwary.com/kohcf */
+
+.form-radio-indicator {
+    position: Absolute;
+    top: 2px;
+    left: 0;
+    height: 24px;
+    width: 24px;
+    background: var(--primary-light);
+    border: 2px solid var(--primary-dark);
+}
+
+.radioselector:hover input~.form-radio-indicator,
+.form-radio input:focus~.form-radio-indicator {
+    background: #e6e6e6;
+}
+
+.form-radio input:checked~.form-radio-indicator {
+    background: var(--primary-light);
+}
+
+.form-radio input:checked:focus~.form-radio-indicator {
+    background: var(--primary-light);
+}
+
+.form-radio input:disabled~.form-radio-indicator {
+    background: #e6e6e6;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.form-radio-indicator:after {
+    box-sizing: unset;
+    content: '';
+    position: Absolute;
+    display: none;
+}
+
+.form-radio input:checked~.form-radio-indicator:after {
+    display: block;
+}
+
+.form-radio .form-radio-indicator {
+    border-radius: 50%;
+}
+
+.form-radio .form-radio-indicator:after {
+    left: 3px;
+    top: 3px;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background: var(--success);
+    transition: background 250ms;
+}
+
+.form-radio input:disabled~.form-radio-indicator:after {
+    background: var(--border-light);
+}
+
+
+/*------------------*\
+    3.4.3 Toggle
+\*------------------*/
+
+
+/* Reference https://ref.cyberwary.com/8ywj3 */
+
+.form-radio-toggle {
+    display: none;
+}
+
+.form-radio-toggle+label {
+    cursor: pointer;
+    min-width: 150px;
+}
+
+.form-radio-toggle+label:hover {
+    background: none;
+    color: var(--primary-dark);
+}
+
+.form-radio-toggle+label:after {
+    background: var(--primary-dark);
+    content: "";
+    height: 100%;
+    position: Absolute;
+    top: 0;
+    transition: left 200ms cubic-bezier(0.77, 0, 0.175, 1);
+    width: 100%;
+    z-index: -1;
+}
+
+.form-radio-toggle.toggle-left+label {
+    border-right: 0;
+}
+
+.form-radio-toggle.toggle-left+label:after {
+    left: 100%;
+}
+
+.form-radio-toggle.toggle-right+label {
+    margin-left: -5px;
+}
+
+.form-radio-toggle.toggle-right+label:after {
+    left: -100%;
+}
+
+.form-radio-toggle:checked+label {
+    cursor: default;
+    color: var(--primary-light);
+    transition: color 200ms;
+}
+
+.form-radio-toggle:checked+label:after {
+    left: 0;
+}
+
+.form-radio-toggle-btn {
+    border: 2px solid var(--primary-dark);
+    display: inline-block;
+    padding: 3px 0;
+    position: Relative;
+    text-align: center;
+    transition: background 600ms ease, color 600ms ease;
+}
+
+
+/*------------------*\
+    3.4.4 Dropdown
+\*------------------*/
+
+.form-dropdown {
+    background-color: var(--primary-light);
+    border: 1px solid var(--border-light);
+    color: var(--primary-dark);
+    font-size: 14px;
+    height: 100%;
+    position: Relative;
+    transition: all .1s ease-in-out;
+}
+
+.form-dropdown .select {
+    cursor: pointer;
+    display: block;
+    padding: 10px;
+}
+
+.form-dropdown .select>i {
+    font-size: 13px;
+    color: var(--alt-dark);
+    cursor: pointer;
+    transition: all .1s ease-in-out;
+    float: right;
+    line-height: 20px;
+}
+
+.form-dropdown:focus,
+.form-dropdown.active,
+.form-dropdown.active:hover {
+    outline: none;
+}
+
+.form-dropdown.active .select>i {
+    transform: rotate(-180deg);
+}
+
+.form-dropdown .form-dropdown-menu {
+    background-color: var(--primary-light);
+    border: 1px solid var(--border-light);
+    display: None;
+    margin-top: 1px;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+}
+
+.form-dropdown .form-dropdown-menu li {
+    cursor: pointer;
+    padding: 10px;
+}
+
+.form-dropdown .form-dropdown-menu {
+    padding: 0;
+    list-style: none;
+}
+
+.form-dropdown .form-dropdown-menu li:hover {
+    background-color: #f2f2f2;
+}
+
+.form-dropdown .form-dropdown-menu li:active {
+    background-color: #e2e2e2;
+}
+
+
+/*-------------------------------------------*\
+    4. Mobile Optmisations
+\*-------------------------------------------*/
 
 @media (max-width: 768px) {
     #sidebar {
