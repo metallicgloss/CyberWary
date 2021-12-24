@@ -38,7 +38,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         {% block page_head %}{% endblock %}
 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Source+Code+Pro:wght@500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.css" integrity="sha256-o+AsfCHj7A1M5Xgm1kJmZiGEIvMQEzQqrXz2072Gkkg=" crossorigin="anonymous">
         <link rel="stylesheet" href="{% static 'css/portal.css' %}">
         <link rel="stylesheet" href="{% static 'css/shared.css' %}">
@@ -85,7 +85,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </ul>
             </nav>
             <div id="content">
-                <nav class="navbar navbar-expand-lg mb-5">
+                <nav class="navbar navbar-expand-lg mb-3">
                     <div class="container-fluid">
                         <button type="button" id="sidebarCollapse" class="btn p-0 pt-1">
                         <i class="icofont-navigation-menu"></i>
@@ -96,11 +96,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                         <div class="user-details">
                                             <p id="user-name" class="mb-0 text-end">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                                            <p id="user-plan" class="mb-0 text-end">Profile</p>
+                                            <p id="user-plan" class="mb-0 text-end">Free Tier</p>
                                         </div>
                                         <img src="{{ request.user.get_gravatar_image }}" alt="Profile Photo" width="48" height="48" class="rounded-circle ms-4">
                                     </a>
-                                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow mt-3" aria-labelledby="userProfileDropdown">
+                                    <ul class="dropdown-menu dropdown-menu-dark text-small text-end shadow rounded-0 mt-3 end-0" aria-labelledby="userProfileDropdown">
                                         <li><a class="dropdown-item" href="{% url 'modify' %}">Profile</a></li>
                                         <li>
                                             <hr class="dropdown-divider">

@@ -35,12 +35,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <div class="user-auth text-center">
     <div class="container">
         <div class="row justify-content-center text-start">
-            <div class="col-xs-12 col-lg-9">
+            <div class="col-lg-12 col-xl-9">
                 <form method="post">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col">
-                            <p class="mt-4 label"><i class="icofont-id me-2"></i> {{ form.username.label }}<span class="required">*</span></p>
+                            <p class="mt-4 mb-1 fw-bold"><i class="icofont-id me-2"></i> {{ form.username.label }}<span class="required">*</span></p>
                             <div class="position-relative">
                                 {{ form.username }}
                                 <span class="focus-border">
@@ -55,7 +55,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
                     <div class="row">
                         <div class="col">
-                            <p class="mt-4 label"><i class="icofont-ui-password me-2"></i> {{ form.password.label }}<span class="required">*</span></p>
+                            <p class="mt-4 mb-1 fw-bold"><i class="icofont-ui-password me-2"></i> {{ form.password.label }}<span class="required">*</span></p>
                             <div class="position-relative">
                                 {{ form.password }}
                                 <span class="focus-border">
@@ -73,10 +73,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     {% endif %}
 
                     <div class="row mt-4">
-                        <div class="col-lg-6">
+                        <div class="col-xl-6">
                             <button type="submit" class="bg-success">Log in</button>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-xl-6">
                             <a href="{% url 'register' %}">
                                 <button type="button" class="alt-button">Don't have an account? Register Now</button>
                             </a>

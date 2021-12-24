@@ -50,15 +50,16 @@ class LoginForm(AuthenticationForm):
             field.required = True
 
 
-class RegistrationForm(UserCreationForm):
+class AccountDetailsForm(UserCreationForm):
     username = forms.CharField(
         label='Username',
         widget=TextInput(
             attrs={
-                'class': 'validate',
                 'placeholder': 'Create a username...'
             }
-        )
+        ),
+        min_length=4, 
+        max_length=16
     )
     first_name = forms.CharField(
         label='Forename',
@@ -66,7 +67,9 @@ class RegistrationForm(UserCreationForm):
             attrs={
                 'placeholder': 'Enter your forename...'
             }
-        )
+        ),
+        min_length=2, 
+        max_length=64
     )
     last_name = forms.CharField(
         label='Surname',
@@ -111,8 +114,73 @@ class RegistrationForm(UserCreationForm):
         )
     
     def __init__(self, *args, **kwargs):
-        super(RegistrationForm, self).__init__( * args, ** kwargs)
+        super(AccountDetailsForm, self).__init__( * args, ** kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-input-animation'
             field.required = True
+            field.widget.attrs.pop("autofocus", None)
+
+            
+
+class AccountModificationForm(UserCreationForm):
+    first_name = forms.CharField(
+        label='Forename',
+        widget=TextInput(
+            attrs={
+                'placeholder': 'Enter your forename...'
+            }
+        ),
+        required=True,
+        min_length=2, 
+        max_length=64
+    )
+    last_name = forms.CharField(
+        label='Surname',
+        widget=TextInput(
+            attrs={
+                'placeholder': 'Enter your surname...'
+            }
+        ),
+        required=True
+    )
+    email = forms.EmailField(
+        label='Email Address',
+        widget=TextInput(
+            attrs={
+                'placeholder': 'Enter your email address...'
+            }
+        ),
+        required=True
+    )
+    password1 = forms.CharField(
+        label='Password',
+        widget=PasswordInput(
+            attrs={
+                'placeholder': 'Create a password...'
+            }
+        ),
+        required=False
+    )
+    password2 = forms.CharField(
+        label='Confirm Password',
+        widget=PasswordInput(
+            attrs={
+                'placeholder': 'Re-enter your password...'
+            }
+        ),
+        required=False
+    )
+
+    class Meta:
+        model = SystemUser
+        fields = (
+            'first_name',
+            'last_name',
+            'email'
+        )
+    
+    def __init__(self, *args, **kwargs):
+        super(AccountModificationForm, self).__init__( * args, ** kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-input-animation'
             field.widget.attrs.pop("autofocus", None)

@@ -1,0 +1,161 @@
+{% extends "portal.html" %}
+
+{% load static %}
+
+{% comment %}
+GNU General Public License v3.0
+Cyber Wary - <https://github.com/metallicgloss/CyberWary>
+Copyright (C) 2021 - William P - <hello@metallicgloss.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% block page_content %}
+    <h2>CyberWary Profile</h2>
+    <p>View, update or correct your account details, including your name, email address and password.</p>
+    <div class="row mt-5">
+        <div class="col-lg-12 col-xl-7">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+                <div class="row">
+                    <div class="col-lg-12 col-xl-4 {% if form.first_name.errors %}field-error{% endif %}">
+                        <p class="mt-4 mb-1 fw-bold">
+                            <i class="icofont-ui-user me-2"></i> {{ form.first_name.label }}<span class="text-danger">*</span>
+                        </p>
+                        <div class="position-relative">
+                            {{ form.first_name }}
+                            <span class="focus-border">
+                                <i></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-xl-4 {% if form.last_name.errors %}field-error{% endif %}">
+                        <p class="mt-4 mb-1 fw-bold">
+                            <i class="icofont-ui-user me-2"></i> {{ form.last_name.label }}<span class="text-danger">*</span>
+                        </p>
+                        <div class="position-relative">
+                            {{ form.last_name }}
+                            <span class="focus-border">
+                                <i></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-xl-4 {% if form.email.errors %}field-error{% endif %}">
+                        <p class="mt-4 mb-1 fw-bold">
+                            <i class="icofont-ui-email me-2"></i> {{ form.email.label }}<span class="text-danger">*</span>
+                        </p>
+                        <div class="position-relative">
+                            {{ form.email }}
+                            <span class="focus-border">
+                                <i></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-12">
+                        <p class="mt-4 mb-1 fw-bold">
+                            <i class="icofont-exchange me-2"></i> Update Your Password?
+                        </p>
+                        <input id="toggle-off" class="form-radio-toggle toggle-left" name="update_password" value="false" type="radio" checked>
+                        <label for="toggle-off" class="form-radio-toggle-btn">No</label>
+                        <input id="toggle-on" class="form-radio-toggle toggle-right" name="update_password" value="true" type="radio">
+                        <label for="toggle-on" class="form-radio-toggle-btn">Yes</label>
+                    </div>
+                </div>
+                <div class="row password-field" style="display:none;">
+                    <div class="col-lg-12 col-xl-6 {% if form.password1.errors or form.password2.errors %}field-error{% endif %}">
+                        <p class="mt-4 mb-1 fw-bold">
+                            <i class="icofont-ui-password me-2"></i> {{ form.password1.label }}<span class="text-danger">*</span>
+                        </p>
+                        <div class="position-relative">
+                            {{ form.password1 }}
+                            <span class="focus-border">
+                                <i></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-xl-6 {% if form.password1.errors or form.password2.errors %}field-error{% endif %}">
+                        <p class="mt-4 mb-1 fw-bold">
+                            <i class="icofont-ui-password me-2"></i> {{ form.password2.label }}<span class="text-danger">*</span>
+                        </p>
+                        <div class="position-relative">
+                            {{ form.password2 }}
+                            <span class="focus-border">
+                                <i></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row update-button" style="display:none;">
+                    <div class="col-lg-12">
+                        <button class="btn bg-success text-white px-5 py-2 mt-4 text-uppercase" type="submit">Save Changes <i class="icofont-save ms-3"></i></button>
+                    </div>
+                </div>
+                {% if update %}
+                    <div class="form-errors success-message mt-4">
+                        <h5 class="text-success">Success.</h5>
+                        <ul>
+                            <li>Your account was updated successfully.</li>
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if form.errors %}
+                    <div class="form-errors my-5">
+                        <h5 class="text-danger">Sorry! There was a problem with your request.</h5>
+                        <ul>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+        <div class="col-xl-1 d-lg-none d-xl-block">
+            <div class="section-divider"></div>
+        </div>
+        <div class="col-lg-12 col-xl-4 order-xs-first">
+            Account Details
+        </div>
+    </div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+    $(document).ready(function(){
+        $('input[type=radio][name=update_password]').change(function() {
+            if (this.value == "true") {
+                $('.password-field').show()
+            }
+            else {
+                $('.password-field').hide()
+                $('#{{ form.password1.auto_id }}').val("")
+                $('#{{ form.password2.auto_id }}').val("")
+            }
+        });
+        $("input[type=text], input[type=password]").on("input", function(){
+            $('.update-button').show()
+            $('.success-message').hide()
+            $("input[type=text], input[type=password]").off()
+        });
+    });
+</script>
+{% endblock%}

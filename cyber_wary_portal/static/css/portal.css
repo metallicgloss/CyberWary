@@ -57,6 +57,19 @@ body {
     2. Bootstrap Overrides
 \*-------------------------------------------*/
 
+.dropdown-menu-dark .dropdown-item.active,
+.dropdown-menu-dark .dropdown-item:active {
+    background-color: var(--alt-dark);
+}
+
+.dropdown-menu-dark {
+    background-color: var(--primary-dark);
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
 
 /*-------------------------------------------*\
     3. Custom
@@ -161,7 +174,36 @@ body {
 #content {
     width: 100%;
     min-height: 100vh;
-    padding: 15px;
+    padding: 15px 15px 15px 30px;
+}
+
+pre {
+    background-color: var(--primary-dark);
+    color: var(--primary-light);
+    width: 100%;
+    min-height: 80vh;
+    font-family: 'Source Code Pro', monospace;
+}
+
+.scan-brief svg {
+    margin-top: 10px;
+}
+
+.scan-setup p {
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: var(--alt-dark);
+}
+
+.scan-component {
+    margin-bottom: 25px;
+}
+
+.section-divider {
+    border-left: 1px solid var(--border-light);
+    height: 100%;
+    position: relative;
+    left: 50%;
 }
 
 
@@ -317,7 +359,7 @@ body {
 }
 
 .form-radio input:disabled~.form-radio-indicator:after {
-    background: var(--border-light);
+    background: var(--success);
 }
 
 
@@ -334,7 +376,7 @@ body {
 
 .form-radio-toggle+label {
     cursor: pointer;
-    min-width: 150px;
+    min-width: 170px;
 }
 
 .form-radio-toggle+label:hover {
@@ -348,7 +390,7 @@ body {
     height: 100%;
     position: Absolute;
     top: 0;
-    transition: left 200ms cubic-bezier(0.77, 0, 0.175, 1);
+    transition: left 0.2s cubic-bezier(0.77, 0, 0.175, 1);
     width: 100%;
     z-index: -1;
 }
@@ -382,10 +424,10 @@ body {
 .form-radio-toggle-btn {
     border: 2px solid var(--primary-dark);
     display: inline-block;
-    padding: 3px 0;
+    padding: 8px 0;
     position: Relative;
     text-align: center;
-    transition: background 600ms ease, color 600ms ease;
+    transition: background 0.6s ease, color 0.6s ease;
 }
 
 
@@ -455,6 +497,28 @@ body {
 
 .form-dropdown .form-dropdown-menu li:active {
     background-color: #e2e2e2;
+}
+
+.save-dropdown {
+    height: inherit;
+    display: inline-block;
+    background: var(--primary-dark);
+    border: 0;
+    color: var(--primary-light);
+    min-width: 120px;
+}
+
+.save-dropdown .form-dropdown-menu {
+    background: var(--primary-dark);
+    border: 1px solid var(--primary-dark);
+}
+
+.save-dropdown .form-dropdown-menu li:hover {
+    background: var(--alt-dark);
+}
+
+.save-dropdown .select>i {
+    color: var(--primary-light) !important;
 }
 
 

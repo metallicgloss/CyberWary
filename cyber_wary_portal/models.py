@@ -19,6 +19,7 @@
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
 import hashlib
 
 # --------------------------------------------------------------------------- #
@@ -43,3 +44,21 @@ class DefaultFields(models.Model):
 class SystemUser(AbstractUser):
     def get_gravatar_image(self):
         return 'http://www.gravatar.com/avatar/{}'.format(hashlib.md5(self.email.encode()).hexdigest())
+
+        
+# --------------------------------------------------------------------------- #
+#                        1.3 Scan Class                                       #
+# --------------------------------------------------------------------------- #
+
+class Scan(DefaultFields):
+    # The monthly recurring cost of the package.
+    cost = models.CharField(
+        max_length=50,
+        null=True
+    )
+
+    # Foreign key to the user that owns the viewing entry.
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )

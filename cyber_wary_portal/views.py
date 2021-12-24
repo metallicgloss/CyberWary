@@ -17,27 +17,33 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from .forms import RegistrationForm
+from django.urls import reverse
+from .forms import AccountDetailsForm, AccountModificationForm
+from .models import SystemUser
+
 
 @login_required
 def index(request):
     return render(request, 'dashboard.html')
 
+
 @login_required
 def create(request):
     return render(request, 'create.html')
+
 
 @login_required
 def report(request):
     return render(request, 'report.html')
 
+
 @login_required
 def scans(request):
     return render(request, 'scans.html')
-
 
 
 # --------------------------------------------------------------------------- #
@@ -47,14 +53,14 @@ def scans(request):
 
 def register(request):
     if request.method == 'POST':
-        form = RegistrationForm(request.POST)
+        form = AccountDetailsForm(request.POST)
 
         if form.is_valid():
             # Form contains all required values - save as new user.
             form.save()
 
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
+            username = form.data.get('username')
+            raw_password = form.data.get('password1')
 
             # Authenticate user session with provided details.
             user = authenticate(username=username, password=raw_password)
@@ -63,7 +69,7 @@ def register(request):
             return redirect('portal')
 
     else:
-        form = RegistrationForm()
+        form = AccountDetailsForm()
 
     return render(
         request,
@@ -80,4 +86,71 @@ def register(request):
 
 @login_required
 def modify(request):
-    pass
+    errors = []
+    profile_updated = False
+
+    if request.method == 'POST':
+        # Post request, submitting / saving of data.
+        form = AccountModificationForm(request.POST)
+
+        if form.is_valid():
+            # Get existing user.
+            user = SystemUser.objects.get(pk=request.user.pk)
+
+            # Add valid class to fields with valid data.
+            user.first_name = form.data.get('first_name')
+            user.last_name = form.data.get('last_name')
+
+            try:
+                # Check for existing user.
+                existing_user = SystemUser.objects.get(
+                    email=form.data.get('email')
+                )
+
+                # If email isn't owned by current user, existing email.
+                if(existing_user.pk != request.user.pk):
+                    form.add_error(
+                        'email',
+                        "There is already an existing user with that email address, so it could not be updated."
+                    )
+
+            except SystemUser.DoesNotExist:
+                # User doesn't exist with that email - its completely free to be used.
+                user.email = form.data.get('email')
+
+            if form.data.get('password1') != "" and form.data.get('password1') == form.data.get('password2'):
+                # If password not blank and match, set password and mark as valid.
+                user.set_password(form.data.get('password1'))
+
+            elif form.data.get('password1') != "":
+                # Add errors stating fields didn't match.
+                form.add_error(
+                    'password2',
+                    "The passwords entered did not match."
+                )
+
+            # Save user with modified details.
+            user.save()
+
+            return HttpResponseRedirect(
+                "%s?update=true" % reverse('modify')
+            )
+
+    else:
+        # Standard GET request, load AccountDetailsForm form and populate with user data.
+        form = AccountModificationForm(
+            instance=SystemUser.objects.get(pk=request.user.pk)
+        )
+
+        if(request.GET.get('update') is not None):
+            profile_updated = True
+
+    return render(
+        request,
+        'account/modify.html',
+        {
+            'form': form,
+            'errors': errors,
+            'update': profile_updated
+        }
+    )

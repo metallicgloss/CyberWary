@@ -47,8 +47,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         {% endfor %}
 
                         <div class="row">
-                            <div class="col {% if form.username.errors %}field-error{% endif %}">
-                                <p class="label">
+                            <div class="col-xl-12 {% if form.username.errors %}field-error{% endif %}">
+                                <p class="label mb-1 fw-bold">
                                     <i class="icofont-id me-2"></i> {{ form.username.label }}<span class="text-danger">*</span>
                                 </p>
                                 <div class="position-relative">
@@ -61,7 +61,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         </div>
                         <div class="row">
                             <div class="col-xs-12 col-lg-6 {% if form.password1.errors or form.password2.errors %}field-error{% endif %}">
-                                <p class="mt-4 label">
+                                <p class="mt-4 mb-1 fw-bold">
                                     <i class="icofont-ui-password me-2"></i> {{ form.password1.label }}<span class="text-danger">*</span>
                                 </p>
                                 <div class="position-relative">
@@ -72,7 +72,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 </div>
                             </div>
                             <div class="col-xs-12 col-lg-6 {% if form.password1.errors or form.password2.errors %}field-error{% endif %}">
-                                <p class="mt-4 label">
+                                <p class="mt-4 mb-1 fw-bold">
                                     <i class="icofont-ui-password me-2"></i> {{ form.password2.label }}<span class="text-danger">*</span>
                                 </p>
                                 <div class="position-relative mb-4">
@@ -86,7 +86,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <hr>
                         <div class="row">
                             <div class="col-xs-12 col-lg-6 {% if form.first_name.errors %}field-error{% endif %}">
-                                <p class="mt-4 label">
+                                <p class="mt-4 mb-1 fw-bold">
                                     <i class="icofont-ui-user me-2"></i> {{ form.first_name.label }}<span class="text-danger">*</span>
                                 </p>
                                 <div class="position-relative">
@@ -97,7 +97,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 </div>
                             </div>
                             <div class="col-xs-12 col-lg-6 {% if form.last_name.errors %}field-error{% endif %}">
-                                <p class="mt-4 label">
+                                <p class="mt-4 mb-1 fw-bold">
                                     <i class="icofont-ui-user me-2"></i> {{ form.last_name.label }}<span class="text-danger">*</span>
                                 </p>
                                 <div class="position-relative">
@@ -110,7 +110,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         </div>
                         <div class="row">
                             <div class="col {% if form.email.errors %}field-error{% endif %}">
-                                <p class="mt-4 label">
+                                <p class="mt-4 mb-1 fw-bold">
                                     <i class="icofont-ui-email me-2"></i> {{ form.email.label }}<span class="text-danger">*</span>
                                 </p>
                                 <div class="position-relative">

@@ -120,6 +120,10 @@ a {
     color: var(--danger) !important;
 }
 
+.text-success {
+    color: var(--success) !important;
+}
+
 .bg-success {
     background-color: var(--success) !important;
 }
@@ -167,7 +171,7 @@ form input:focus {
 
 .form-input-animation~.focus-border:before,
 .form-input-animation~.focus-border:after {
-    background-color: var(--success);
+    background-color: var(--primary-dark);
     content: "";
     height: 2px;
     left: 0;
@@ -186,13 +190,13 @@ form input:focus {
 
 .form-input-animation~.focus-border i:before,
 .form-input-animation~.focus-border i:after {
-    background-color: var(--success);
+    background-color: var(--primary-dark);
     content: "";
     height: 0;
     left: 0;
     position: absolute;
     top: 0;
-    transition: 0.4s;
+    transition: 0.3s;
     width: 2px;
 }
 

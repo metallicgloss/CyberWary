@@ -460,14 +460,6 @@ body {
     width: 100%;
 }
 
-.user-auth p {
-    margin-bottom: 0.3rem;
-}
-
-.user-auth .label {
-    font-weight: bold;
-}
-
 .user-auth .required {
     font-weight: normal;
 }
