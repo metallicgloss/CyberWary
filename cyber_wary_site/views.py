@@ -19,14 +19,18 @@
 
 from django.shortcuts import render
 
+
 def index(request):
     return render(request, 'index.html')
-    
+
+
 def software(request):
     return render(request, 'software.html')
 
+
 def tos(request):
     return render(request, 'tos.html')
+
 
 def pp(request):
     return render(request, 'pp.html')

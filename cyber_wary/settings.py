@@ -47,6 +47,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Django REST Framework
+    'rest_framework',
+    'rest_framework.authtoken',
+
     # Custom Apps
     'cyber_wary_portal',
     'cyber_wary_site',
@@ -113,6 +117,19 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Django REST Framework
+REST_FRAMEWORK = {
+    # Restrict API to authenticated users only.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
+
+    # Restrict authentication method to API Key/Token only.
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 
 # Internationalization

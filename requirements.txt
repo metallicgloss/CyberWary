@@ -1,3 +1,4 @@
 Django==3.2.9
-python-dotenv==0.19.2
+djangorestframework==3.13.1
 mysqlclient==2.1.0
+python-dotenv==0.19.2

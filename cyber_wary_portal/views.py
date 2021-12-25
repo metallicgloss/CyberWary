@@ -17,13 +17,14 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from django.http.response import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.decorators import login_required
-from django.urls import reverse
 from .forms import AccountDetailsForm, AccountModificationForm
 from .models import SystemUser
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
+from django.http.response import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from rest_framework.authtoken.models import Token
 
 
 @login_required
@@ -153,4 +154,19 @@ def modify(request):
             'errors': errors,
             'update': profile_updated
         }
+    )
+
+    
+# --------------------------------------------------------------------------- #
+#                           6. Account Modification                           #
+# --------------------------------------------------------------------------- #
+
+@login_required
+def api(request):
+    t = Token.objects.filter(user=request.user)
+    new_key = t[0].generate_key()
+    t.update(key=new_key)
+    return render(
+        request,
+        'account/api.html'
     )

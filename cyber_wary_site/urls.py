@@ -17,10 +17,10 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+from cyber_wary_site import views
 from django.conf.urls import include
 from django.contrib.auth import views as auth_views
 from django.urls import path
-from cyber_wary_site import views
 
 urlpatterns = [
     # ----------------------------------------------------------------------- #

@@ -20,7 +20,6 @@
 from django.contrib.staticfiles.handlers import StaticFilesHandler
 from django.core.wsgi import get_wsgi_application
 import os
-import sys
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cyber_wary.settings')
 application = StaticFilesHandler(get_wsgi_application())

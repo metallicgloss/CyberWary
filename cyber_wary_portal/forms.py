@@ -44,7 +44,7 @@ class LoginForm(AuthenticationForm):
     )
 
     def __init__(self, *args, **kwargs):
-        super(LoginForm, self).__init__( * args, ** kwargs)
+        super(LoginForm, self).__init__(* args, ** kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-input-animation'
             field.required = True
@@ -58,7 +58,7 @@ class AccountDetailsForm(UserCreationForm):
                 'placeholder': 'Create a username...'
             }
         ),
-        min_length=4, 
+        min_length=4,
         max_length=16
     )
     first_name = forms.CharField(
@@ -68,7 +68,7 @@ class AccountDetailsForm(UserCreationForm):
                 'placeholder': 'Enter your forename...'
             }
         ),
-        min_length=2, 
+        min_length=2,
         max_length=64
     )
     last_name = forms.CharField(
@@ -112,15 +112,14 @@ class AccountDetailsForm(UserCreationForm):
             'last_name',
             'email'
         )
-    
+
     def __init__(self, *args, **kwargs):
-        super(AccountDetailsForm, self).__init__( * args, ** kwargs)
+        super(AccountDetailsForm, self).__init__(* args, ** kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-input-animation'
             field.required = True
             field.widget.attrs.pop("autofocus", None)
 
-            
 
 class AccountModificationForm(UserCreationForm):
     first_name = forms.CharField(
@@ -131,7 +130,7 @@ class AccountModificationForm(UserCreationForm):
             }
         ),
         required=True,
-        min_length=2, 
+        min_length=2,
         max_length=64
     )
     last_name = forms.CharField(
@@ -178,9 +177,9 @@ class AccountModificationForm(UserCreationForm):
             'last_name',
             'email'
         )
-    
+
     def __init__(self, *args, **kwargs):
-        super(AccountModificationForm, self).__init__( * args, ** kwargs)
+        super(AccountModificationForm, self).__init__(* args, ** kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-input-animation'
             field.widget.attrs.pop("autofocus", None)

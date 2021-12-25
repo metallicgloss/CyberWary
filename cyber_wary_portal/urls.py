@@ -17,10 +17,10 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+from cyber_wary_portal import views
 from django.conf.urls import include
 from django.contrib.auth import views as auth_views
 from django.urls import path
-from cyber_wary_portal import views
 from .forms import LoginForm
 
 urlpatterns = [
@@ -72,7 +72,7 @@ urlpatterns = [
         views.register,
         name='register'
     ),
-    
+
     path(
         '',
         include('django.contrib.auth.urls')
@@ -82,5 +82,11 @@ urlpatterns = [
         'modify/',
         views.modify,
         name='modify'
+    ),
+
+    path(
+        'api/',
+        views.api,
+        name='api'
     ),
 ]
