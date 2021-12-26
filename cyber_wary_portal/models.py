@@ -79,13 +79,14 @@ class Scan(DefaultFields):
         validators=[
             MaxValueValidator(2),
             MinValueValidator(1)
-        ]
+        ],
+        null=False
     )
 
     title = models.CharField(
         default="Untitled Scan",
         help_text="An identifier for a scan.",
-        max_length=64,
+        max_length=32,
         null=True
     )
 
@@ -107,7 +108,7 @@ class Scan(DefaultFields):
 
     scan_key = models.CharField(
         help_text="A unique key associated with the scan.",
-        max_length=64,
+        max_length=32,
         null=False
     )
 
@@ -167,7 +168,7 @@ class Scan(DefaultFields):
         null=True
     )
 
-    system_password = models.BooleanField(
+    system_passwords = models.BooleanField(
         help_text="Flag for scan of system passwords.",
         default=False,
         null=True

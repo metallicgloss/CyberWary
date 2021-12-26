@@ -28,7 +28,9 @@
     the public front-end website and back-end user portal.
 
     1. Defaults
-    2. Bootstrap Overrides
+    2. Overrides
+        2.1 Bootstrap
+        2.2 DateTimePicker
     3. Custom
         3.1 Sidebar
         3.2 Navbar
@@ -49,25 +51,87 @@
 \*-------------------------------------------*/
 
 body {
-    background-color: var(--primary-light);
+    background-color: var(--light-primary);
 }
 
 
 /*-------------------------------------------*\
-    2. Bootstrap Overrides
+    2. Overrides
 \*-------------------------------------------*/
+
+
+/*------------------*\
+    2.1 Bootstrap
+\*------------------*/
 
 .dropdown-menu-dark .dropdown-item.active,
 .dropdown-menu-dark .dropdown-item:active {
-    background-color: var(--alt-dark);
+    background-color: var(--dark-primary-alt);
 }
 
 .dropdown-menu-dark {
-    background-color: var(--primary-dark);
+    background-color: var(--dark-primary);
 }
 
 .dropdown-toggle::after {
     display: none;
+}
+
+
+/*----------------------*\
+    2.2 DateTimePicker
+\*----------------------*/
+
+.daterangepicker {
+    border-radius: 0;
+}
+
+.daterangepicker td.available:hover,
+.daterangepicker th.available:hover {
+    border-radius: 0;
+    background-color: var(--light-primary-alt);
+}
+
+.daterangepicker td.available:focus,
+.daterangepicker th.available:focus {
+    border-radius: 0;
+    background-color: var(--light-primary-alt);
+}
+
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+    background-color: var(--success);
+    border: 0;
+    color: #fff;
+    border-radius: 0 !important;
+}
+
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+    background-color: var(--success);
+}
+
+.daterangepicker .btn-primary {
+    border-radius: 0;
+    background-color: var(--success);
+    border: 1px solid var(--success);
+}
+
+.daterangepicker .btn-primary:hover {
+    border-radius: 0;
+    background-color: var(--success-alt);
+    border: 1px solid var(--success-alt);
+}
+
+.daterangepicker .btn-default {
+    border-radius: 0;
+    background-color: var(--dark-primary);
+    color: var(--light-primary);
+}
+
+.daterangepicker .btn-default:hover {
+    background-color: var(--dark-primary-alt);
+    border: 1px solid var(--dark-primary-alt)
 }
 
 
@@ -83,8 +147,8 @@ body {
 #sidebar {
     min-width: 330px;
     max-width: 330px;
-    background: linear-gradient(0deg, var(--success) -5.51%, var(--primary-dark) 48.98%);
-    color: var(--primary-light);
+    background: linear-gradient(0deg, var(--success) -5.51%, var(--dark-primary) 48.98%);
+    color: var(--light-primary);
     transition: all 0.2s;
 }
 
@@ -110,7 +174,7 @@ body {
 }
 
 #sidebar .sidebar-list a {
-    color: var(--primary-light);
+    color: var(--light-primary);
     transition: all 0.3s;
 }
 
@@ -136,14 +200,14 @@ body {
 \*-----------------*/
 
 .nav a {
-    color: var(--primary-dark);
+    color: var(--dark-primary);
 }
 
 .nav .user-details #user-name {
     font-family: 'Space Mono', monospace;
     font-size: 16px;
     line-height: 24px;
-    color: var(--primary-dark);
+    color: var(--dark-primary);
 }
 
 .nav .user-details #user-plan {
@@ -178,12 +242,20 @@ body {
 }
 
 #content p {
-    color: var(--tertiary-dark);
+    color: var(--dark-tertiary);
+}
+
+.generated-script {
+    overflow: hidden;
+}
+
+.generated-script g {
+    stroke: var(--dark-primary-alt)
 }
 
 pre {
-    background-color: var(--primary-dark);
-    color: var(--primary-light);
+    background-color: var(--dark-primary);
+    color: var(--light-primary);
     width: 100%;
     min-height: 80vh;
     font-family: 'Source Code Pro', monospace;
@@ -196,7 +268,7 @@ pre {
 .scan-setup p {
     margin-bottom: 5px;
     font-weight: 600;
-    color: var(--alt-dark);
+    color: var(--dark-primary-alt);
 }
 
 .scan-component {
@@ -204,10 +276,46 @@ pre {
 }
 
 .section-divider {
-    border-left: 1px solid var(--border-light);
+    border-left: 1px solid var(--light-border);
     height: 100%;
     position: relative;
     left: 50%;
+}
+
+#cursor:after {
+    content: "";
+    display: inline-block;
+    background-color: var(--light-primary);
+    vertical-align: top;
+    margin-left: 5px;
+    width: 2px;
+    height: 20px;
+    -webkit-animation: blink 1s step-end infinite;
+    animation: blink 1s step-end infinite;
+}
+
+@-webkit-keyframes blink {
+    0% {
+        opacity: 1.0;
+    }
+    50% {
+        opacity: 0.0;
+    }
+    100% {
+        opacity: 1.0;
+    }
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1.0;
+    }
+    50% {
+        opacity: 0.0;
+    }
+    100% {
+        opacity: 1.0;
+    }
 }
 
 
@@ -231,6 +339,10 @@ pre {
     opacity: 0;
 }
 
+.help-text {
+    font-size: 13px;
+}
+
 
 /*------------------*\
     3.4.1 Checkbox
@@ -245,8 +357,8 @@ pre {
     left: 0;
     height: 25px;
     width: 25px;
-    background: var(--primary-light);
-    border: 2px solid var(--primary-dark);
+    background: var(--light-primary);
+    border: 2px solid var(--dark-primary);
     border-radius: 0px;
 }
 
@@ -291,13 +403,13 @@ pre {
     top: 5px;
     width: 4px;
     height: 7px;
-    border: solid var(--primary-dark);
+    border: solid var(--dark-primary);
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
 
 .form-checkbox input:disabled~.form-checkbox-indicator:after {
-    border-color: var(--border-light);
+    border-color: var(--light-border);
 }
 
 
@@ -314,8 +426,8 @@ pre {
     left: 0;
     height: 24px;
     width: 24px;
-    background: var(--primary-light);
-    border: 2px solid var(--primary-dark);
+    background: var(--light-primary);
+    border: 2px solid var(--dark-primary);
 }
 
 .radioselector:hover input~.form-radio-indicator,
@@ -324,11 +436,11 @@ pre {
 }
 
 .form-radio input:checked~.form-radio-indicator {
-    background: var(--primary-light);
+    background: var(--light-primary);
 }
 
 .form-radio input:checked:focus~.form-radio-indicator {
-    background: var(--primary-light);
+    background: var(--light-primary);
 }
 
 .form-radio input:disabled~.form-radio-indicator {
@@ -385,11 +497,11 @@ pre {
 
 .form-radio-toggle+label:hover {
     background: none;
-    color: var(--primary-dark);
+    color: var(--dark-primary);
 }
 
 .form-radio-toggle+label:after {
-    background: var(--primary-dark);
+    background: var(--dark-primary);
     content: "";
     height: 100%;
     position: Absolute;
@@ -417,7 +529,7 @@ pre {
 
 .form-radio-toggle:checked+label {
     cursor: default;
-    color: var(--primary-light);
+    color: var(--light-primary);
     transition: color 200ms;
 }
 
@@ -426,7 +538,7 @@ pre {
 }
 
 .form-radio-toggle-btn {
-    border: 2px solid var(--primary-dark);
+    border: 2px solid var(--dark-primary);
     display: inline-block;
     padding: 8px 0;
     position: Relative;
@@ -440,9 +552,9 @@ pre {
 \*------------------*/
 
 .form-dropdown {
-    background-color: var(--primary-light);
-    border: 1px solid var(--border-light);
-    color: var(--primary-dark);
+    background-color: var(--light-primary);
+    border: 1px solid var(--light-border);
+    color: var(--dark-primary);
     font-size: 14px;
     height: 100%;
     position: Relative;
@@ -452,12 +564,12 @@ pre {
 .form-dropdown .select {
     cursor: pointer;
     display: block;
-    padding: 10px;
+    padding: 10px 15px;
 }
 
 .form-dropdown .select>i {
     font-size: 13px;
-    color: var(--alt-dark);
+    color: var(--dark-primary-alt);
     cursor: pointer;
     transition: all .1s ease-in-out;
     float: right;
@@ -475,8 +587,8 @@ pre {
 }
 
 .form-dropdown .form-dropdown-menu {
-    background-color: var(--primary-light);
-    border: 1px solid var(--border-light);
+    background-color: var(--light-primary);
+    border: 1px solid var(--light-border);
     display: None;
     margin-top: 1px;
     overflow-y: auto;
@@ -506,23 +618,41 @@ pre {
 .save-dropdown {
     height: inherit;
     display: inline-block;
-    background: var(--primary-dark);
+    background: var(--dark-primary);
     border: 0;
-    color: var(--primary-light);
+    color: var(--light-primary);
     min-width: 120px;
 }
 
 .save-dropdown .form-dropdown-menu {
-    background: var(--primary-dark);
-    border: 1px solid var(--primary-dark);
+    background: var(--dark-primary);
+    border: 1px solid var(--dark-primary);
 }
 
 .save-dropdown .form-dropdown-menu li:hover {
-    background: var(--alt-dark);
+    background: var(--dark-primary-alt);
 }
 
 .save-dropdown .select>i {
-    color: var(--primary-light) !important;
+    color: var(--light-primary) !important;
+}
+
+
+/*------------------*\
+    3.4.4 Textarea
+\*------------------*/
+
+.form-text-area {
+    width: 100%;
+    min-height: 100px;
+    font-size: 14px;
+    padding: 10px 15px;
+    border: 1px solid var(--light-border);
+    margin-bottom: -6px;
+}
+
+.form-text-area:focus {
+    outline: 0;
 }
 
 

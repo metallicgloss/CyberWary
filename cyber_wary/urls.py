@@ -30,9 +30,4 @@ urlpatterns = [
         'portal/',
         include('cyber_wary_portal.urls')
     ),
-
-    path(
-        'admin/',
-        admin.site.urls
-    ),
 ]

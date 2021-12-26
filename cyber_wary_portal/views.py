@@ -17,14 +17,19 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from .forms import AccountDetailsForm, AccountModificationForm
+from .forms import AccountDetailsForm, AccountModificationForm, ScanForm, ApiKeyForm
 from .models import SystemUser
+from datetime import datetime
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from django.http.response import HttpResponse, HttpResponseRedirect
+from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.utils.crypto import get_random_string
+from django.utils.timezone import make_aware
+from pytz import timezone
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view
 
 
 @login_required
@@ -34,7 +39,25 @@ def index(request):
 
 @login_required
 def create(request):
-    return render(request, 'create.html')
+    if request.method == 'POST':
+        form = ScanForm(request.POST)
+        if form.is_valid():
+            scan = form.save(commit=False)
+            scan.user = request.user
+            scan.scan_key = get_random_string(length=32)
+            scan.save()
+            return redirect('portal')
+
+    else:
+        form = ScanForm()
+
+    return render(
+        request,
+        'create.html',
+        {
+            'form': form
+        }
+    )
 
 
 @login_required
@@ -96,7 +119,9 @@ def modify(request):
 
         if form.is_valid():
             # Get existing user.
-            user = SystemUser.objects.get(pk=request.user.pk)
+            user = SystemUser.objects.get(
+                pk=request.user.pk
+            )
 
             # Add valid class to fields with valid data.
             user.first_name = form.data.get('first_name')
@@ -140,7 +165,9 @@ def modify(request):
     else:
         # Standard GET request, load AccountDetailsForm form and populate with user data.
         form = AccountModificationForm(
-            instance=SystemUser.objects.get(pk=request.user.pk)
+            instance=SystemUser.objects.get(
+                pk=request.user.pk
+            )
         )
 
         if(request.GET.get('update') is not None):
@@ -156,17 +183,55 @@ def modify(request):
         }
     )
 
-    
+
 # --------------------------------------------------------------------------- #
 #                           6. Account Modification                           #
 # --------------------------------------------------------------------------- #
 
 @login_required
 def api(request):
-    t = Token.objects.filter(user=request.user)
-    new_key = t[0].generate_key()
-    t.update(key=new_key)
+    key_updated = False
+
+    if request.method == 'POST':
+        form = ApiKeyForm(request.POST)
+
+        if form.is_valid():
+
+            if(form.data.get('confirmation') == "true"):
+                api_key = Token.objects.filter(user=request.user)
+                new_key = api_key[0].generate_key()
+                api_key.update(
+                    key=new_key,
+                    created=make_aware(
+                        datetime.now(),
+                        timezone=timezone("Europe/London")
+                    )
+                )
+
+                return HttpResponseRedirect(
+                    "%s?update=true" % reverse('api')
+                )
+
+    else:
+        form = ApiKeyForm()
+        api_key = Token.objects.get_or_create(
+            user=request.user
+        )
+
+        if(request.GET.get('update') is not None):
+            key_updated = True
+
     return render(
         request,
-        'account/api.html'
+        'account/api.html',
+        {
+            'form': form,
+            'api_key': api_key[0],
+            'update': key_updated
+        }
     )
+
+
+@api_view(['POST',])
+def test(request):
+    return JsonResponse(request.data)

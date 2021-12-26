@@ -45,7 +45,7 @@
 \*-------------------------------------------*/
 
 body {
-    background-color: var(--primary-dark);
+    background-color: var(--dark-primary);
 }
 
 
@@ -54,7 +54,7 @@ body {
 \*-------------------------------------------*/
 
 .navbar-dark .navbar-nav .nav-link {
-    color: var(--primary-light)
+    color: var(--light-primary)
 }
 
 .navbar-dark .navbar-nav .active {
@@ -102,7 +102,7 @@ body {
     font-weight: bold;
     font-size: 16px;
     line-height: 22px;
-    color: var(--primary-light);
+    color: var(--light-primary);
     text-transform: uppercase;
     width: 148px;
     z-index: 2;
@@ -132,7 +132,7 @@ body {
 }
 
 .footer a {
-    color: var(--primary-light);
+    color: var(--light-primary);
     font-size: 12px;
 }
 
@@ -148,7 +148,7 @@ body {
 .overview h1 {
     font-size: 48px;
     line-height: 70px;
-    color: var(--primary-light);
+    color: var(--light-primary);
     padding: 75px 0;
     z-index: 2;
     position: relative;
@@ -165,7 +165,7 @@ body {
 }
 
 .details {
-    background-color: var(--primary-light);
+    background-color: var(--light-primary);
     padding: 100px 0;
 }
 
@@ -186,7 +186,7 @@ body {
     font-weight: bold;
     font-size: 18px;
     line-height: 27px;
-    color: var(--secondary-dark);
+    color: var(--dark-secondary);
     text-decoration: none;
     border-bottom: 1px solid var(--success);
 }
@@ -201,7 +201,7 @@ body {
 
 .details .notification-box .notification {
     height: 68px;
-    background: var(--alt-light);
+    background: var(--light-primary-alt);
 }
 
 .details .notification-box .notification .info p {
@@ -318,9 +318,9 @@ body {
 }
 
 .get-ready {
-    background-color: var(--primary-light);
+    background-color: var(--light-primary);
     padding-top: 100px;
-    border-top: 1px solid var(--alt-light)
+    border-top: 1px solid var(--light-primary-alt)
 }
 
 
@@ -333,7 +333,7 @@ body {
 }
 
 .statistics {
-    background-color: var(--primary-light);
+    background-color: var(--light-primary);
     padding-top: 75px;
 }
 
@@ -402,7 +402,7 @@ body {
 }
 
 .feature-run {
-    background-color: var(--primary-light);
+    background-color: var(--light-primary);
     padding: 100px 0;
 }
 
@@ -423,7 +423,7 @@ body {
 }
 
 .feature-run .run-scan .scan {
-    background-color: var(--primary-dark);
+    background-color: var(--dark-primary);
     text-transform: uppercase;
     border: 0;
 }
@@ -434,7 +434,7 @@ body {
 \*-----------------*/
 
 .legal-section {
-    background-color: var(--primary-light);
+    background-color: var(--light-primary);
     padding: 75px 0;
 }
 
@@ -444,7 +444,7 @@ body {
 \*-----------------*/
 
 .user-auth {
-    background-color: var(--primary-light);
+    background-color: var(--light-primary);
     padding: 100px 0;
 }
 
@@ -454,34 +454,20 @@ body {
 
 .user-auth button {
     border: 0;
-    color: var(--primary-light);
+    color: var(--light-primary);
     padding: 10px;
     text-decoration: none;
     width: 100%;
 }
 
-.user-auth .required {
-    font-weight: normal;
-}
-
 .user-auth .alt-button {
-    background-color: var(--alt-dark);
+    background-color: var(--dark-primary-alt);
 }
 
 .form-button {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%)
-}
-
-.field-error p {
-    color: var(--danger);
-}
-
-.field-error input,
-.field-error select,
-.field-error textarea {
-    border: 1px solid var(--danger);
 }
 
 

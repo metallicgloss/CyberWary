@@ -36,18 +36,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <div class="container">
         <div class="row justify-content-center text-start">
             <div class="col-lg-12 col-xl-9">
-                <form method="post">
+                <form method="POST">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col">
-                            <p class="mt-4 mb-1 fw-bold"><i class="icofont-id me-2"></i> {{ form.username.label }}<span class="required">*</span></p>
+                            <p class="mt-4 mb-1 fw-bold"><i class="icofont-id me-2"></i> {{ form.username.label }} <span class="required">*</span></p>
                             <div class="position-relative">
                                 {{ form.username }}
                                 <span class="focus-border">
                                     <i></i>
                                 </span>
                             </div>
-                            {% for error in field.username.errors %}
+                            {% for error in form.username.errors %}
                                 <p class="text-red">{{ error }}</p>
                             {% endfor %}
                         </div>
@@ -55,14 +55,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
                     <div class="row">
                         <div class="col">
-                            <p class="mt-4 mb-1 fw-bold"><i class="icofont-ui-password me-2"></i> {{ form.password.label }}<span class="required">*</span></p>
+                            <p class="mt-4 mb-1 fw-bold"><i class="icofont-ui-password me-2"></i> {{ form.password.label }} <span class="required">*</span></p>
                             <div class="position-relative">
                                 {{ form.password }}
                                 <span class="focus-border">
                                     <i></i>
                                 </span>
                             </div>
-                            {% for error in field.password.errors %}
+                            {% for error in form.password.errors %}
                                 <p class="text-red">{{ error }}</p>
                             {% endfor %}
                         </div>

@@ -89,4 +89,12 @@ urlpatterns = [
         views.api,
         name='api'
     ),
+
+    
+
+    path(
+        'api/v1/test',
+        views.test,
+        name='test'
+    ),
 ]

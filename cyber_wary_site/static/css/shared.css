@@ -42,16 +42,18 @@
 \*-------------------------------------------*/
 
 :root {
-    --primary-dark: #1D1C28;
-    --secondary-dark: #272727;
-    --tertiary-dark: #545454;
-    --alt-dark: #3A3850;
-    --primary-light: #FFFFFF;
-    --alt-light: #F4F4F4;
-    --border-light: #D4D4D4;
+    --dark-primary: #1D1C28;
+    --dark-secondary: #272727;
+    --dark-tertiary: #545454;
+    --dark-primary-alt: #3A3850;
+    --light-primary: #FFFFFF;
+    --light-primary-alt: #F4F4F4;
+    --light-border: #D4D4D4;
     --success: #34CC96;
+    --success-alt: #4adfab;
     --warning: #E9A464;
     --danger: #F54B4B;
+    --danger-alt: #D06262;
 }
 
 
@@ -61,7 +63,7 @@
 
 body {
     font-family: 'Open Sans', sans-serif;
-    color: var(--secondary-dark);
+    color: var(--dark-secondary);
     max-width: 100%;
     min-height: 100%;
     overflow-x: hidden;
@@ -90,8 +92,8 @@ a {
 }
 
 .btn-secondary {
-    background-color: var(--alt-dark);
-    border-color: var(--alt-dark);
+    background-color: var(--dark-primary-alt);
+    border-color: var(--dark-primary-alt);
 }
 
 .btn-check:focus+.btn,
@@ -109,8 +111,12 @@ a {
     box-shadow: none;
 }
 
-.text-danger {
-    color: var(--success) !important;
+.text-secondary {
+    color: var(--dark-secondary) !important;
+}
+
+.text-tertiary {
+    color: var(--dark-tertiary) !important;
 }
 
 .text-warning {
@@ -119,6 +125,10 @@ a {
 
 .text-danger {
     color: var(--danger) !important;
+}
+
+.text-danger-alt {
+    color: var(--danger-alt) !important;
 }
 
 .text-success {
@@ -157,8 +167,15 @@ a {
     4.2 Forms
 \*-----------------*/
 
+.required {
+    font-weight: normal;
+    color: var(--danger);
+}
+
 form input[type=text],
+form input[type=number],
 form input[type=password],
+form input[type=datetime-local],
 form select {
     border: 1px solid #D4D4D4;
     font-size: 14px;
@@ -172,7 +189,7 @@ form input:focus {
 
 .form-input-animation~.focus-border:before,
 .form-input-animation~.focus-border:after {
-    background-color: var(--primary-dark);
+    background-color: var(--dark-primary);
     content: "";
     height: 2px;
     left: 0;
@@ -191,7 +208,7 @@ form input:focus {
 
 .form-input-animation~.focus-border i:before,
 .form-input-animation~.focus-border i:after {
-    background-color: var(--primary-dark);
+    background-color: var(--dark-primary);
     content: "";
     height: 0;
     left: 0;
@@ -218,4 +235,15 @@ form input:focus {
 .form-input-animation:focus~.focus-border i:after {
     height: 100%;
     transition: 0.4s;
+}
+
+.field-error p {
+    color: var(--danger) !important;
+}
+
+.field-error input,
+.field-error select,
+.field-error textarea,
+.field-error .form-dropdown {
+    border: 1px solid var(--danger) !important;
 }

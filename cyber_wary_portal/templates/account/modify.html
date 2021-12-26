@@ -26,7 +26,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <p>View, update or correct your account details, including your name, email address and password.</p>
     <div class="row mt-5">
         <div class="col-lg-12 col-xl-7">
-            <form method="post">
+            <form method="POST">
                 {% csrf_token %}
                 {{ form.non_field_errors }}
                 {% for hidden in form.hidden_fields %}
