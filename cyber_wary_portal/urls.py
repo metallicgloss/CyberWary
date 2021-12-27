@@ -88,13 +88,11 @@ urlpatterns = [
         'api/',
         views.api,
         name='api'
-    ),
-
-    
+    ),    
 
     path(
-        'api/v1/test',
-        views.test,
-        name='test'
+        'api/v1/start_scan',
+        views.start_scan,
+        name='start_scan'
     ),
 ]

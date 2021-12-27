@@ -31,6 +31,7 @@
     2. Overrides
         2.1 Bootstrap
         2.2 DateTimePicker
+        2.3 DataTables
     3. Custom
         3.1 Sidebar
         3.2 Navbar
@@ -132,6 +133,93 @@ body {
 .daterangepicker .btn-default:hover {
     background-color: var(--dark-primary-alt);
     border: 1px solid var(--dark-primary-alt)
+}
+
+
+/*----------------------*\
+    2.3 DataTables
+\*----------------------*/
+
+table.dataTable.display tbody tr:hover>.sorting_1,
+table.dataTable.order-column.hover tbody tr:hover>.sorting_1,
+table.dataTable.stripe tbody tr.odd,
+table.dataTable.display tbody tr.odd,
+table.dataTable.display tbody tr.odd>.sorting_1,
+table.dataTable.order-column.stripe tbody tr.odd>.sorting_1,
+table.dataTable.display tbody tr.even>.sorting_1,
+table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
+    background-color: var(--light-primary);
+}
+
+table.dataTable.hover tbody tr:hover,
+table.dataTable.display tbody tr:hover {
+    background-color: inherit;
+}
+
+table.dataTable.row-border tbody th,
+table.dataTable.row-border tbody td,
+table.dataTable.display tbody th,
+table.dataTable.display tbody td {
+    border-top: 1px solid var(--light-border)
+}
+
+table.dataTable thead th:first-child,
+table.dataTable tbody td:first-child {
+    padding: 12px 0;
+}
+
+table.dataTable thead th:not(:first-child),
+table.dataTable tbody td:not(:first-child) {
+    padding: 12px 18px
+}
+
+table.dataTable thead th {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--success);
+    text-transform: uppercase;
+    border-bottom: 0;
+}
+
+table.dataTable tbody td {
+    font-size: 14px;
+    color: var(--dark-primary);
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_paginate {
+    color: var(--dark-secondary);
+    font-size: 12px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    color: var(--light-primary) !important;
+    background: var(--success);
+    border: 1px solid var(--success);
+    border-radius: 0;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    color: var(--light-primary) !important;
+    background: var(--success-alt);
+    border: 1px solid var(--success-alt);
+    border-radius: 0;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:active,
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    color: var(--light-primary) !important;
+    background: var(--dark-secondary);
+    border: 1px solid var(--dark-secondary);
+    border-radius: 0;
+    box-shadow: none;
+}
+
+table.dataTable.no-footer {
+    border-bottom: 0;
 }
 
 

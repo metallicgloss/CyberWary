@@ -96,6 +96,9 @@ DATABASES = {
         'PASSWORD': os.environ.get('CYBERWARY_MYSQL_PASSWORD'),
         'HOST': os.environ.get('CYBERWARY_MYSQL_HOST'),
         'PORT': os.environ.get('CYBERWARY_MYSQL_PORT'),
+        'OPTIONS': {
+            'init_command': 'SET default_storage_engine=INNODB',
+        }
     }
 }
 

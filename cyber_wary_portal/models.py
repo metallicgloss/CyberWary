@@ -21,9 +21,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-import hashlib
-
-from django.db.models.fields import DateField
+from hashlib import md5
 
 # --------------------------------------------------------------------------- #
 #                        1.1 Default Fields Class                             #
@@ -47,7 +45,7 @@ class DefaultFields(models.Model):
 
 class SystemUser(AbstractUser):
     def get_gravatar_image(self):
-        return 'http://www.gravatar.com/avatar/{}'.format(hashlib.md5(self.email.encode()).hexdigest())
+        return 'http://www.gravatar.com/avatar/{}'.format(md5(self.email.encode()).hexdigest())
 
 
 # --------------------------------------------------------------------------- #
@@ -55,11 +53,11 @@ class SystemUser(AbstractUser):
 # --------------------------------------------------------------------------- #
 
 class Scan(DefaultFields):
-    class ScanTypes(models.IntegerChoices):
-        BLUE = 1
-        RED = 2
+    class ScanTypes(models.TextChoices):
+        BLUE = 'B'
+        RED = 'R'
 
-    class ScanStatus(models.TextChoices):
+    class ScanStatus(models.IntegerChoices):
         PENDING = 1
         IN_PROGRESS = 2
         PARTIALLY_COMPLETED = 3
@@ -72,14 +70,11 @@ class Scan(DefaultFields):
         on_delete=models.CASCADE,
     )
 
-    type = models.IntegerField(
+    type = models.CharField(
+        max_length=1,
         choices=ScanTypes.choices,
         default=ScanTypes.BLUE,
         help_text="Type of scan being performed.",
-        validators=[
-            MaxValueValidator(2),
-            MinValueValidator(1)
-        ],
         null=False
     )
 
@@ -297,9 +292,9 @@ class BiosDetails(DefaultFields):
 
 
 class SystemUsers(DefaultFields):
-    class AccountType(models.IntegerChoices):
-        MICROSOFT = 1
-        LOCAL = 2
+    class AccountType(models.TextChoices):
+        MICROSOFT = 'M'
+        LOCAL = 'L'
 
     record = models.ForeignKey(
         ScanRecord,
@@ -318,14 +313,11 @@ class SystemUsers(DefaultFields):
         null=True
     )
 
-    type = models.IntegerField(
+    type = models.CharField(
+        max_length=2,
         choices=AccountType.choices,
         default=AccountType.LOCAL,
-        help_text="The type of account.",
-        validators=[
-            MaxValueValidator(2),
-            MinValueValidator(1)
-        ]
+        help_text="The type of account."
     )
 
     last_logon = models.DateTimeField(
@@ -427,3 +419,46 @@ class InternetProtocolAddress(DefaultFields):
         help_text="The DHCP lease expiry date/time.",
         null=True
     )
+
+    
+class ApiRequest(DefaultFields):
+    class RequestMethod(models.IntegerChoices):
+        GET = 1
+        POST = 2
+        PATCH = 3
+        PUT = 4
+        DELETE = 5
+
+    # Foreign key to the user that owns the scan.
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+
+    type = models.CharField(
+        help_text="The type of request made.",
+        max_length=32,
+        null=True
+    )
+
+    payload = models.TextField(
+        help_text="The raw payload data.",
+        null=True
+    )
+
+    method = models.IntegerField(
+        choices=RequestMethod.choices,
+        default=RequestMethod.GET,
+        help_text="The type of request that was made.",
+        null=False
+    )
+
+    response = models.CharField(
+        help_text="The response code issued to the request.",
+        max_length=8,
+        null=True,
+        default="200"
+    )
+
+    def get_payload_size(self):
+        return len(self.payload)

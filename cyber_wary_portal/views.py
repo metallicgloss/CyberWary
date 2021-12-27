@@ -18,7 +18,7 @@
 #
 
 from .forms import AccountDetailsForm, AccountModificationForm, ScanForm, ApiKeyForm
-from .models import SystemUser
+from .models import SystemUser, ApiRequest
 from datetime import datetime
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
@@ -30,6 +30,7 @@ from django.utils.timezone import make_aware
 from pytz import timezone
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
+import json
 
 
 @login_required
@@ -220,6 +221,8 @@ def api(request):
 
         if(request.GET.get('update') is not None):
             key_updated = True
+    
+    api_log = ApiRequest.objects.filter(user=request.user)
 
     return render(
         request,
@@ -227,11 +230,21 @@ def api(request):
         {
             'form': form,
             'api_key': api_key[0],
-            'update': key_updated
+            'update': key_updated,
+            'api_log': api_log
         }
     )
 
 
 @api_view(['POST',])
-def test(request):
+def start_scan(request):
+    
+    request_log = ApiRequest(
+        user=request.user,
+        type='start_scan',
+        payload=json.loads(request.POST['system_information'].replace("'", '"')),
+        method=ApiRequest.RequestMethod.POST
+    )
+    request_log.save()
+
     return JsonResponse(request.data)
