@@ -329,9 +329,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
         $('input[name="{{ form.title.name }}"]').on('input', function() {
             if($(this).val()) {
-                $('#scan-title').html($(this).val());
+                $('#scan-title').text($(this).val());
             } else {
-                $('#scan-title').html("Untitled Scan");
+                $('#scan-title').text("Untitled Scan");
             }
         });
 
@@ -350,10 +350,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             
             if($(this).attr('id') == 1) {
                 $('#scan-type').attr("class", "text-primary");
-                $('#scan-type').html("Blue Team");
+                $('#scan-type').text("Blue Team");
             } else {
                 $('#scan-type').attr("class", "text-danger-alt");
-                $('#scan-type').html("Red Team");
+                $('#scan-type').text("Red Team");
             }
         });
 
