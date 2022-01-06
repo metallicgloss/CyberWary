@@ -19,9 +19,8 @@
 
 from cyber_wary_portal import views
 from django.conf.urls import include
-from django.contrib.auth import views as auth_views
 from django.urls import path
-from .forms import LoginForm
+from django.views.generic import RedirectView
 
 urlpatterns = [
     # ----------------------------------------------------------------------- #
@@ -56,39 +55,26 @@ urlpatterns = [
     #                      Authentication & Account URLs                      #
     # ----------------------------------------------------------------------- #
 
+    # Void two unneeded URLs included within allauth
+    path('account/password/change/',RedirectView.as_view(pattern_name='portal',permanent=True)),
+    path('account/password/set/',RedirectView.as_view(pattern_name='portal',permanent=True)),
 
     path(
-        'login/',
-        auth_views.LoginView.as_view(
-            template_name="registration/login.html",
-            authentication_form=LoginForm
-        ),
-        name='login'
-    ),
-
-
-    path(
-        'register/',
-        views.register,
-        name='register'
+        'account/',
+        include('allauth.urls')
     ),
 
     path(
-        '',
-        include('django.contrib.auth.urls')
-    ),
-
-    path(
-        'modify/',
+        'account/modify/',
         views.modify,
-        name='modify'
+        name='account_modify'
     ),
 
     path(
         'api/',
         views.api,
         name='api'
-    ),    
+    ),
 
     path(
         'api/v1/start_scan',

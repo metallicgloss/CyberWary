@@ -24,32 +24,6 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
-class LoginForm(AuthenticationForm):
-    username = forms.CharField(
-        label="Username",
-        widget=forms.TextInput(
-            attrs={
-                'class': 'validate',
-                'placeholder': 'Enter your username...'
-            }
-        )
-    )
-    password = forms.CharField(
-        label="Password",
-        widget=forms.PasswordInput(
-            attrs={
-                'placeholder': 'Enter your password...'
-            }
-        )
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(LoginForm, self).__init__(* args, ** kwargs)
-        for field in self.fields.values():
-            field.widget.attrs['class'] = 'form-input-animation'
-            field.required = True
-
-
 class AccountDetailsForm(UserCreationForm):
     username = forms.CharField(
         label='Username',
@@ -116,7 +90,6 @@ class AccountDetailsForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(AccountDetailsForm, self).__init__(* args, ** kwargs)
         for field in self.fields.values():
-            field.widget.attrs['class'] = 'form-input-animation'
             field.required = True
             field.widget.attrs.pop("autofocus", None)
 

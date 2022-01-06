@@ -68,12 +68,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             <li class="nav-item {% if request.path == "/software/" %}active{% endif %}">
                                 <a href="{% url 'software' %}" class="nav-link px-lg-3">Features</a>
                             </li>
-                            <li class="nav-item ps-lg-5 pe-lg-3">
-                                <a href="{% url 'login' %}" class="nav-link">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'register' %}" class="btn btn-secondary mt-1 mt-lg-0 w-100 w-lg-0">Register</a>
-                            </li>
+                            {% if user.is_authenticated %}
+                                <li class="nav-item ps-lg-5">
+                                    <a href="{% url 'portal' %}" class="btn btn-secondary mt-1 mt-lg-0 w-100 w-lg-0">Dashboard</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item ps-lg-5 pe-lg-3">
+                                    <a href="{% url 'account_login' %}" class="nav-link">Login</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'account_signup' %}" class="btn btn-secondary mt-1 mt-lg-0 w-100 w-lg-0">Register</a>
+                                </li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>

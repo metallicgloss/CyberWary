@@ -17,7 +17,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from .forms import AccountDetailsForm, AccountModificationForm, ScanForm, ApiKeyForm
+from .forms import AccountModificationForm, ScanForm, ApiKeyForm
 from .models import SystemUser, ApiRequest
 from datetime import datetime
 from django.contrib.auth import login, authenticate
@@ -69,40 +69,6 @@ def report(request):
 @login_required
 def scans(request):
     return render(request, 'scans.html')
-
-
-# --------------------------------------------------------------------------- #
-#                           5. Account Registration                           #
-# --------------------------------------------------------------------------- #
-
-
-def register(request):
-    if request.method == 'POST':
-        form = AccountDetailsForm(request.POST)
-
-        if form.is_valid():
-            # Form contains all required values - save as new user.
-            form.save()
-
-            username = form.data.get('username')
-            raw_password = form.data.get('password1')
-
-            # Authenticate user session with provided details.
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-
-            return redirect('portal')
-
-    else:
-        form = AccountDetailsForm()
-
-    return render(
-        request,
-        'registration/register.html',
-        {
-            'form': form
-        }
-    )
 
 
 # --------------------------------------------------------------------------- #

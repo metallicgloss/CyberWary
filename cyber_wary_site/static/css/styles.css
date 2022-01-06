@@ -452,16 +452,12 @@ body {
     font-size: 48px;
 }
 
-.user-auth button {
+.user-auth .form-actions button {
     border: 0;
     color: var(--light-primary);
     padding: 10px;
     text-decoration: none;
     width: 100%;
-}
-
-.user-auth .alt-button {
-    background-color: var(--dark-primary-alt);
 }
 
 .form-button {
@@ -501,7 +497,7 @@ body {
     .feature-breakdown .feature-comment .comment {
         margin: 25px 0;
     }
-    .user-auth .alt-button {
+    .user-auth .btn-secondary {
         margin-top: 20px;
     }
     .page-header {

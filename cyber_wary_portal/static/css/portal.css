@@ -37,10 +37,10 @@
         3.2 Navbar
         3.3 Content Area
         3.4 Forms
-            3.4.1 Checkbox
-            3.4.2 Radio
-            3.4.3 Toggle
-            3.4.4 Dropdown
+            3.4.1 Radio
+            3.4.2 Toggle
+            3.4.3 Dropdown
+            3.4.4 Textarea
         3.5 Legal
     4. Mobile Optimisations
 
@@ -64,6 +64,10 @@ body {
 /*------------------*\
     2.1 Bootstrap
 \*------------------*/
+
+.dropdown {
+    min-width: 250px !important;
+}
 
 .dropdown-menu-dark .dropdown-item.active,
 .dropdown-menu-dark .dropdown-item:active {
@@ -220,6 +224,32 @@ table.dataTable tbody td {
 
 table.dataTable.no-footer {
     border-bottom: 0;
+}
+
+table.dataTable thead .sorting_asc {
+    background-image: url(/static/imgs/up.svg);
+    background-position: right 17px;
+    background-repeat: no-repeat;
+}
+
+table.dataTable thead .sorting_desc {
+    background-image: url(/static/imgs/down.svg);
+    background-position: right 17px;
+    background-repeat: no-repeat;
+}
+
+table.dataTable thead .sorting {
+    background-image: url(/static/imgs/sorting.svg);
+    background-position: right 17px;
+    background-repeat: no-repeat;
+}
+
+table.dataTable>tbody>tr.child ul.dtr-details {
+    width: 100%;
+}
+
+table.dataTable>tbody>tr.child span.dtr-title {
+    width: 50%;
 }
 
 
@@ -411,98 +441,9 @@ pre {
     3.3 Forms
 \*-----------------*/
 
-.form-field {
-    display: block;
-    position: Relative;
-    padding-left: 35px;
-    margin-bottom: 5px;
-    padding-top: 3px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.form-field input {
-    position: Absolute;
-    z-index: -1;
-    opacity: 0;
-}
-
-.help-text {
-    font-size: 13px;
-}
-
 
 /*------------------*\
-    3.4.1 Checkbox
-\*------------------*/
-
-
-/* Reference https://ref.cyberwary.com/9g1m8 */
-
-.form-checkbox-indicator {
-    position: Absolute;
-    top: 2px;
-    left: 0;
-    height: 25px;
-    width: 25px;
-    background: var(--light-primary);
-    border: 2px solid var(--dark-primary);
-    border-radius: 0px;
-}
-
-.form-checkbox-indicator:before {
-    /* Reference https://ref.cyberwary.com/bo561 */
-    border: 2px solid white;
-    content: "";
-    position: Absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-
-.control:hover input~.form-checkbox-indicator {
-    background: #e6e6e6;
-}
-
-.form-field input:checked~.form-checkbox-indicator {
-    background: var(--success);
-}
-
-.form-field input:disabled~.form-checkbox-indicator {
-    background: #e6e6e6;
-    opacity: 0.6;
-    pointer-events: none;
-}
-
-.form-checkbox-indicator:after {
-    box-sizing: unset;
-    content: '';
-    position: Absolute;
-    display: none;
-}
-
-.form-field input:checked~.form-checkbox-indicator:after {
-    display: block;
-}
-
-.form-checkbox .form-checkbox-indicator:after {
-    left: 8px;
-    top: 5px;
-    width: 4px;
-    height: 7px;
-    border: solid var(--dark-primary);
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-}
-
-.form-checkbox input:disabled~.form-checkbox-indicator:after {
-    border-color: var(--light-border);
-}
-
-
-/*------------------*\
-    3.4.2 Radio
+    3.4.1 Radio
 \*------------------*/
 
 
@@ -568,7 +509,7 @@ pre {
 
 
 /*------------------*\
-    3.4.3 Toggle
+    3.4.2 Toggle
 \*------------------*/
 
 
@@ -636,7 +577,7 @@ pre {
 
 
 /*------------------*\
-    3.4.4 Dropdown
+    3.4.3 Dropdown
 \*------------------*/
 
 .form-dropdown {

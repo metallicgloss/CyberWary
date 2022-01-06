@@ -33,6 +33,7 @@
     4. Custom
         4.1 Elements
         4.2 Forms
+            4.2.1 Checkbox
 
 \*-----------------------------------------------------------------------*/
 
@@ -42,18 +43,19 @@
 \*-------------------------------------------*/
 
 :root {
+    --danger-alt: #D06262;
+    --danger: #F54B4B;
+    --dark-primary-alt-hover: #2e2d40;
+    --dark-primary-alt: #3A3850;
     --dark-primary: #1D1C28;
     --dark-secondary: #272727;
     --dark-tertiary: #545454;
-    --dark-primary-alt: #3A3850;
-    --light-primary: #FFFFFF;
-    --light-primary-alt: #F4F4F4;
     --light-border: #E9E9E9;
-    --success: #34CC96;
+    --light-primary-alt: #F4F4F4;
+    --light-primary: #FFFFFF;
     --success-alt: #4adfab;
+    --success: #34CC96;
     --warning: #E9A464;
-    --danger: #F54B4B;
-    --danger-alt: #D06262;
 }
 
 
@@ -94,6 +96,12 @@ a {
 .btn-secondary {
     background-color: var(--dark-primary-alt);
     border-color: var(--dark-primary-alt);
+}
+
+.btn-secondary:hover,
+.btn-secondary:active {
+    background-color: var(--dark-primary-alt-hover);
+    border-color: var(--dark-primary-alt-hover);
 }
 
 .btn-check:focus+.btn,
@@ -173,6 +181,7 @@ a {
 }
 
 form input[type=text],
+form input[type=email],
 form input[type=number],
 form input[type=password],
 form input[type=datetime-local],
@@ -187,8 +196,8 @@ form input:focus {
     outline: none;
 }
 
-.form-input-animation~.focus-border:before,
-.form-input-animation~.focus-border:after {
+.form-input-animation input~.focus-border:before,
+.form-input-animation input~.focus-border:after {
     background-color: var(--dark-primary);
     content: "";
     height: 2px;
@@ -199,15 +208,15 @@ form input:focus {
     width: 0;
 }
 
-.form-input-animation~.focus-border:after {
+.form-input-animation input~.focus-border:after {
     bottom: 0;
     left: auto;
     right: 0;
     top: auto;
 }
 
-.form-input-animation~.focus-border i:before,
-.form-input-animation~.focus-border i:after {
+.form-input-animation input~.focus-border i:before,
+.form-input-animation input~.focus-border i:after {
     background-color: var(--dark-primary);
     content: "";
     height: 0;
@@ -218,21 +227,21 @@ form input:focus {
     width: 2px;
 }
 
-.form-input-animation~.focus-border i:after {
+.form-input-animation input~.focus-border i:after {
     bottom: 0;
     left: auto;
     right: 0;
     top: auto;
 }
 
-.form-input-animation:focus~.focus-border:before,
-.form-input-animation:focus~.focus-border:after {
+.form-input-animation input:focus~.focus-border:before,
+.form-input-animation input:focus~.focus-border:after {
     transition: 0.3s;
     width: 100%;
 }
 
-.form-input-animation:focus~.focus-border i:before,
-.form-input-animation:focus~.focus-border i:after {
+.form-input-animation input:focus~.focus-border i:before,
+.form-input-animation input:focus~.focus-border i:after {
     height: 100%;
     transition: 0.4s;
 }
@@ -246,4 +255,134 @@ form input:focus {
 .field-error textarea,
 .field-error .form-dropdown {
     border: 1px solid var(--danger) !important;
+}
+
+.form-field {
+    display: block;
+    position: Relative;
+    padding-left: 40px;
+    margin-bottom: 5px;
+    padding-top: 2px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.form-field input {
+    position: Absolute;
+    z-index: -1;
+    opacity: 0;
+}
+
+.help-text {
+    font-size: 13px;
+}
+
+.social-login {
+    background: var(--light-primary);
+    border: 1px solid var(--light-border);
+    color: var(--success);
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px 0;
+    display: block;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.social-login svg {
+    height: 30px;
+}
+
+.social-login span {
+    vertical-align: middle;
+}
+
+.social-login:hover {
+    outline: none;
+    text-decoration: none;
+    background: var(--light-primary-alt);
+    border: 1px solid var(--success-alt);
+    color: var(--success-alt);
+}
+
+.text-separator {
+    border-bottom: 1px solid var(--light-border);
+    height: 16px;
+}
+
+.text-separator span {
+    background-color: var(--light-primary);
+    font-family: 'Space Mono';
+    padding: 0 15px;
+    font-weight: bold;
+    font-size: 18px
+}
+
+
+/*------------------*\
+    4.2.1 Checkbox
+\*------------------*/
+
+
+/* Reference https://ref.cyberwary.com/9g1m8 */
+
+.form-checkbox-indicator {
+    position: Absolute;
+    top: 2px;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background: var(--light-primary);
+    border: 2px solid var(--dark-primary);
+    border-radius: 0px;
+}
+
+.form-checkbox-indicator:before {
+    /* Reference https://ref.cyberwary.com/bo561 */
+    border: 2px solid white;
+    content: "";
+    position: Absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.control:hover input~.form-checkbox-indicator {
+    background: #e6e6e6;
+}
+
+.form-field input:checked~.form-checkbox-indicator {
+    background: var(--success);
+}
+
+.form-field input:disabled~.form-checkbox-indicator {
+    background: #e6e6e6;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.form-checkbox-indicator:after {
+    box-sizing: unset;
+    content: '';
+    position: Absolute;
+    display: none;
+}
+
+.form-field input:checked~.form-checkbox-indicator:after {
+    display: block;
+}
+
+.form-checkbox .form-checkbox-indicator:after {
+    left: 8px;
+    top: 5px;
+    width: 4px;
+    height: 7px;
+    border: solid var(--dark-primary);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.form-checkbox input:disabled~.form-checkbox-indicator:after {
+    border-color: var(--light-border);
 }

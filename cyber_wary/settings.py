@@ -44,15 +44,23 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
-
-    # Django REST Framework
-    'rest_framework',
-    'rest_framework.authtoken',
 
     # Custom Apps
     'cyber_wary_portal',
     'cyber_wary_site',
+
+    # Django REST Framework Authentication
+    'rest_framework',
+    'rest_framework.authtoken',
+
+    # Social Media Auth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
 ]
 
 MIDDLEWARE = [
@@ -120,6 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Django REST Framework
 REST_FRAMEWORK = {
     # Restrict API to authenticated users only.
@@ -148,13 +157,85 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = '/static/'
 
+TEMPLATE_DIRS = [
+    os.path.join(
+        os.path.abspath(
+            os.path.dirname(__name__)
+        ),
+        'cyber_wary_portal',
+        'templates'
+    ),
+]
+
+
 # Authentication Settings
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth
 AUTH_USER_MODEL = 'cyber_wary_portal.SystemUser'
-LOGIN_URL = '/portal/login'
+LOGIN_URL = '/portal/account/login'
 LOGIN_REDIRECT_URL = 'portal'
 LOGOUT_REDIRECT_URL = 'index'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Authentication Enabled Backends
+SITE_ID = 1
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+
+# Django AllAuth Configuration
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_MAX_EMAIL_ADDRESSES = 5
+ACCOUNT_USERNAME_REQUIRED = True
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_FORMS = {
+    'signup': 'cyber_wary_portal.forms.AccountDetailsForm'
+}
+
+# Django AllAuth Providers
+SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'SCOPE': [
+            'user',
+            'repo',
+            'read:org',
+        ],
+        'APP': {
+            'client_id': os.environ.get('CYBERWARY_GITHUB_CLIENT_ID'),
+            'secret': os.environ.get('CYBERWARY_GITHUB_SECRET'),
+            'key': ''
+        }
+    },
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'APP': {
+            'client_id': os.environ.get('CYBERWARY_GOOGLE_CLIENT_ID'),
+            'secret': os.environ.get('CYBERWARY_GOOGLE_SECRET'),
+            'key': ''
+        }
+    }
+}
+
+
+# Django Mail Configuration (SendGrid)
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+SENDGRID_API_KEY = os.environ.get('CYBERWARY_SENDGRID_API_KEY')
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False

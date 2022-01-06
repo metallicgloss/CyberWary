@@ -93,7 +93,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <div class="nav navbar-nav ms-auto">
                                 <div class="dropdown">
-                                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a href="#" class="d-flex align-items-center justify-content-end text-decoration-none dropdown-toggle" id="userProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                         <div class="user-details">
                                             <p id="user-name" class="mb-0 text-end">{{ request.user.first_name }} {{ request.user.last_name }}</p>
                                             <p id="user-plan" class="mb-0 text-end">Free Tier</p>
@@ -101,12 +101,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <img src="{{ request.user.get_gravatar_image }}" alt="Profile Photo" width="48" height="48" class="rounded-circle ms-4">
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-dark text-small text-end shadow rounded-0 mt-3 end-0" aria-labelledby="userProfileDropdown">
-                                        <li><a class="dropdown-item" href="{% url 'modify' %}">Account Settings</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'account_modify' %}">Account Details</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'socialaccount_connections' %}">Third-Party Settings</a></li>
                                         <li><a class="dropdown-item" href="{% url 'api' %}">API Settings</a></li>
                                         <li>
                                             <hr class="dropdown-divider">
                                         </li>
-                                        <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign out</a></li>
                                     </ul>
                                 </div>
                             </div>
