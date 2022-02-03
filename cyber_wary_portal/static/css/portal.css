@@ -32,6 +32,7 @@
         2.1 Bootstrap
         2.2 DateTimePicker
         2.3 DataTables
+        2.4 HLJS
     3. Custom
         3.1 Sidebar
         3.2 Navbar
@@ -177,6 +178,10 @@ table.dataTable tbody td:not(:first-child) {
     padding: 12px 18px
 }
 
+table.dataTable {
+    margin-left: 0;
+}
+
 table.dataTable thead th {
     font-weight: 600;
     font-size: 14px;
@@ -226,30 +231,22 @@ table.dataTable.no-footer {
     border-bottom: 0;
 }
 
-table.dataTable thead .sorting_asc {
-    background-image: url(/static/imgs/up.svg);
-    background-position: right 17px;
-    background-repeat: no-repeat;
-}
-
-table.dataTable thead .sorting_desc {
-    background-image: url(/static/imgs/down.svg);
-    background-position: right 17px;
-    background-repeat: no-repeat;
-}
-
-table.dataTable thead .sorting {
-    background-image: url(/static/imgs/sorting.svg);
-    background-position: right 17px;
-    background-repeat: no-repeat;
-}
-
 table.dataTable>tbody>tr.child ul.dtr-details {
     width: 100%;
 }
 
 table.dataTable>tbody>tr.child span.dtr-title {
     width: 50%;
+}
+
+
+/*----------------------*\
+    2.4 HLJS
+\*----------------------*/
+
+.hljs {
+    color: var(--light-primary);
+    background: transparent;
 }
 
 
@@ -371,12 +368,19 @@ table.dataTable>tbody>tr.child span.dtr-title {
     stroke: var(--dark-primary-alt)
 }
 
-pre {
+.code {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    max-width: 100%;
+}
+
+.generated-content {
     background-color: var(--dark-primary);
     color: var(--light-primary);
     width: 100%;
     min-height: 80vh;
     font-family: 'Source Code Pro', monospace;
+    z-index: 5;
 }
 
 .scan-brief svg {

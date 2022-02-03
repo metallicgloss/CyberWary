@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.microsoft',
 ]
 
 MIDDLEWARE = [
@@ -229,6 +230,13 @@ SOCIALACCOUNT_PROVIDERS = {
         'APP': {
             'client_id': os.environ.get('CYBERWARY_GOOGLE_CLIENT_ID'),
             'secret': os.environ.get('CYBERWARY_GOOGLE_SECRET'),
+            'key': ''
+        }
+    },
+    'microsoft': {
+        'APP': {
+            'client_id': os.environ.get('CYBERWARY_MICROSOFT_CLIENT_ID'),
+            'secret': os.environ.get('CYBERWARY_MICROSOFT_SECRET'),
             'key': ''
         }
     }

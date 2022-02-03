@@ -21,6 +21,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endcomment %}
 
+{% block page_head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/styles/atom-one-dark.min.css" integrity="sha256-Qjf/ynzmqttDjEV+CmdbElxTS73aW4f0HzoUlWA7zJs=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.css" integrity="sha256-lP22bsj+dImBpPIJD99KKgo9vlrOLmXEzkbpXWkr2sc=" crossorigin="anonymous">
+{% endblock %}
+
 {% block page_content %}
     <div class="row">
         <div class="col-lg-12 col-xl-5">
@@ -301,93 +306,116 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     </svg>
                 </div>
             </div>
-            <pre class="p-3"><span class="generated-content">C:\</span><span id="cursor"></span></pre>
+            <div class="p-3 generated-content">
+                <div class="code position-relative">Start-Job {
+    Invoke-WebRequest
+        -Uri 'http://localhost:8000/portal/api/v1/start_scan'
+        -Method POST
+        -Headers @{
+            Authorization="Token 42ad94c98c29a7b0c9ac502a6f1748995d4f2eec";
+        }
+        -Body @{
+            scan_key='testing';
+            system_information=$(
+                Get-ComputerInfo|ConvertTo-Json
+            )
+        }
+} | Get-Job
+                </div>
+                <pre class="pt-3"><span class="generated-content">C:\></span><span id="cursor"></span></pre>
+            </div>
         </div>
     </div>
 {% endblock %}
 
 {% block page_scripts %}
-<script>
-    
-    $(document).ready(function() {
-        $('input[name="{{ form.expiry.name }}"]').daterangepicker({
-            minDate: moment().add(1, 'hours'),
-            maxDate: moment().add(1, 'year'),
-            singleDatePicker: true,
-            timePicker: true,
-            timePicker24Hour: true,
-            locale: {
-                format: "DD/MM/YYYY H:mm",
-                separator: " - ",
-                applyLabel: "Apply",
-                cancelLabel: "Cancel",
-                fromLabel: "From",
-                toLabel: "To",
-                firstDay: 1
-            },
-        })
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js" integrity="sha256-ACiuknPSzs3jBPs5Vmxs9LOfqJe75LfS6l7pRNjwsHk=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.js" integrity="sha256-iOVs1FytPbiP3HcnhtFMzo0MwYebwD5OVr6Rnf2a0ik=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            document.querySelectorAll('div.code').forEach(el => {
+                // then highlight each
+                hljs.highlightElement(el);
+            });
 
-        $('input[name="{{ form.title.name }}"]').on('input', function() {
-            if($(this).val()) {
-                $('#scan-title').text($(this).val());
-            } else {
-                $('#scan-title').text("Untitled Scan");
-            }
-        });
 
-        $('.form-dropdown').click(function () {
-            $(this).attr('tabindex', 1).focus();
-            $(this).toggleClass('active');
-            $(this).find('.form-dropdown-menu').slideToggle(300);
-        });
-        $('.form-dropdown').focusout(function () {
-            $(this).removeClass('active');
-            $(this).find('.form-dropdown-menu').slideUp(300);
-        });
-        $('.form-dropdown .form-dropdown-menu li').click(function () {
-            $(this).parents('.form-dropdown').find('span').text($(this).text());
-            $(this).parents('.form-dropdown').find('input').attr('value', $(this).attr('id'));
-            
-            if($(this).attr('id') == 1) {
-                $('#scan-type').attr("class", "text-primary");
-                $('#scan-type').text("Blue Team");
-            } else {
-                $('#scan-type').attr("class", "text-danger-alt");
-                $('#scan-type').text("Red Team");
-            }
-        });
+            $('input[name="{{ form.expiry.name }}"]').daterangepicker({
+                minDate: moment().add(1, 'hours'),
+                maxDate: moment().add(1, 'year'),
+                singleDatePicker: true,
+                timePicker: true,
+                timePicker24Hour: true,
+                locale: {
+                    format: "DD/MM/YYYY H:mm",
+                    separator: " - ",
+                    applyLabel: "Apply",
+                    cancelLabel: "Cancel",
+                    fromLabel: "From",
+                    toLabel: "To",
+                    firstDay: 1
+                },
+            })
 
-        var pathElements = document.querySelectorAll('.generated-script path');
-        for (var i = 0; i < pathElements.length; i++) {
-            pathElements[i].setAttribute(
-                'stroke-dashoffset',
-                anime.setDashoffset(
-                    pathElements[i]
-                )
-            );
-            anime({
-                autoplay: true,
-                delay: anime.random(
-                    0,
-                    3000
-                ),
-                direction: 'alternate',
-                duration: anime.random(
-                    1000,
-                    6000
-                ),
-                easing: 'easeInOutSine',
-                loop: true,
-                strokeDashoffset: [
+            $('input[name="{{ form.title.name }}"]').on('input', function() {
+                if($(this).val()) {
+                    $('#scan-title').text($(this).val());
+                } else {
+                    $('#scan-title').text("Untitled Scan");
+                }
+            });
+
+            $('.form-dropdown').click(function () {
+                $(this).attr('tabindex', 1).focus();
+                $(this).toggleClass('active');
+                $(this).find('.form-dropdown-menu').slideToggle(300);
+            });
+            $('.form-dropdown').focusout(function () {
+                $(this).removeClass('active');
+                $(this).find('.form-dropdown-menu').slideUp(300);
+            });
+            $('.form-dropdown .form-dropdown-menu li').click(function () {
+                $(this).parents('.form-dropdown').find('span').text($(this).text());
+                $(this).parents('.form-dropdown').find('input').attr('value', $(this).attr('id'));
+                
+                if($(this).attr('id') == 1) {
+                    $('#scan-type').attr("class", "text-primary");
+                    $('#scan-type').text("Blue Team");
+                } else {
+                    $('#scan-type').attr("class", "text-danger-alt");
+                    $('#scan-type').text("Red Team");
+                }
+            });
+
+            var pathElements = document.querySelectorAll('.generated-script path');
+            for (var i = 0; i < pathElements.length; i++) {
+                pathElements[i].setAttribute(
+                    'stroke-dashoffset',
                     anime.setDashoffset(
                         pathElements[i]
+                    )
+                );
+                anime({
+                    autoplay: true,
+                    delay: anime.random(
+                        0,
+                        3000
                     ),
-                    0
-                ],
-                targets: pathElements[i],
-            });
-        }
-    });
-</script>
-    
+                    direction: 'alternate',
+                    duration: anime.random(
+                        1000,
+                        6000
+                    ),
+                    easing: 'easeInOutSine',
+                    loop: true,
+                    strokeDashoffset: [
+                        anime.setDashoffset(
+                            pathElements[i]
+                        ),
+                        0
+                    ],
+                    targets: pathElements[i],
+                });
+            }
+        });
+    </script>
 {% endblock%}

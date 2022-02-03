@@ -161,8 +161,8 @@ class AccountModificationForm(UserCreationForm):
 
 class ScanForm(forms.ModelForm):
     TYPES = (
-        (1, 'Blue Team'),
-        (2, 'Red Team')
+        ('B', 'Blue Team'),
+        ('R', 'Red Team')
     )
 
     type = forms.ChoiceField(

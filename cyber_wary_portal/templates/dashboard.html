@@ -22,5 +22,20 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endcomment %}
 
 {% block page_content %}
-Dashboard TBC
+    <h2>Dashboard</h2>
+    Google Maps with location plotted for each ip geolocation that has been scanned.
+    Line race chart for date installed for each device scanned.
+    Radar for detected problems on devices.
+    Pie Chart - overall number of problems detected.
+    List - Most recently compromised passwords.
+    List - Scan history (most recent data).
+    Payload Data Generated.
+    Most Common OS Version
+    Number of Scans
+    Weighted Blue VS Red Team
+    GitHub Style for number of scans executed.
+{% endblock %}
+
+{% block page_scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js" integrity="sha256-iJxB0L7blNZTAFBu/ESTfVaVTqFrTeISeWk7RUEePFY=" crossorigin="anonymous"></script>
 {% endblock %}

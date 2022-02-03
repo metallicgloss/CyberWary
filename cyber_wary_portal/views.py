@@ -18,7 +18,7 @@
 #
 
 from .forms import AccountModificationForm, ScanForm, ApiKeyForm
-from .models import SystemUser, ApiRequest
+from .models import SystemUser, ApiRequest, Scan
 from datetime import datetime
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
@@ -47,7 +47,7 @@ def create(request):
             scan.user = request.user
             scan.scan_key = get_random_string(length=32)
             scan.save()
-            return redirect('portal')
+            return redirect('scans')
 
     else:
         form = ScanForm()
@@ -68,7 +68,14 @@ def report(request):
 
 @login_required
 def scans(request):
-    return render(request, 'scans.html')
+    user_scans = Scan.objects.filter(user=request.user)
+    return render(
+        request,
+        'scans.html',
+        {
+            'user_scans': user_scans
+        }
+    )
 
 
 # --------------------------------------------------------------------------- #

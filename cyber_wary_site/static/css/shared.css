@@ -29,6 +29,7 @@
 
     1. Colours
     2. Defaults
+        2.1 Scrollbar
     3. Bootstrap Overrides
     4. Custom
         4.1 Elements
@@ -82,6 +83,30 @@ h5 {
 
 a {
     text-decoration: none;
+}
+
+
+/*-----------------*\
+    2.1 Scrollbar
+\*-----------------*/
+
+* {
+    scrollbar-width: auto;
+    scrollbar-color: var(--success) #f2f2f2;
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #f2f2f2;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: var(--success);
+    border-radius: 0px;
+    border: 0px;
 }
 
 
@@ -186,7 +211,7 @@ form input[type=number],
 form input[type=password],
 form input[type=datetime-local],
 form select {
-    border: 1px solid #D4D4D4;
+    border: 1px solid var(--light-border);
     font-size: 14px;
     padding: 10px 15px;
     width: 100%;

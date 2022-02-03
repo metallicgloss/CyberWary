@@ -21,6 +21,59 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endcomment %}
 
+{% block page_head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.css" integrity="sha256-YY1izqyhIj4W3iyJOaGWOpXDSwrHWFL4Nfk+W0LyCHE=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-responsive-dt@2.2.9/css/responsive.dataTables.min.css" integrity="sha256-Y/AdBW1nhvzPowuT1lvF4PkY6QR+nqYzBcbmkDCG30Y=" crossorigin="anonymous">
+{% endblock%}
+
 {% block page_content %}
-Dashboard TBC
+    <h2>Scans</h2>
+    <div class="row">
+        <div class="col-xl-12">
+            <table id="scan-history" class="display pb-5 w-100">
+                <thead>
+                    <tr>
+                        <th class="pb-3 desktop">Scan Created Date/Time</th>
+                        <th class="pb-3 none">Timestamp</th>
+                        <th class="pb-3 desktop">Scan Type</th>
+                        <th class="pb-3 desktop"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for scan in user_scans %}
+                        <tr style="background-color: var(--light-primary-alt)">
+                            <td>{{ scan.created|date:"l jS F Y - H:i:s e" }}</td>
+                            <td>{{ scan.created|date:"U" }}</td>
+                            <td>{{ scan.get_type_display }} Team</td>
+                            <td><i class="icofont-rounded-double-right"></i></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
+
+
+
+{% block page_scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/js/jquery.dataTables.min.js" integrity="sha256-3aHVku6TxTRUkkiibvwTz5k8wc7xuEr1QqTB+Oo5Q7I=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net-responsive@2.2.9/js/dataTables.responsive.min.js" integrity="sha256-f+r2TX3KkC6avpv7F8bRhVZZO8nW7xJhmCKd6k7PqGE=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function(){
+            $('#scan-history').dataTable( {
+                "lengthChange": false,
+                "searching": false,
+                "pageLength": 10,
+                "order": [[ 1, 'desc' ]],
+                "ordering": false,
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+            });
+        });
+    </script>
+{% endblock%}
