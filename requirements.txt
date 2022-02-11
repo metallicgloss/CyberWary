@@ -1,6 +1,6 @@
-django-allauth==0.47.0
-django-sendgrid-v5==1.2.0
-Django==3.2.9
+django-allauth==0.48.0
+Django==4.0.2
 djangorestframework==3.13.1
 mysqlclient==2.1.0
 python-dotenv==0.19.2
+pytz==2021.3
