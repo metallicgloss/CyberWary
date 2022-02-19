@@ -17,7 +17,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from .forms import AccountModificationForm, ScanForm, ApiKeyForm
+from .forms import AccountModificationForm, ApiKeyForm
 from .models import SystemUser, ApiRequest, Scan
 from datetime import datetime
 from django.contrib.auth import login, authenticate
@@ -27,6 +27,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.utils.timezone import make_aware
+from formtools.wizard.views import SessionWizardView
 from pytz import timezone
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
@@ -38,27 +39,28 @@ def index(request):
     return render(request, 'dashboard.html')
 
 
-@login_required
-def create(request):
-    if request.method == 'POST':
-        form = ScanForm(request.POST)
-        if form.is_valid():
-            scan = form.save(commit=False)
-            scan.user = request.user
-            scan.scan_key = get_random_string(length=32)
-            scan.save()
-            return redirect('scans')
+class ScanCreationWizard(SessionWizardView):
+    instance = None
+    template_name = "scan/create.html"
 
-    else:
-        form = ScanForm()
+    def get_form_instance(self, step):
+        if self.instance is None:
+            self.instance = Scan()
+        return self.instance
 
-    return render(
-        request,
-        'create.html',
-        {
-            'form': form
-        }
-    )
+    def get_context_data(self, form, **kwargs):
+        context = super(ScanCreationWizard, self).get_context_data(form=form, **kwargs)
+
+        if self.steps.current == '1':
+            step_1_data = self.get_cleaned_data_for_step('0')
+            context.update(step_1_data)
+        return context
+
+    def done(self, form_list, **kwargs):
+        self.instance.user = self.request.user
+        self.instance.scan_key = get_random_string(length=32)
+        self.instance.save()
+        return redirect('history')
 
 
 @login_required
@@ -67,11 +69,11 @@ def report(request):
 
 
 @login_required
-def scans(request):
-    user_scans = Scan.objects.filter(user=request.user)
+def history(request):
+    user_scans = Scan.objects.filter(user=request.user).order_by('-created')
     return render(
         request,
-        'scans.html',
+        'scan/history.html',
         {
             'user_scans': user_scans
         }
@@ -194,8 +196,8 @@ def api(request):
 
         if(request.GET.get('update') is not None):
             key_updated = True
-    
-    api_log = ApiRequest.objects.filter(user=request.user)
+
+    api_log = ApiRequest.objects.filter(user=request.user).order_by('-created')
 
     return render(
         request,
@@ -209,13 +211,14 @@ def api(request):
     )
 
 
-@api_view(['POST',])
+@api_view(['POST', ])
 def start_scan(request):
-    
+
     request_log = ApiRequest(
         user=request.user,
         type='start_scan',
-        payload=json.loads(request.POST['system_information'].replace("'", '"')),
+        payload=json.loads(
+            request.POST['system_information'].replace("'", '"')),
         method=ApiRequest.RequestMethod.POST
     )
     request_log.save()

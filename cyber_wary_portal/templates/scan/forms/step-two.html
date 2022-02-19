@@ -1,0 +1,153 @@
+{% comment %}
+GNU General Public License v3.0
+Cyber Wary - <https://github.com/metallicgloss/CyberWary>
+Copyright (C) 2021 - William P - <hello@metallicgloss.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+{% endcomment %}
+
+<form id="scan-components" method="POST">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+    <div class="row">
+        <div class="col {% if form.system_users.errors %}field-error{% endif %}">
+            <p class="mt-4 mb-1 fw-bold"><i class="icofont-laptop me-2"></i> {{ form.system_users.label }} <span class="required">*</span></p>
+            <div class="position-relative">
+                {{ form.system_users }}
+                <span class="focus-border">
+                    <i></i>
+                </span>
+            </div>
+            {% for error in form.system_users.errors %}
+                <p class="text-red mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col {% if form.network_adapters.errors %}field-error{% endif %}">
+            <p class="mt-4 mb-1 fw-bold"><i class="icofont-laptop me-2"></i> {{ form.network_adapters.label }} <span class="required">*</span></p>
+            <div class="position-relative">
+                {{ form.network_adapters }}
+                <span class="focus-border">
+                    <i></i>
+                </span>
+            </div>
+            {% for error in form.network_adapters.errors %}
+                <p class="text-red mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col {% if form.startup_applications.errors %}field-error{% endif %}">
+            <p class="mt-4 mb-1 fw-bold"><i class="icofont-laptop me-2"></i> {{ form.startup_applications.label }} <span class="required">*</span></p>
+            <div class="position-relative">
+                {{ form.startup_applications }}
+                <span class="focus-border">
+                    <i></i>
+                </span>
+            </div>
+            {% for error in form.startup_applications.errors %}
+                <p class="text-red mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col {% if form.installed_applications.errors %}field-error{% endif %}">
+            <p class="mt-4 mb-1 fw-bold"><i class="icofont-laptop me-2"></i> {{ form.installed_applications.label }} <span class="required">*</span></p>
+            <div class="position-relative">
+                {{ form.installed_applications }}
+                <span class="focus-border">
+                    <i></i>
+                </span>
+            </div>
+            {% for error in form.installed_applications.errors %}
+                <p class="text-red mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col {% if form.outdated_applications.errors %}field-error{% endif %}">
+            <p class="mt-4 mb-1 fw-bold"><i class="icofont-laptop me-2"></i> {{ form.outdated_applications.label }} <span class="required">*</span></p>
+            <div class="position-relative">
+                {{ form.outdated_applications }}
+                <span class="focus-border">
+                    <i></i>
+                </span>
+            </div>
+            {% for error in form.outdated_applications.errors %}
+                <p class="text-red mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col {% if form.firewall_rules.errors %}field-error{% endif %}">
+            <p class="mt-4 mb-1 fw-bold"><i class="icofont-laptop me-2"></i> {{ form.firewall_rules.label }} <span class="required">*</span></p>
+            <div class="position-relative">
+                {{ form.firewall_rules }}
+                <span class="focus-border">
+                    <i></i>
+                </span>
+            </div>
+            {% for error in form.firewall_rules.errors %}
+                <p class="text-red mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col {% if form.system_passwords.errors %}field-error{% endif %}">
+            <p class="mt-4 mb-1 fw-bold"><i class="icofont-laptop me-2"></i> {{ form.system_passwords.label }} <span class="required">*</span></p>
+            <div class="position-relative">
+                {{ form.system_passwords }}
+                <span class="focus-border">
+                    <i></i>
+                </span>
+            </div>
+            {% for error in form.system_passwords.errors %}
+                <p class="text-red mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col {% if form.browser_passwords.errors %}field-error{% endif %}">
+            <p class="mt-4 mb-1 fw-bold"><i class="icofont-laptop me-2"></i> {{ form.browser_passwords.label }} <span class="required">*</span></p>
+            <div class="position-relative">
+                {{ form.browser_passwords }}
+                <span class="focus-border">
+                    <i></i>
+                </span>
+            </div>
+            {% for error in form.browser_passwords.errors %}
+                <p class="text-red mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col {% if form.antivirus_product.errors %}field-error{% endif %}">
+            <p class="mt-4 mb-1 fw-bold"><i class="icofont-laptop me-2"></i> {{ form.antivirus_product.label }} <span class="required">*</span></p>
+            <div class="position-relative">
+                {{ form.antivirus_product }}
+                <span class="focus-border">
+                    <i></i>
+                </span>
+            </div>
+            {% for error in form.antivirus_product.errors %}
+                <p class="text-red mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success text-start text-white px-3 py-1 mt-4 w-100 text-uppercase">Initialise Scan <i class="icofont-rounded-double-right"></i></button>
+</form>

@@ -370,7 +370,6 @@ table.dataTable>tbody>tr.child span.dtr-title {
 
 .code {
     word-wrap: break-word;
-    white-space: pre-wrap;
     max-width: 100%;
 }
 
@@ -387,7 +386,7 @@ table.dataTable>tbody>tr.child span.dtr-title {
     margin-top: 10px;
 }
 
-.scan-setup p {
+.scan-form-container p {
     margin-bottom: 5px;
     font-weight: 600;
     color: var(--dark-primary-alt);

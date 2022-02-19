@@ -158,21 +158,20 @@ class AccountModificationForm(UserCreationForm):
             field.widget.attrs.pop("autofocus", None)
 
 
-
-class ScanForm(forms.ModelForm):
+class ScanFormStep1(forms.ModelForm):
     TYPES = (
         ('B', 'Blue Team'),
         ('R', 'Red Team')
     )
 
     type = forms.ChoiceField(
-        label='Scan Type',
+        label='Type',
         choices=TYPES,
         required=True
     )
 
     title = forms.CharField(
-        label='Scan Title',
+        label='Title',
         widget=forms.TextInput(
             attrs={
                 'placeholder': 'Enter a name for the scan...'
@@ -184,7 +183,7 @@ class ScanForm(forms.ModelForm):
     )
 
     comment = forms.CharField(
-        label='Scan Comments',
+        label='Notes/Comments',
         widget=forms.Textarea(
             attrs={
                 'rows': '5'
@@ -207,9 +206,8 @@ class ScanForm(forms.ModelForm):
     )
 
     expiry = forms.DateTimeField(
-        label='Expiry Date of Scan'
+        label='Expiry Date/Time'
     )
-
 
     class Meta:
         model = Scan
@@ -218,7 +216,68 @@ class ScanForm(forms.ModelForm):
             'title',
             'comment',
             'max_devices',
-            'expiry',
+            'expiry'
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(ScanFormStep1, self).__init__(* args, ** kwargs)
+        for field in self.fields.values():
+            if (field.label == 'Notes/Comments'):
+                field.widget.attrs['class'] = 'form-input-animation form-text-area'
+            else:
+                field.widget.attrs['class'] = 'form-input-animation'
+            field.widget.attrs.pop("autofocus", None)
+
+
+class ScanFormStep2(forms.ModelForm):
+    system_users = forms.BooleanField(
+        label='Scan System Users?',
+        required=False
+    )
+
+    network_adapters = forms.BooleanField(
+        label='network',
+        required=False
+    )
+
+    startup_applications = forms.BooleanField(
+        label='startup',
+        required=False
+    )
+
+    installed_applications = forms.BooleanField(
+        label='installed',
+        required=False
+    )
+
+    outdated_applications = forms.BooleanField(
+        label='outdated',
+        required=False
+    )
+
+    firewall_rules = forms.BooleanField(
+        label='firewall',
+        required=False
+    )
+
+    system_passwords = forms.BooleanField(
+        label='sys pass',
+        required=False
+    )
+
+    browser_passwords = forms.BooleanField(
+        label='browser',
+        required=False
+    )
+
+    antivirus_product = forms.BooleanField(
+        label='anti',
+        required=False
+    )
+
+    class Meta:
+        model = Scan
+        fields = (
             'system_users',
             'network_adapters',
             'startup_applications',
@@ -231,14 +290,10 @@ class ScanForm(forms.ModelForm):
         )
 
     def __init__(self, *args, **kwargs):
-        super(ScanForm, self).__init__(* args, ** kwargs)
+        super(ScanFormStep2, self).__init__(* args, ** kwargs)
         for field in self.fields.values():
-            if (field.label == 'Scan Comments'):
-                field.widget.attrs['class'] = 'form-input-animation form-text-area'
-            else:
-                field.widget.attrs['class'] = 'form-input-animation'
+            field.widget.attrs['class'] = 'form-input-animation'
             field.widget.attrs.pop("autofocus", None)
-
 
 
 class ApiKeyForm(forms.Form):

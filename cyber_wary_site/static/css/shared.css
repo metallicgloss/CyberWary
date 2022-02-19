@@ -129,6 +129,17 @@ a {
     border-color: var(--dark-primary-alt-hover);
 }
 
+.btn-success {
+    background-color: var(--success);
+    border-color: var(--success);
+}
+
+.btn-success:hover,
+.btn-success:active {
+    background-color: var(--success-alt);
+    border-color: var(--success-alt);
+}
+
 .btn-check:focus+.btn,
 .btn:focus,
 .btn-check:focus+.btn-success,

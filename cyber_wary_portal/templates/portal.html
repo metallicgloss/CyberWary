@@ -64,19 +64,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </div>
                 <ul class="sidebar-list list-unstyled py-5">
                     <li class="py-5">
-                        <a href="{% url 'portal' %}">
+                        <a href="{% url 'portal' %}" {% if request.resolver_match.url_name == 'portal' %}class="text-success"{% endif %}>
                             <i class="icofont-ui-home me-3"></i>
                             Dashboard
                         </a>
                     </li>
                     <li class="py-2">
-                        <a href="{% url 'create' %}">
+                        <a href="{% url 'create' %}" {% if request.resolver_match.url_name == 'create' %}class="text-success"{% endif %}>
                             <i class="icofont-plus me-3"></i>
                             New Scan
                         </a>
                     </li>
                     <li class="py-2">
-                        <a href="{% url 'scans' %}">
+                        <a href="{% url 'history' %}" {% if request.resolver_match.url_name == 'history' %}class="text-success"{% endif %}>
                             <i class="icofont-copy me-3"></i>
                             Scan History
                         </a>

@@ -21,6 +21,8 @@ from cyber_wary_portal import views
 from django.conf.urls import include
 from django.urls import path
 from django.views.generic import RedirectView
+from .forms import ScanFormStep1, ScanFormStep2
+from .views import ScanCreationWizard
 
 urlpatterns = [
     # ----------------------------------------------------------------------- #
@@ -35,7 +37,12 @@ urlpatterns = [
 
     path(
         'create',
-        views.create,
+        ScanCreationWizard.as_view(
+            [
+                ScanFormStep1,
+                ScanFormStep2
+            ]
+        ),
         name='create'
     ),
 
@@ -46,9 +53,9 @@ urlpatterns = [
     ),
 
     path(
-        'scans',
-        views.scans,
-        name='scans'
+        'history',
+        views.history,
+        name='history'
     ),
 
     # ----------------------------------------------------------------------- #
@@ -56,8 +63,10 @@ urlpatterns = [
     # ----------------------------------------------------------------------- #
 
     # Void two unneeded URLs included within allauth
-    path('account/password/change/',RedirectView.as_view(pattern_name='portal',permanent=True)),
-    path('account/password/set/',RedirectView.as_view(pattern_name='portal',permanent=True)),
+    path('account/password/change/',
+         RedirectView.as_view(pattern_name='portal', permanent=True)),
+    path('account/password/set/',
+         RedirectView.as_view(pattern_name='portal', permanent=True)),
 
     path(
         'account/',

@@ -35,112 +35,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <svg width="3" height="3" viewBox="0 0 3 3" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect width="3" height="3" fill="#34CC96" />
                 </svg>
-                <p class="ms-3 mb-3"><span id="scan-type"></span> Scan</p>
+                <p class="ms-3 mb-3"><span id="scan-type">Generic</span> Scan</p>
             </div>
-            <div class="scan-setup">
-                <form method="POST">
-                    {% csrf_token %}
-                    {% for hidden in form.hidden_fields %}
-                        {{ hidden }}
-                    {% endfor %}
-                    <div class="row">
-                        <div class="col {% if form.type.errors %}field-error{% endif %}">
-                            <p class="mt-4 mb-1 fw-bold"><i class="icofont-tag me-2"></i> {{ form.type.label }} <span class="required">*</span></p>
-                            <div class="position-relative">
-                                <div class="form-dropdown form-input-animation">
-                                    <div class="select">
-                                        <span>Select Scan Type</span>
-                                        <i class="icofont-thin-down"></i>
-                                    </div>
-                                    <input type="hidden" name="{{ form.type.name }}">
-                                    <ul class="form-dropdown-menu">
-                                        {% for value, text in form.type.field.choices %}
-                                            <li id="{{ value }}">{{ text }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                                <span class="focus-border">
-                                    <i></i>
-                                </span>
-                            </div>
-                            {% for error in form.type.errors %}
-                                <p class="text-red mt-2">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col {% if form.title.errors %}field-error{% endif %}">
-                            <p class="mt-4 mb-1 fw-bold"><i class="icofont-heading me-2"></i> {{ form.title.label }} <span class="required">*</span></p>
-                            <div class="position-relative">
-                                {{ form.title }}
-                                <span class="focus-border">
-                                    <i></i>
-                                </span>
-                            </div>
-                            {% for error in form.title.errors %}
-                                <p class="text-red mt-2">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col {% if form.comment.errors %}field-error{% endif %}">
-                            <p class="mt-4 mb-1 fw-bold"><i class="icofont-speech-comments me-2"></i> {{ form.comment.label }}</p>
-                            <div class="position-relative">
-                                {{ form.comment }}
-                                <span class="focus-border">
-                                    <i></i>
-                                </span>
-                            </div>
-                            {% for error in form.comment.errors %}
-                                <p class="text-red mt-2">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col {% if form.max_devices.errors %}field-error{% endif %}">
-                            <p class="mt-4 mb-1 fw-bold"><i class="icofont-laptop me-2"></i> {{ form.max_devices.label }} <span class="required">*</span></p>
-                            <div class="position-relative">
-                                {{ form.max_devices }}
-                                <span class="focus-border">
-                                    <i></i>
-                                </span>
-                            </div>
-                            {% for error in form.max_devices.errors %}
-                                <p class="text-red mt-2">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col {% if form.expiry.errors %}field-error{% endif %}">
-                            <p class="mt-4 mb-1 fw-bold"><i class="icofont-calendar me-2"></i> {{ form.expiry.label }} <span class="required">*</span></p>
-                            <div class="position-relative">
-                                {{ form.expiry }}
-                                <span class="focus-border">
-                                    <i></i>
-                                </span>
-                            </div>
-                            {% for error in form.expiry.errors %}
-                                <p class="text-red mt-2">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <button type="submit" class="btn bg-success text-white px-5 py-2 mt-4 text-uppercase">Initialise Scan <i class="icofont-gears ms-2"></i></button>
-                </form>
+            <div class="scan-form-container">
+                {% if wizard.steps.step1 == 1 %}
+                    {% include "scan/forms/step-one.html" %}
+                {% elif wizard.steps.step1 == 2 %}
+                    {% include "scan/forms/step-two.html" %}
+                {% endif %}
             </div>
         </div>
-        <div class="col-lg-12 col-xl-5 offset-xl-2">
-            <div class="d-flex justify-content-end mt-4 mb-3">
-                <div class="form-dropdown save-dropdown">
-                    <div class="select">
-                        <span>Save As</span>
-                        <i class="icofont-thin-down"></i>
-                    </div>
-                    <input type="hidden" name="export-option">
-                    <ul class="form-dropdown-menu">
-                    </ul>
-                </div>
-                <button class="btn bg-success text-white">Test</button>
-            </div>
+        <div class="col-lg-12 col-xl-5 offset-xl-2 pt-2">
+            <h5>Live Script Preview</h5>
             <div class="position-relative">
                 <div class="position-absolute w-100 generated-script">
                     <svg viewBox="0 0 575 575" width="900" height="80vh" xmlns="http://www.w3.org/2000/svg" class="position-relative">
@@ -307,20 +213,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </div>
             </div>
             <div class="p-3 generated-content">
-                <div class="code position-relative">Start-Job {
-    Invoke-WebRequest
-        -Uri 'http://localhost:8000/portal/api/v1/start_scan'
-        -Method POST
-        -Headers @{
-            Authorization="Token 42ad94c98c29a7b0c9ac502a6f1748995d4f2eec";
-        }
-        -Body @{
-            scan_key='testing';
-            system_information=$(
-                Get-ComputerInfo|ConvertTo-Json
-            )
-        }
-} | Get-Job
+                <div class="code position-relative">
+                    <div class="hljs-comment">
+                        # Scan Title: <span id="script-scan-title">{{ title|default:"Untitled Scan" }}</span><br>
+                        # Scan Type: <span id="script-scan-type">{% if type == "B" %}Blue Team{% elif type == "R" %}Red Team{% else %}Generic Scan{% endif %}</span><br>
+                        # Scan Max Associated Devices: <span id="script-scan-max-devices">{{ max_devices|default:"1" }}</span><br>
+                        # Scan Expiry: <span id="script-scan-expiry">{{ expiry|date:"d/m/Y H:i"|default:"" }}</span><br>
+                    </div>
                 </div>
                 <pre class="pt-3"><span class="generated-content">C:\></span><span id="cursor"></span></pre>
             </div>
@@ -329,63 +228,44 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endblock %}
 
 {% block page_scripts %}
-    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js" integrity="sha256-ACiuknPSzs3jBPs5Vmxs9LOfqJe75LfS6l7pRNjwsHk=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.js" integrity="sha256-iOVs1FytPbiP3HcnhtFMzo0MwYebwD5OVr6Rnf2a0ik=" crossorigin="anonymous"></script>
     <script>
+        var scanTitle = "0-{{ form.title.name }}"
+        var scanMax = "0-{{ form.max_devices.name }}"
+        var scanExpiry = "0-{{ form.expiry.name }}"
+        
         $(document).ready(function() {
-            document.querySelectorAll('div.code').forEach(el => {
-                // then highlight each
-                hljs.highlightElement(el);
-            });
+            {% if wizard.steps.step1 == 1 %}
+                $('#script-scan-expiry').text(moment().add(1, 'hours').format("DD/MM/YYYY H:mm"))
+                
 
+                $('input[name="0-{{ form.expiry.name }}"]').daterangepicker({
+                    minDate: moment().add(1, 'hours'),
+                    maxDate: moment().add(1, 'year'),
+                    singleDatePicker: true,
+                    timePicker: true,
+                    timePicker24Hour: true,
+                    locale: {
+                        format: "DD/MM/YYYY H:mm",
+                        separator: " - ",
+                        applyLabel: "Apply",
+                        cancelLabel: "Cancel",
+                        fromLabel: "From",
+                        toLabel: "To",
+                        firstDay: 1
+                    },
+                })
+            {% endif %}
 
-            $('input[name="{{ form.expiry.name }}"]').daterangepicker({
-                minDate: moment().add(1, 'hours'),
-                maxDate: moment().add(1, 'year'),
-                singleDatePicker: true,
-                timePicker: true,
-                timePicker24Hour: true,
-                locale: {
-                    format: "DD/MM/YYYY H:mm",
-                    separator: " - ",
-                    applyLabel: "Apply",
-                    cancelLabel: "Cancel",
-                    fromLabel: "From",
-                    toLabel: "To",
-                    firstDay: 1
-                },
-            })
-
-            $('input[name="{{ form.title.name }}"]').on('input', function() {
-                if($(this).val()) {
-                    $('#scan-title').text($(this).val());
-                } else {
-                    $('#scan-title').text("Untitled Scan");
-                }
-            });
-
-            $('.form-dropdown').click(function () {
+            $('.form-dropdown').click(function() {
                 $(this).attr('tabindex', 1).focus();
                 $(this).toggleClass('active');
-                $(this).find('.form-dropdown-menu').slideToggle(300);
+                $(this).find('.form-dropdown-menu').slideToggle(200);
             });
-            $('.form-dropdown').focusout(function () {
+            $('.form-dropdown').focusout(function() {
                 $(this).removeClass('active');
-                $(this).find('.form-dropdown-menu').slideUp(300);
+                $(this).find('.form-dropdown-menu').slideUp(200);
             });
-            $('.form-dropdown .form-dropdown-menu li').click(function () {
-                $(this).parents('.form-dropdown').find('span').text($(this).text());
-                $(this).parents('.form-dropdown').find('input').attr('value', $(this).attr('id'));
-                
-                if($(this).attr('id') == 1) {
-                    $('#scan-type').attr("class", "text-primary");
-                    $('#scan-type').text("Blue Team");
-                } else {
-                    $('#scan-type').attr("class", "text-danger-alt");
-                    $('#scan-type').text("Red Team");
-                }
-            });
-
+        
             var pathElements = document.querySelectorAll('.generated-script path');
             for (var i = 0; i < pathElements.length; i++) {
                 pathElements[i].setAttribute(
@@ -418,4 +298,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             }
         });
     </script>
+    <script src="{% static 'js/script-preview.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js" integrity="sha256-ACiuknPSzs3jBPs5Vmxs9LOfqJe75LfS6l7pRNjwsHk=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.js" integrity="sha256-iOVs1FytPbiP3HcnhtFMzo0MwYebwD5OVr6Rnf2a0ik=" crossorigin="anonymous"></script>
 {% endblock%}

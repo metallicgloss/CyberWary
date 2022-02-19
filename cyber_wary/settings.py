@@ -62,6 +62,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.microsoft',
+
+    # Django Form Wizard
+    'formtools',
 ]
 
 MIDDLEWARE = [

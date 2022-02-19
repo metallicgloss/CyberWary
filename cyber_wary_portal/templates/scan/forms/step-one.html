@@ -1,0 +1,108 @@
+{% comment %}
+GNU General Public License v3.0
+Cyber Wary - <https://github.com/metallicgloss/CyberWary>
+Copyright (C) 2021 - William P - <hello@metallicgloss.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+{% endcomment %}
+
+<form id="create-scan" method="POST">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+    <div class="row">
+        <div class="col {% if form.type.errors %}field-error{% endif %}">
+            <p class="mt-4 mb-1 fw-bold"><i class="icofont-tag me-2"></i> {{ form.type.label }} <span class="required">*</span></p>
+            <div class="position-relative">
+                <div class="form-dropdown form-input-animation">
+                    <div class="select">
+                        <span>Select Scan Type</span>
+                        <i class="icofont-thin-down"></i>
+                    </div>
+                    <input type="hidden" name="0-{{ form.type.name }}">
+                    <ul class="form-dropdown-menu">
+                        {% for value, text in form.type.field.choices %}
+                            <li id="{{ value }}">{{ text }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <span class="focus-border">
+                    <i></i>
+                </span>
+            </div>
+            {% for error in form.type.errors %}
+                <p class="text-red mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col {% if form.title.errors %}field-error{% endif %}">
+            <p class="mt-4 mb-1 fw-bold"><i class="icofont-heading me-2"></i> {{ form.title.label }} <span class="required">*</span></p>
+            <div class="position-relative">
+                {{ form.title }}
+                <span class="focus-border">
+                    <i></i>
+                </span>
+            </div>
+            {% for error in form.title.errors %}
+                <p class="text-red mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col {% if form.comment.errors %}field-error{% endif %}">
+            <p class="mt-4 mb-1 fw-bold"><i class="icofont-speech-comments me-2"></i> {{ form.comment.label }}</p>
+            <div class="position-relative">
+                {{ form.comment }}
+                <span class="focus-border">
+                    <i></i>
+                </span>
+            </div>
+            {% for error in form.comment.errors %}
+                <p class="text-red mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col {% if form.max_devices.errors %}field-error{% endif %}">
+            <p class="mt-4 mb-1 fw-bold"><i class="icofont-laptop me-2"></i> {{ form.max_devices.label }} <span class="required">*</span></p>
+            <div class="position-relative">
+                {{ form.max_devices }}
+                <span class="focus-border">
+                    <i></i>
+                </span>
+            </div>
+            {% for error in form.max_devices.errors %}
+                <p class="text-red mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col {% if form.expiry.errors %}field-error{% endif %}">
+            <p class="mt-4 mb-1 fw-bold"><i class="icofont-calendar me-2"></i> {{ form.expiry.label }} <span class="required">*</span></p>
+            <div class="position-relative">
+                {{ form.expiry }}
+                <span class="focus-border">
+                    <i></i>
+                </span>
+            </div>
+            {% for error in form.expiry.errors %}
+                <p class="text-red mt-2">{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success text-start text-white px-3 py-1 mt-4 w-100 text-uppercase">Initialise Scan <i class="icofont-rounded-double-right"></i></button>
+</form>

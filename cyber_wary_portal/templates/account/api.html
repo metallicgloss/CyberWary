@@ -89,7 +89,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <thead>
                     <tr>
                         <th class="pb-2 desktop">Date/Time</th>
-                        <th class="pb-2 none">Timestamp</th>
                         <th class="pb-2 desktop">Request Action</th>
                         <th class="pb-2 desktop">Request Method</th>
                         <th class="pb-2 desktop">Payload Size</th>
@@ -100,7 +99,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     {% for record in api_log %}
                         <tr>
                             <td>{{ record.created|date:"l jS F Y - H:i:s e" }}</td>
-                            <td>{{ record.created|date:"U" }}</td>
                             <td>{{ record.type }}</td>
                             <td>{{ record.get_method_display|upper }}</td>
                             <td>{{ record.get_payload_size }} Bytes</td>
@@ -132,7 +130,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 "lengthChange": false,
                 "searching": false,
                 "pageLength": 10,
-                "order": [[ 1, 'desc' ]],
                 "ordering": false,
                 responsive: {
                     details: {

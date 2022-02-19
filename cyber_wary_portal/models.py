@@ -79,7 +79,6 @@ class Scan(DefaultFields):
     )
 
     title = models.CharField(
-        default="Untitled Scan",
         help_text="An identifier for a scan.",
         max_length=32,
         null=True
