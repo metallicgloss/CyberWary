@@ -24,6 +24,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% block page_head %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.css" integrity="sha256-YY1izqyhIj4W3iyJOaGWOpXDSwrHWFL4Nfk+W0LyCHE=" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-responsive-dt@2.2.9/css/responsive.dataTables.min.css" integrity="sha256-Y/AdBW1nhvzPowuT1lvF4PkY6QR+nqYzBcbmkDCG30Y=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/styles/atom-one-dark.min.css" integrity="sha256-Qjf/ynzmqttDjEV+CmdbElxTS73aW4f0HzoUlWA7zJs=" crossorigin="anonymous">
 {% endblock%}
 
 {% block page_content %}
@@ -93,6 +94,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <th class="pb-2 desktop">Request Method</th>
                         <th class="pb-2 desktop">Payload Size</th>
                         <th class="pb-2 desktop">Response Code</th>
+                        <th class="pb-2 desktop">Raw Payload</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -103,15 +105,34 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             <td>{{ record.get_method_display|upper }}</td>
                             <td>{{ record.get_payload_size }} Bytes</td>
                             <td>{{ record.response }}</td>
+                            <td>
+                                <span class="payload-action" onclick="viewPayload('{{ record.id }}', '{{ record.type }}', '{{ record.created|date:"l jS F Y - H:i:s e" }}')">
+                                    View Request Payload
+                                </span>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
+    <div class="modal fade" id="payloadModal" tabindex="-1" aria-labelledby="payloadModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Payload Contents - <span id="payload-datetime"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <pre class="generated-content language-json payload-contents" id="code"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block page_scripts %}
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js" integrity="sha256-ACiuknPSzs3jBPs5Vmxs9LOfqJe75LfS6l7pRNjwsHk=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/js/jquery.dataTables.min.js" integrity="sha256-3aHVku6TxTRUkkiibvwTz5k8wc7xuEr1QqTB+Oo5Q7I=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/datatables.net-responsive@2.2.9/js/dataTables.responsive.min.js" integrity="sha256-f+r2TX3KkC6avpv7F8bRhVZZO8nW7xJhmCKd6k7PqGE=" crossorigin="anonymous"></script>
     <script>
@@ -139,5 +160,23 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 },
             });
         });
+
+        function viewPayload(payloadID, type, datetime) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'api_payload' %}",
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    payloadID,
+                    type
+                },
+                success: function(data) {
+                    $('.generated-content').text(JSON.stringify(data, null, '    ')) // To double check .text adds html escape.
+                    $('#payload-datetime').text(datetime);
+                    hljs.highlightElement(document.getElementById("code"));
+                    $('#payloadModal').modal('show');
+                }
+            });
+        }
     </script>
 {% endblock%}

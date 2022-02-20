@@ -132,8 +132,32 @@ class Scan(DefaultFields):
         null=True
     )
 
+    system_services = models.BooleanField(
+        help_text="Flag for scan of system services.",
+        default=False,
+        null=True
+    )
+
+    system_passwords = models.BooleanField(
+        help_text="Flag for scan of passwords stored on the system.",
+        default=False,
+        null=True
+    )
+
     network_adapters = models.BooleanField(
         help_text="Flag for scan of network adapters.",
+        default=False,
+        null=True
+    )
+
+    network_exposure = models.BooleanField(
+        help_text="Flag for scan of network exposure.",
+        default=False,
+        null=True
+    )
+
+    network_firewall_rules = models.BooleanField(
+        help_text="Flag for scan of firewall rules.",
         default=False,
         null=True
     )
@@ -150,31 +174,19 @@ class Scan(DefaultFields):
         null=True
     )
 
-    outdated_applications = models.BooleanField(
-        help_text="Flag for scan of outdated applications.",
+    installed_firmware = models.BooleanField(
+        help_text="Flag for scan of installed firmware and drivers.",
         default=False,
         null=True
     )
 
-    firewall_rules = models.BooleanField(
-        help_text="Flag for scan of firewall rules.",
+    installed_patches = models.BooleanField(
+        help_text="Flag for scan of installed OS updates and patches.",
         default=False,
         null=True
     )
 
-    system_passwords = models.BooleanField(
-        help_text="Flag for scan of system passwords.",
-        default=False,
-        null=True
-    )
-
-    browser_passwords = models.BooleanField(
-        help_text="Flag for scan of browser passwords.",
-        default=False,
-        null=True
-    )
-
-    antivirus_product = models.BooleanField(
+    installed_antivirus = models.BooleanField(
         help_text="Flag for scan of check of anti-virus product installation.",
         default=False,
         null=True

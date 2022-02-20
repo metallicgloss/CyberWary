@@ -63,10 +63,21 @@ urlpatterns = [
     # ----------------------------------------------------------------------- #
 
     # Void two unneeded URLs included within allauth
-    path('account/password/change/',
-         RedirectView.as_view(pattern_name='portal', permanent=True)),
-    path('account/password/set/',
-         RedirectView.as_view(pattern_name='portal', permanent=True)),
+    path(
+        'account/password/change/',
+        RedirectView.as_view(
+            pattern_name='portal',
+            permanent=True
+        )
+    ),
+
+    path(
+        'account/password/set/',
+        RedirectView.as_view(
+            pattern_name='portal',
+            permanent=True
+        )
+    ),
 
     path(
         'account/',
@@ -83,6 +94,12 @@ urlpatterns = [
         'api/',
         views.api,
         name='api'
+    ),
+
+    path(
+        'api/payload',
+        views.api_payload,
+        name='api_payload'
     ),
 
     path(

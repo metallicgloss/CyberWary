@@ -17,6 +17,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+from warnings import catch_warnings
 from .forms import AccountModificationForm, ApiKeyForm
 from .models import SystemUser, ApiRequest, Scan
 from datetime import datetime
@@ -49,7 +50,8 @@ class ScanCreationWizard(SessionWizardView):
         return self.instance
 
     def get_context_data(self, form, **kwargs):
-        context = super(ScanCreationWizard, self).get_context_data(form=form, **kwargs)
+        context = super(ScanCreationWizard, self).get_context_data(
+            form=form, **kwargs)
 
         if self.steps.current == '1':
             step_1_data = self.get_cleaned_data_for_step('0')
@@ -135,7 +137,7 @@ def modify(request):
             user.save()
 
             return HttpResponseRedirect(
-                "%s?update=true" % reverse('modify')
+                "%s?update=true" % reverse('account_modify')
             )
 
     else:
@@ -211,14 +213,35 @@ def api(request):
     )
 
 
+@login_required
+def api_payload(request):
+    if request.method == 'POST':
+        try:
+            return JsonResponse(
+                json.loads(
+                    ApiRequest.objects.get(
+                        user=request.user,
+                        pk=request.POST['payloadID'],
+                        type=request.POST['type'],
+                    ).payload
+                )
+            )
+        except ApiRequest.DoesNotExist:
+            return JsonResponse("No Payload Found")
+    else:
+        return redirect("portal")
+
+
 @api_view(['POST', ])
 def start_scan(request):
-
     request_log = ApiRequest(
         user=request.user,
         type='start_scan',
-        payload=json.loads(
-            request.POST['system_information'].replace("'", '"')),
+        payload=json.dumps(
+            json.loads(
+                request.POST['system_information']
+            )
+        ),
         method=ApiRequest.RequestMethod.POST
     )
     request_log.save()

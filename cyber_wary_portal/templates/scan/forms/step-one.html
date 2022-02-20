@@ -24,6 +24,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         {{ hidden }}
     {% endfor %}
     <div class="row">
+        <div class="col-xl-12">
+            <h3 class="mt-4 mb-0">Scan Details</h3>
+            <p class="scan-note scan-section pb-1"><i>Initiate a scan request.</i></p>
+        </div>
+    </div>
+    <div class="row">
         <div class="col {% if form.type.errors %}field-error{% endif %}">
             <p class="mt-4 mb-1 fw-bold"><i class="icofont-tag me-2"></i> {{ form.type.label }} <span class="required">*</span></p>
             <div class="position-relative">
@@ -104,5 +110,5 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             {% endfor %}
         </div>
     </div>
-    <button type="submit" class="btn btn-success text-start text-white px-3 py-1 mt-4 w-100 text-uppercase">Initialise Scan <i class="icofont-rounded-double-right"></i></button>
+    <button type="submit" class="btn btn-success text-start text-white px-3 py-1 mt-4 w-100">Configure Scan <i class="icofont-rounded-double-right"></i></button>
 </form>

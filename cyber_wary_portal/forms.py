@@ -231,47 +231,68 @@ class ScanFormStep1(forms.ModelForm):
 
 class ScanFormStep2(forms.ModelForm):
     system_users = forms.BooleanField(
-        label='Scan System Users?',
+        label='User Accounts',
+        help_text='Analyses the user accounts setup on the device.',
         required=False
     )
 
-    network_adapters = forms.BooleanField(
-        label='network',
-        required=False
-    )
-
-    startup_applications = forms.BooleanField(
-        label='startup',
-        required=False
-    )
-
-    installed_applications = forms.BooleanField(
-        label='installed',
-        required=False
-    )
-
-    outdated_applications = forms.BooleanField(
-        label='outdated',
-        required=False
-    )
-
-    firewall_rules = forms.BooleanField(
-        label='firewall',
+    system_services = forms.BooleanField(
+        label='Services',
+        help_text='Analyses the system services installed on the device.',
         required=False
     )
 
     system_passwords = forms.BooleanField(
-        label='sys pass',
+        label='System/Browser Passwords',
+        help_text='Analyses the system and browser passwords accessible/stored on the device.',
         required=False
     )
 
-    browser_passwords = forms.BooleanField(
-        label='browser',
+    network_adapters = forms.BooleanField(
+        label='Network Adapters',
+        help_text='Analyses the network adapters and active connections of the device.',
         required=False
     )
 
-    antivirus_product = forms.BooleanField(
-        label='anti',
+    network_exposure = forms.BooleanField(
+        label='Network Exposure (Network Vulnerability Scan)',
+        help_text='Analyses the external exposure of the device; includes Log4j and Metasploit.',
+        required=False
+    )
+
+    network_firewall_rules = forms.BooleanField(
+        label='Firewall Rules',
+        help_text='Analyses the firewall rules configured on the device.',
+        required=False
+    )
+
+    startup_applications = forms.BooleanField(
+        label='System Start-Up Applications',
+        help_text='Analyses the start-up apps configured on the device.',
+        required=False
+    )
+
+    installed_applications = forms.BooleanField(
+        label='Installed Applications',
+        help_text='Analyses the third-party applications installed on the device.',
+        required=False
+    )
+
+    installed_firmware = forms.BooleanField(
+        label='Installed Firmware',
+        help_text='Analyses the firmware and drivers installed on the device.',
+        required=False
+    )
+
+    installed_patches = forms.BooleanField(
+        label='Operating System Patches',
+        help_text='Analyses the operating system patches installed on the device.',
+        required=False
+    )
+
+    installed_antivirus = forms.BooleanField(
+        label='Anti-Virus & Exploit Settings',
+        help_text='Analyses the anti-virus applications installed and Windows Exploit settings.',
         required=False
     )
 
@@ -279,14 +300,16 @@ class ScanFormStep2(forms.ModelForm):
         model = Scan
         fields = (
             'system_users',
+            'system_services',
+            'system_passwords',
             'network_adapters',
+            'network_exposure',
+            'network_firewall_rules',
             'startup_applications',
             'installed_applications',
-            'outdated_applications',
-            'firewall_rules',
-            'system_passwords',
-            'browser_passwords',
-            'antivirus_product'
+            'installed_firmware',
+            'installed_patches',
+            'installed_antivirus'
         )
 
     def __init__(self, *args, **kwargs):

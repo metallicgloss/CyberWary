@@ -28,14 +28,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 {% block page_content %}
     <div class="row">
-        <div class="col-lg-12 col-xl-5">
-            <h2 class="mb-0"><span id="scan-title">Untitled Scan</span></h2>
+        <div class="col-lg-12 col-xl-6">
+            <h2 class="mb-0"><span id="scan-title">{{ title|default:"Untitled Scan" }}</span></h2>
             <div class="d-flex align-items-start scan-brief">
                 <p class="me-3 mb-3">{% now "l jS F Y" %}</p>
                 <svg width="3" height="3" viewBox="0 0 3 3" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect width="3" height="3" fill="#34CC96" />
                 </svg>
-                <p class="ms-3 mb-3"><span id="scan-type">Generic</span> Scan</p>
+                <p class="ms-3 mb-3"><span id="scan-type">{% if type == "B" %}Blue Team{% elif type == "R" %}Red Team{% else %}Generic{% endif %}</span> Scan</p>
             </div>
             <div class="scan-form-container">
                 {% if wizard.steps.step1 == 1 %}
@@ -45,7 +45,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 {% endif %}
             </div>
         </div>
-        <div class="col-lg-12 col-xl-5 offset-xl-2 pt-2">
+        <div class="col-lg-12 col-xl-5 offset-xl-1 pt-2">
             <h5>Live Script Preview</h5>
             <div class="position-relative">
                 <div class="position-absolute w-100 generated-script">
@@ -228,15 +228,54 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endblock %}
 
 {% block page_scripts %}
-    <script>
-        var scanTitle = "0-{{ form.title.name }}"
-        var scanMax = "0-{{ form.max_devices.name }}"
-        var scanExpiry = "0-{{ form.expiry.name }}"
-        
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js" integrity="sha256-ACiuknPSzs3jBPs5Vmxs9LOfqJe75LfS6l7pRNjwsHk=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.js" integrity="sha256-iOVs1FytPbiP3HcnhtFMzo0MwYebwD5OVr6Rnf2a0ik=" crossorigin="anonymous"></script>
+    {% if wizard.steps.step1 == 2 %}
+        <script src="{% static 'js/script-preview.js' %}"></script>
+    {% endif %}
+    <script>        
         $(document).ready(function() {
+
             {% if wizard.steps.step1 == 1 %}
+
+                $('input[name="0-{{ form.title.name }}"]').on('input', function() {
+                    if ($(this).val()) {
+                        $('#scan-title').text($(this).val());
+                        $('#script-scan-title').text($(this).val());
+                    } else {
+                        $('#scan-title').text("Untitled Scan");
+                        $('#script-scan-title').text("Untitled Scan");
+                    }
+                });
+            
+                $('.form-dropdown .form-dropdown-menu li').click(function() {
+                    $(this).parents('.form-dropdown').find('span').text($(this).text());
+                    $(this).parents('.form-dropdown').find('input').attr('value', $(this).attr('id'));
+            
+                    if ($(this).attr('id') == "B") {
+                        $('#scan-type').attr("class", "text-primary");
+                        $('#scan-type, #script-scan-type').text("Blue Team");
+                    } else {
+                        $('#scan-type').attr("class", "text-danger-alt");
+                        $('#scan-type, #script-scan-type').text("Red Team");
+                    }
+            
+                });
+            
+                $('input[name="0-{{ form.max_devices.name }}"]').on('input', function() {
+                    if ($(this).val()) {
+                        $('#script-scan-max-devices').text($(this).val());
+                    }
+                });
+            
+            
+                $('input[name="0-{{ form.expiry.name }}"]').on('change', function() {
+                    if ($(this).val()) {
+                        $('#script-scan-expiry').text($(this).val());
+                    }
+                });
+
                 $('#script-scan-expiry').text(moment().add(1, 'hours').format("DD/MM/YYYY H:mm"))
-                
 
                 $('input[name="0-{{ form.expiry.name }}"]').daterangepicker({
                     minDate: moment().add(1, 'hours'),
@@ -254,6 +293,21 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         firstDay: 1
                     },
                 })
+
+            {% else %}
+
+                var networkAdapters = "{{ form.network_adapters.name }}"
+                var networkExposure = "{{ form.network_exposure.name }}"
+                var networkFirewallRules = "{{ form.network_firewall_rules.name }}"
+                var startupApplications = "{{ form.startup_applications.name }}"
+                var installedApplications = "{{ form.installed_applications.name }}"
+                var installedFirmware = "{{ form.installed_firmware.name }}"
+                var installedPatches = "{{ form.installed_patches.name }}"
+                var installedAntivirus = "{{ form.installed_antivirus.name }}"
+                var systemUsers = "{{ form.system_users.name }}"
+                var systemServices = "{{ form.system_services.name }}"
+                var systemPasswords = "{{ form.system_passwords.name }}"
+
             {% endif %}
 
             $('.form-dropdown').click(function() {
@@ -298,7 +352,4 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             }
         });
     </script>
-    <script src="{% static 'js/script-preview.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js" integrity="sha256-ACiuknPSzs3jBPs5Vmxs9LOfqJe75LfS6l7pRNjwsHk=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.js" integrity="sha256-iOVs1FytPbiP3HcnhtFMzo0MwYebwD5OVr6Rnf2a0ik=" crossorigin="anonymous"></script>
 {% endblock%}
