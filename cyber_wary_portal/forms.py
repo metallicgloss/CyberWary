@@ -278,12 +278,6 @@ class ScanFormStep2(forms.ModelForm):
         required=False
     )
 
-    installed_firmware = forms.BooleanField(
-        label='Installed Firmware',
-        help_text='Analyses the firmware and drivers installed on the device.',
-        required=False
-    )
-
     installed_patches = forms.BooleanField(
         label='Operating System Patches',
         help_text='Analyses the operating system patches installed on the device.',
@@ -307,7 +301,6 @@ class ScanFormStep2(forms.ModelForm):
             'network_firewall_rules',
             'startup_applications',
             'installed_applications',
-            'installed_firmware',
             'installed_patches',
             'installed_antivirus'
         )

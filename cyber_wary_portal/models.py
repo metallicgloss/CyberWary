@@ -174,12 +174,6 @@ class Scan(DefaultFields):
         null=True
     )
 
-    installed_firmware = models.BooleanField(
-        help_text="Flag for scan of installed firmware and drivers.",
-        default=False,
-        null=True
-    )
-
     installed_patches = models.BooleanField(
         help_text="Flag for scan of installed OS updates and patches.",
         default=False,

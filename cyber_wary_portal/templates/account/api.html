@@ -106,9 +106,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             <td>{{ record.get_payload_size }} Bytes</td>
                             <td>{{ record.response }}</td>
                             <td>
-                                <span class="payload-action" onclick="viewPayload('{{ record.id }}', '{{ record.type }}', '{{ record.created|date:"l jS F Y - H:i:s e" }}')">
-                                    View Request Payload
-                                </span>
+                                {% if record.get_payload_size < 100000 %}
+                                    <span class="payload-action" onclick="viewPayload('{{ record.id }}', '{{ record.type }}', '{{ record.created|date:"l jS F Y - H:i:s e" }}')">
+                                        View Request Payload
+                                    </span>
+                                {% else %}
+                                    <a href="{% url 'api_payload' %}?payloadID={{ record.id }}&type={{ record.type }}" target="_blank" class="text-primary">
+                                        <span class="payload-action">
+                                            View in New Tab <i class="icofont-exit ms-1"></i>
+                                        </span>
+                                    </a>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

@@ -155,6 +155,10 @@ a {
     box-shadow: none;
 }
 
+.text-primary {
+    color: var(--dark-primary) !important;
+}
+
 .text-secondary {
     color: var(--dark-secondary) !important;
 }

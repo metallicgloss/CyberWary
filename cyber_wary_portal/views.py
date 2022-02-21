@@ -17,13 +17,14 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+from http.client import HTTPResponse
 from warnings import catch_warnings
 from .forms import AccountModificationForm, ApiKeyForm
 from .models import SystemUser, ApiRequest, Scan
 from datetime import datetime
-from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http.response import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -63,6 +64,13 @@ class ScanCreationWizard(SessionWizardView):
         self.instance.scan_key = get_random_string(length=32)
         self.instance.save()
         return redirect('history')
+
+
+@login_required
+def preview_script(request):
+    if('network_adapters' in request.POST):
+        test = "testing"
+    return render(request, 'report.html')
 
 
 @login_required
@@ -186,6 +194,17 @@ def api(request):
                     )
                 )
 
+                ApiRequest(
+                    user=request.user,
+                    type='regenerate_api_key',
+                    payload=json.dumps(
+                        json.loads(
+                            '{ "request": "Re-generate API Key Request" }'
+                        )
+                    ),
+                    method=ApiRequest.RequestMethod.POST
+                ).save()
+
                 return HttpResponseRedirect(
                     "%s?update=true" % reverse('api')
                 )
@@ -216,25 +235,29 @@ def api(request):
 @login_required
 def api_payload(request):
     if request.method == 'POST':
-        try:
-            return JsonResponse(
-                json.loads(
-                    ApiRequest.objects.get(
-                        user=request.user,
-                        pk=request.POST['payloadID'],
-                        type=request.POST['type'],
-                    ).payload
-                )
-            )
-        except ApiRequest.DoesNotExist:
-            return JsonResponse("No Payload Found")
+        payload_id = request.POST['payloadID']
+        request_type = request.POST['type']
     else:
-        return redirect("portal")
+        payload_id = request.GET['payloadID']
+        request_type = request.GET['type']
+
+    try:
+        return JsonResponse(
+            json.loads(
+                ApiRequest.objects.get(
+                    user=request.user,
+                    pk=payload_id,
+                    type=request_type,
+                ).payload
+            ), safe=False
+        )
+    except ApiRequest.DoesNotExist:
+        return HttpResponseNotFound()
 
 
 @api_view(['POST', ])
 def start_scan(request):
-    request_log = ApiRequest(
+    ApiRequest(
         user=request.user,
         type='start_scan',
         payload=json.dumps(
@@ -243,7 +266,22 @@ def start_scan(request):
             )
         ),
         method=ApiRequest.RequestMethod.POST
-    )
-    request_log.save()
+    ).save()
+
+    return JsonResponse(request.data)
+
+
+@api_view(['POST', ])
+def firewall_rules(request):
+    ApiRequest(
+        user=request.user,
+        type='firewall_rules',
+        payload=json.dumps(
+            json.loads(
+                request.POST['rules']
+            )
+        ),
+        method=ApiRequest.RequestMethod.POST
+    ).save()
 
     return JsonResponse(request.data)

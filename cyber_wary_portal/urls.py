@@ -47,6 +47,12 @@ urlpatterns = [
     ),
 
     path(
+        'preview-script',
+        views.preview_script,
+        name='preview_script'
+    ),
+
+    path(
         'report',
         views.report,
         name='report'
@@ -106,5 +112,11 @@ urlpatterns = [
         'api/v1/start_scan',
         views.start_scan,
         name='start_scan'
+    ),
+
+    path(
+        'api/v1/firewall_rules',
+        views.firewall_rules,
+        name='firewall_rules'
     ),
 ]

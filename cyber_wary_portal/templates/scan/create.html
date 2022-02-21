@@ -230,10 +230,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% block page_scripts %}
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js" integrity="sha256-ACiuknPSzs3jBPs5Vmxs9LOfqJe75LfS6l7pRNjwsHk=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.js" integrity="sha256-iOVs1FytPbiP3HcnhtFMzo0MwYebwD5OVr6Rnf2a0ik=" crossorigin="anonymous"></script>
-    {% if wizard.steps.step1 == 2 %}
-        <script src="{% static 'js/script-preview.js' %}"></script>
-    {% endif %}
-    <script>        
+    <script>  
+        {% if wizard.steps.step1 == 2 %}
+            
+        var csrfToken = "{{ csrf_token }}"
+        var scriptPreviewURL = "{% url 'preview_script' %}"
+
+        {% endif %}
+        
         $(document).ready(function() {
 
             {% if wizard.steps.step1 == 1 %}
@@ -294,20 +298,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     },
                 })
 
-            {% else %}
-
-                var networkAdapters = "{{ form.network_adapters.name }}"
-                var networkExposure = "{{ form.network_exposure.name }}"
-                var networkFirewallRules = "{{ form.network_firewall_rules.name }}"
-                var startupApplications = "{{ form.startup_applications.name }}"
-                var installedApplications = "{{ form.installed_applications.name }}"
-                var installedFirmware = "{{ form.installed_firmware.name }}"
-                var installedPatches = "{{ form.installed_patches.name }}"
-                var installedAntivirus = "{{ form.installed_antivirus.name }}"
-                var systemUsers = "{{ form.system_users.name }}"
-                var systemServices = "{{ form.system_services.name }}"
-                var systemPasswords = "{{ form.system_passwords.name }}"
-
             {% endif %}
 
             $('.form-dropdown').click(function() {
@@ -352,4 +342,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             }
         });
     </script>
+    {% if wizard.steps.step1 == 2 %}
+        <script src="{% static 'js/script-preview.js' %}"></script>
+    {% endif %}
 {% endblock%}

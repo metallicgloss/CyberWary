@@ -34,7 +34,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <thead>
                     <tr>
                         <th class="pb-3 desktop">Scan Created Date/Time</th>
-                        <th class="pb-3 none">Timestamp</th>
                         <th class="pb-3 desktop">Scan Type</th>
                         <th class="pb-3 desktop"></th>
                     </tr>
@@ -43,7 +42,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     {% for scan in user_scans %}
                         <tr style="background-color: var(--light-primary-alt)">
                             <td>{{ scan.created|date:"l jS F Y - H:i:s e" }}</td>
-                            <td>{{ scan.created|date:"U" }}</td>
                             <td>{{ scan.get_type_display }} Team</td>
                             <td><i class="icofont-rounded-double-right"></i></td>
                         </tr>
@@ -63,7 +61,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 "lengthChange": false,
                 "searching": false,
                 "pageLength": 10,
-                "order": [[ 1, 'desc' ]],
                 "ordering": false,
                 responsive: {
                     details: {
