@@ -376,10 +376,17 @@ table.dataTable>tbody>tr.child span.dtr-title {
 .generated-content {
     background-color: var(--dark-primary);
     color: var(--light-primary);
-    width: 100%;
-    min-height: 80vh;
     font-family: 'Source Code Pro', monospace;
+    font-size: 13px;
+    max-height: 80vh;
+    min-height: 80vh;
+    overflow-y: scroll;
+    width: 100%;
     z-index: 5;
+}
+
+#generated-script {
+    white-space: pre-wrap;
 }
 
 .payload-contents {
@@ -438,6 +445,43 @@ table.dataTable>tbody>tr.child span.dtr-title {
 .payload-action:hover {
     cursor: pointer;
     color: var(--success) !important;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes rotate {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+.load {
+    width: 30px;
+    height: 30px;
+    border: solid 2px var(--success);
+    border-radius: 50%;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    -webkit-transition: all 0.3s ease-in;
+    -webkit-animation-name: rotate;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    transition: all 0.3s ease-in;
+    animation-name: rotate;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
 }
 
 @-webkit-keyframes blink {

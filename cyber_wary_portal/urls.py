@@ -47,6 +47,12 @@ urlpatterns = [
     ),
 
     path(
+        'scan/<scan_key>',
+        views.scan,
+        name='scan'
+    ),
+
+    path(
         'preview-script',
         views.preview_script,
         name='preview_script'

@@ -18,6 +18,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+from email.policy import default
 from .models import SystemUser, Scan
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -233,61 +234,71 @@ class ScanFormStep2(forms.ModelForm):
     system_users = forms.BooleanField(
         label='User Accounts',
         help_text='Analyses the user accounts setup on the device.',
-        required=False
+        required=False,
+        initial=False
     )
 
     system_services = forms.BooleanField(
         label='Services',
         help_text='Analyses the system services installed on the device.',
-        required=False
+        required=False,
+        initial=False
     )
 
-    system_passwords = forms.BooleanField(
+    browser_passwords = forms.BooleanField(
         label='System/Browser Passwords',
         help_text='Analyses the system and browser passwords accessible/stored on the device.',
-        required=False
+        required=False,
+        initial=False
     )
 
     network_adapters = forms.BooleanField(
         label='Network Adapters',
         help_text='Analyses the network adapters and active connections of the device.',
-        required=False
+        required=False,
+        initial=False
     )
 
     network_exposure = forms.BooleanField(
         label='Network Exposure (Network Vulnerability Scan)',
         help_text='Analyses the external exposure of the device; includes Log4j and Metasploit.',
-        required=False
+        required=False,
+        initial=False
     )
 
     network_firewall_rules = forms.BooleanField(
         label='Firewall Rules',
         help_text='Analyses the firewall rules configured on the device.',
-        required=False
+        required=False,
+        initial=False
     )
 
     startup_applications = forms.BooleanField(
         label='System Start-Up Applications',
         help_text='Analyses the start-up apps configured on the device.',
-        required=False
+        required=False,
+        initial=False
     )
 
     installed_applications = forms.BooleanField(
         label='Installed Applications',
         help_text='Analyses the third-party applications installed on the device.',
-        required=False
+        required=False,
+        initial=False
     )
 
     installed_patches = forms.BooleanField(
         label='Operating System Patches',
         help_text='Analyses the operating system patches installed on the device.',
-        required=False
+        required=False,
+        initial=False
     )
 
     installed_antivirus = forms.BooleanField(
         label='Anti-Virus & Exploit Settings',
         help_text='Analyses the anti-virus applications installed and Windows Exploit settings.',
-        required=False
+        required=False,
+        initial=False
     )
 
     class Meta:
@@ -295,7 +306,7 @@ class ScanFormStep2(forms.ModelForm):
         fields = (
             'system_users',
             'system_services',
-            'system_passwords',
+            'browser_passwords',
             'network_adapters',
             'network_exposure',
             'network_firewall_rules',

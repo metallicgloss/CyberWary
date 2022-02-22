@@ -39,7 +39,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <label class="form-field form-checkbox mt-3 mb-3">
                 <span class="fw-bold">{{ form.network_exposure.label }} <i class="icofont-danger-zone ms-1"></i></span><br>
                 <span class="position-absolute scan-note"><i>{{ form.network_exposure.help_text }}</i></span>
-                <input type="checkbox" name="{{ form.network_exposure.name }}" disabled />
+                <input type="checkbox" name="1-{{ form.network_exposure.name }}" />
                 <div class="form-checkbox-indicator mt-2"></div>
             </label>
             {% for error in form.network_exposure.errors %}
@@ -52,7 +52,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <label class="form-field form-checkbox mt-3 mb-3">
                 <span class="fw-bold">{{ form.network_adapters.label }} <i class="icofont-ui-network ms-1"></i></span><br>
                 <span class="position-absolute scan-note"><i>{{ form.network_adapters.help_text }}</i></span>
-                <input type="checkbox" name="{{ form.network_adapters.name }}" />
+                <input type="checkbox" name="1-{{ form.network_adapters.name }}" />
                 <div class="form-checkbox-indicator mt-2"></div>
             </label>
             {% for error in form.network_adapters.errors %}
@@ -65,7 +65,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <label class="form-field form-checkbox mt-3 mb-3">
                 <span class="fw-bold">{{ form.network_firewall_rules.label }} <i class="icofont-ui-fire-wall ms-1"></i></span><br>
                 <span class="position-absolute scan-note"><i>{{ form.network_firewall_rules.help_text }}</i></span>
-                <input type="checkbox" name="{{ form.network_firewall_rules.name }}" disabled />
+                <input type="checkbox" name="1-{{ form.network_firewall_rules.name }}" />
                 <div class="form-checkbox-indicator mt-2"></div>
             </label>
             {% for error in form.network_firewall_rules.errors %}
@@ -83,7 +83,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <label class="form-field form-checkbox mt-3 mb-3">
                 <span class="fw-bold">{{ form.startup_applications.label }} <i class="icofont-automation ms-1"></i></span><br>
                 <span class="position-absolute scan-note"><i>{{ form.startup_applications.help_text }}</i></span>
-                <input type="checkbox" name="{{ form.startup_applications.name }}" disabled />
+                <input type="checkbox" name="1-{{ form.startup_applications.name }}" />
                 <div class="form-checkbox-indicator mt-2"></div>
             </label>
             {% for error in form.startup_applications.errors %}
@@ -96,7 +96,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <label class="form-field form-checkbox mt-3 mb-3">
                 <span class="fw-bold">{{ form.installed_applications.label }} <i class="icofont-console ms-1"></i></span><br>
                 <span class="position-absolute scan-note"><i>{{ form.installed_applications.help_text }}</i></span>
-                <input type="checkbox" name="{{ form.installed_applications.name }}" disabled />
+                <input type="checkbox" name="1-{{ form.installed_applications.name }}" />
                 <div class="form-checkbox-indicator mt-2"></div>
             </label>
             {% for error in form.installed_applications.errors %}
@@ -114,7 +114,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <label class="form-field form-checkbox mt-3 mb-3">
                 <span class="fw-bold">{{ form.installed_patches.label }} <i class="icofont-heart-beat-alt ms-1"></i></span><br>
                 <span class="position-absolute scan-note"><i>{{ form.installed_patches.help_text }}</i></span>
-                <input type="checkbox" name="{{ form.installed_patches.name }}" disabled />
+                <input type="checkbox" name="1-{{ form.installed_patches.name }}" />
                 <div class="form-checkbox-indicator mt-2"></div>
             </label>
             {% for error in form.installed_patches.errors %}
@@ -127,7 +127,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <label class="form-field form-checkbox mt-3 mb-3">
                 <span class="fw-bold">{{ form.installed_antivirus.label }} <i class="icofont-bug ms-1"></i></span><br>
                 <span class="position-absolute scan-note"><i>{{ form.installed_antivirus.help_text }}</i></span>
-                <input type="checkbox" name="{{ form.installed_antivirus.name }}" disabled />
+                <input type="checkbox" name="1-{{ form.installed_antivirus.name }}" />
                 <div class="form-checkbox-indicator mt-2"></div>
             </label>
             {% for error in form.installed_antivirus.errors %}
@@ -140,7 +140,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <label class="form-field form-checkbox mt-3 mb-3">
                 <span class="fw-bold">{{ form.system_users.label }} <i class="icofont-ui-user-group ms-1"></i></span><br>
                 <span class="position-absolute scan-note"><i>{{ form.system_users.help_text }}</i></span>
-                <input type="checkbox" name="{{ form.system_users.name }}" disabled />
+                <input type="checkbox" name="1-{{ form.system_users.name }}" />
                 <div class="form-checkbox-indicator mt-2"></div>
             </label>
             {% for error in form.system_users.errors %}
@@ -153,7 +153,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <label class="form-field form-checkbox mt-3 mb-3">
                 <span class="fw-bold">{{ form.system_services.label }} <i class="icofont-cubes ms-1"></i></span><br>
                 <span class="position-absolute scan-note"><i>{{ form.system_services.help_text }}</i></span>
-                <input type="checkbox" name="{{ form.system_services.name }}" disabled />
+                <input type="checkbox" name="1-{{ form.system_services.name }}" />
                 <div class="form-checkbox-indicator mt-2"></div>
             </label>
             {% for error in form.system_services.errors %}
@@ -162,14 +162,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         </div>
     </div>
     <div class="row">
-        <div class="col {% if form.system_passwords.errors %}field-error{% endif %}">
+        <div class="col {% if form.browser_passwords.errors %}field-error{% endif %}">
             <label class="form-field form-checkbox mt-3 mb-3">
-                <span class="fw-bold">{{ form.system_passwords.label }} <i class="icofont-ui-password ms-1"></i></span><br>
-                <span class="position-absolute scan-note"><i>{{ form.system_passwords.help_text }}</i></span>
-                <input type="checkbox" name="{{ form.system_passwords.name }}" disabled />
+                <span class="fw-bold">{{ form.browser_passwords.label }} <i class="icofont-ui-password ms-1"></i></span><br>
+                <span class="position-absolute scan-note"><i>{{ form.browser_passwords.help_text }}</i></span>
+                <input type="checkbox" name="1-{{ form.browser_passwords.name }}" />
                 <div class="form-checkbox-indicator mt-2"></div>
             </label>
-            {% for error in form.system_passwords.errors %}
+            {% for error in form.browser_passwords.errors %}
                 <p class="text-red mt-2">{{ error }}</p>
             {% endfor %}
         </div>

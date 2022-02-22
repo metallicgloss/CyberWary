@@ -40,10 +40,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </thead>
                 <tbody>
                     {% for scan in user_scans %}
-                        <tr style="background-color: var(--light-primary-alt)">
+                        <tr>
                             <td>{{ scan.created|date:"l jS F Y - H:i:s e" }}</td>
                             <td>{{ scan.get_type_display }} Team</td>
-                            <td><i class="icofont-rounded-double-right"></i></td>
+                            <td><a href="{% url 'scan' scan_key=scan.scan_key  %}"><i class="icofont-rounded-double-right"></i></a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

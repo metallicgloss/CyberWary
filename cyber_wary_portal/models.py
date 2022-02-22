@@ -138,7 +138,7 @@ class Scan(DefaultFields):
         null=True
     )
 
-    system_passwords = models.BooleanField(
+    browser_passwords = models.BooleanField(
         help_text="Flag for scan of passwords stored on the system.",
         default=False,
         null=True
@@ -187,245 +187,6 @@ class Scan(DefaultFields):
     )
 
 
-class OperatingSystem(DefaultFields):
-    name = models.CharField(
-        help_text="The readable name of an operating system.",
-        max_length=64,
-        null=True
-    )
-
-    build_number = models.CharField(
-        help_text="The build number of an operating system.",
-        max_length=64,
-        null=True
-    )
-
-    version = models.CharField(
-        help_text="The version of an operating system.",
-        max_length=32,
-        null=True
-    )
-
-    architecture = models.CharField(
-        help_text="The architecture type of the system.",
-        max_length=8,
-        null=True
-    )
-
-
-class ScanRecord(DefaultFields):
-    scan = models.ForeignKey(
-        Scan,
-        on_delete=models.CASCADE
-    )
-
-    name = models.CharField(
-        help_text="Name of the device being scanned.",
-        max_length=32,
-        null=True
-    )
-
-    uuid = models.CharField(
-        help_text="The unique system ID assigned to the system.",
-        max_length=64,
-        null=True
-    )
-
-    os = models.ForeignKey(
-        OperatingSystem,
-        on_delete=models.SET_NULL,
-        null=True
-    )
-
-    os_install = models.DateField(
-        help_text="The date that the version of the OS was installed.",
-        null=True
-    )
-
-    boot_time = models.DateTimeField(
-        help_text="The date/time that the system was booted.",
-        null=True
-    )
-
-    boot_mode = models.CharField(
-        help_text="The boot type of the device.",
-        max_length=16,
-        null=True
-    )
-
-    boot_portable = models.BooleanField(
-        help_text="A flag if the OS is mounted in a portable mode.",
-        default=False,
-        null=True
-    )
-
-    public_ip = models.CharField(
-        help_text="The public IP of the scanned device.",
-        max_length=16,
-        null=True
-    )
-
-
-class BiosDetails(DefaultFields):
-    record = models.ForeignKey(
-        ScanRecord,
-        on_delete=models.CASCADE
-    )
-
-    bios_manufacturer = models.CharField(
-        help_text="The manufacturer of the BIOS.",
-        max_length=64,
-        null=True
-    )
-
-    bios_version = models.CharField(
-        help_text="The version / revision of the BIOS installed on the device.",
-        max_length=16,
-        null=True
-    )
-
-    bios_date = models.DateField(
-        help_text="The date of the BIOS installed on the device.",
-        null=True
-    )
-
-    bios_serial = models.CharField(
-        help_text="The serial number of the BIOS installed on the device.",
-        max_length=64,
-        null=True
-    )
-
-
-class SystemUsers(DefaultFields):
-    class AccountType(models.TextChoices):
-        MICROSOFT = 'M'
-        LOCAL = 'L'
-
-    record = models.ForeignKey(
-        ScanRecord,
-        on_delete=models.CASCADE
-    )
-
-    name = models.CharField(
-        help_text="The full name of the user.",
-        max_length=64,
-        null=True
-    )
-
-    sid = models.CharField(
-        help_text="The SID of the user.",
-        max_length=64,
-        null=True
-    )
-
-    type = models.CharField(
-        max_length=2,
-        choices=AccountType.choices,
-        default=AccountType.LOCAL,
-        help_text="The type of account."
-    )
-
-    last_logon = models.DateTimeField(
-        help_text="The date/time that the account was last logged in.",
-        null=True
-    )
-
-    last_password_set = models.DateTimeField(
-        help_text="The date/time that the password was last changed.",
-        null=True
-    )
-
-    active = models.BooleanField(
-        help_text="Flag for active user.",
-        default=False,
-        null=True
-    )
-
-    admin = models.BooleanField(
-        help_text="Flag for administrative permissions.",
-        default=False,
-        null=True
-    )
-
-    enabled = models.BooleanField(
-        help_text="Flag for account enabled.",
-        default=True,
-        null=True
-    )
-
-
-class NetworkAdapters(DefaultFields):
-    record = models.ForeignKey(
-        ScanRecord,
-        on_delete=models.CASCADE
-    )
-
-    name = models.CharField(
-        help_text="The name of the network adapter.",
-        max_length=128,
-        null=True
-    )
-
-    description = models.CharField(
-        help_text="The description of the network adapter.",
-        max_length=128,
-        null=True
-    )
-
-    status = models.CharField(
-        help_text="The uplink status of the adapter.",
-        max_length=16,
-        null=True
-    )
-
-    mac_address = models.CharField(
-        help_text="The physical / hardware address of the adapter.",
-        max_length=17,
-        null=True
-    )
-
-    dns_servers = models.CharField(
-        help_text="The DNS servers configured on the adapter.",
-        max_length=64,
-        null=True
-    )
-
-
-class InternetProtocolAddress(DefaultFields):
-    adapter = models.ForeignKey(
-        NetworkAdapters,
-        on_delete=models.CASCADE
-    )
-
-    ip = models.CharField(
-        help_text="The allocated address.",
-        max_length=45,
-        null=True
-    )
-
-    gateway = models.CharField(
-        help_text="The allocated gateway address.",
-        max_length=45,
-        null=True
-    )
-
-    subnet = models.CharField(
-        help_text="The allocated subnet.",
-        max_length=45,
-        null=True
-    )
-
-    lease_obtained = models.DateTimeField(
-        help_text="The DHCP lease obtained date/time.",
-        null=True
-    )
-
-    lease_expires = models.DateTimeField(
-        help_text="The DHCP lease expiry date/time.",
-        null=True
-    )
-
-    
 class ApiRequest(DefaultFields):
     class RequestMethod(models.IntegerChoices):
         GET = 1
@@ -467,3 +228,210 @@ class ApiRequest(DefaultFields):
 
     def get_payload_size(self):
         return len(self.payload)
+
+
+class Language(DefaultFields):
+    string = models.CharField(
+        help_text="Readable language name.",
+        max_length=32,
+        null=True
+    )
+
+    locale = models.CharField(
+        help_text="Language locale.",
+        max_length=5,
+        null=True
+    )
+
+
+class ScanRecord(DefaultFields):
+    scan = models.ForeignKey(
+        Scan,
+        on_delete=models.CASCADE
+    )
+
+    device_id = models.CharField(
+        help_text="The unique system ID assigned to the system.",
+        max_length=48,
+        null=True
+    )
+
+    name = models.CharField(
+        help_text="The name of the device being scanned.",
+        max_length=32,
+        null=True
+    )
+
+    boot_time = models.DateTimeField(
+        help_text="The date/time that the system was last powered on.",
+        null=True
+    )
+    
+    current_user = models.CharField(
+        help_text="The name of the user performing the scan.",
+        max_length=32,
+        null=True
+    )
+
+    public_ip = models.CharField(
+        help_text="The public IP of the scanned device.",
+        max_length=16,
+        null=True
+    )
+
+
+class OperatingSystem(DefaultFields):
+    name = models.CharField(
+        help_text="The readable name of an operating system.",
+        max_length=32,
+        null=True
+    )
+
+    version = models.CharField(
+        help_text="The version of an operating system.",
+        max_length=32,
+        null=True
+    )
+
+
+class OperatingSystemInstall(DefaultFields):
+    record = models.ForeignKey(
+        ScanRecord,
+        on_delete=models.CASCADE
+    )
+
+    operating_system = models.ForeignKey(
+        OperatingSystem,
+        on_delete=models.CASCADE
+    )
+
+    serial = models.CharField(
+        help_text="The serial number of the operating system.",
+        max_length=64,
+        null=True
+    )
+
+    timezone = models.CharField(
+        help_text="The timezone configured on the system.",
+        max_length=48,
+        null=True
+    )
+
+    install_date = models.DateField(
+        help_text="The date that the version of the OS was installed.",
+        null=True
+    )
+    
+    keyboard = models.ForeignKey(
+        Language,
+        on_delete=models.SET_DEFAULT,
+        default="en-GB"
+    )
+
+    owner = models.CharField(
+        help_text="The username of the configured operating system owner.",
+        max_length=32,
+        null=True
+    )
+
+    logon_server = models.CharField(
+        help_text="The configured logon server.",
+        max_length=32,
+        null=True
+    )
+
+    installed_memory = models.CharField(
+        help_text="The configured/installed physical system memory.",
+        max_length=32,
+        null=True
+    )
+
+    domain = models.BooleanField(
+        help_text="The status for the device being connected to a domain.",
+        default=False,
+        null=True
+    )
+
+    portable = models.BooleanField(
+        help_text="The status for the OS being mounted in a portable mode.",
+        default=False,
+        null=True
+    )
+
+    virtual_machine = models.BooleanField(
+        help_text="The VM/Virtualised environment status.",
+        default=False,
+        null=True
+    )
+
+    debug_mode = models.BooleanField(
+        help_text="The status for the device being configured in debug mode.",
+        default=False,
+        null=True
+    )
+
+    
+class OperatingSystemInstalledLanguages(DefaultFields):
+    operating_system_installation = models.ForeignKey(
+        OperatingSystemInstall,
+        on_delete=models.CASCADE
+    )
+
+    installed_language = models.ForeignKey(
+        Language,
+        on_delete=models.CASCADE
+    )
+
+
+class Bios(DefaultFields):
+    name = models.CharField(
+        help_text="The name of the BIOS.",
+        max_length=32,
+        null=True
+    )
+
+    version = models.CharField( 
+        help_text="The version / revision of the BIOS",
+        max_length=16,
+        null=True
+    )
+
+    manufacturer = models.CharField(
+        help_text="The manufacturer of the BIOS.",
+        max_length=32,
+        null=True
+    )
+
+    release_date = models.DateField(
+        help_text="The date of the BIOS installed on the device was released.",
+        null=True
+    )
+
+
+class BiosInstall(DefaultFields):
+    record = models.ForeignKey(
+        ScanRecord,
+        on_delete=models.CASCADE
+    )
+
+    bios = models.ForeignKey(
+        Bios,
+        on_delete=models.CASCADE
+    )
+
+    install_date = models.DateField(
+        help_text="The date of the BIOS installed on the device.",
+        null=True
+    )
+
+    status = models.CharField(
+        help_text="The status of the BIOS.",
+        max_length=16,
+        null=True
+    )
+
+    primary = models.BooleanField(
+        help_text="The flag for the OS being the primary installed.",
+        max_length=16,
+        null=True
+    )

@@ -19,12 +19,12 @@
 
 from http.client import HTTPResponse
 from warnings import catch_warnings
-from .forms import AccountModificationForm, ApiKeyForm
-from .models import SystemUser, ApiRequest, Scan
+from .forms import AccountModificationForm, ApiKeyForm, ScanFormStep2
+from .models import *
+from .utils import generate_script, get_ip_address, convert_date
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from django.http.response import HttpResponseRedirect, JsonResponse
-from django.http import HttpResponseNotFound
+from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -34,6 +34,8 @@ from pytz import timezone
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 import json
+from django.contrib.auth.mixins import LoginRequiredMixin
+import re
 
 
 @login_required
@@ -41,7 +43,7 @@ def index(request):
     return render(request, 'dashboard.html')
 
 
-class ScanCreationWizard(SessionWizardView):
+class ScanCreationWizard(LoginRequiredMixin, SessionWizardView):
     instance = None
     template_name = "scan/create.html"
 
@@ -63,14 +65,53 @@ class ScanCreationWizard(SessionWizardView):
         self.instance.user = self.request.user
         self.instance.scan_key = get_random_string(length=32)
         self.instance.save()
-        return redirect('history')
+        return redirect('scan', self.instance.scan_key)
 
 
 @login_required
 def preview_script(request):
-    if('network_adapters' in request.POST):
-        test = "testing"
-    return render(request, 'report.html')
+    scan_form = ScanFormStep2(request.POST)
+
+    if scan_form.is_valid():
+        return HttpResponse(
+            generate_script(
+                'preview',
+                scan_form.cleaned_data,
+                Token.objects.get_or_create(
+                    user=request.user
+                )[0].key
+            )
+        )
+
+    else:
+        return HttpResponse(
+            "Unable to generate script."
+        )
+
+
+@login_required
+def scan(request, scan_key):
+    scan = Scan.objects.get(
+        user=request.user,
+        scan_key=scan_key
+    )
+
+    scan_form = ScanFormStep2(scan)
+
+    return render(
+        request,
+        'scan/scan.html',
+        {
+            'scan': scan,
+            'script': generate_script(
+                'live',
+                scan_form.data.__dict__,
+                Token.objects.get_or_create(
+                    user=request.user
+                )[0].key
+            )
+        }
+    )
 
 
 @login_required
@@ -80,12 +121,13 @@ def report(request):
 
 @login_required
 def history(request):
-    user_scans = Scan.objects.filter(user=request.user).order_by('-created')
     return render(
         request,
         'scan/history.html',
         {
-            'user_scans': user_scans
+            'user_scans': Scan.objects.filter(
+                user=request.user
+            ).order_by('-created')
         }
     )
 
@@ -257,18 +299,101 @@ def api_payload(request):
 
 @api_view(['POST', ])
 def start_scan(request):
-    ApiRequest(
+    api_request = ApiRequest(
         user=request.user,
         type='start_scan',
-        payload=json.dumps(
-            json.loads(
-                request.POST['system_information']
-            )
-        ),
+        payload=json.dumps(data),
         method=ApiRequest.RequestMethod.POST
-    ).save()
+    )
+    api_request.save()
 
-    return JsonResponse(request.data)
+    data = json.loads(
+        request.POST['system_information']
+    )
+
+    device_id = request.POST['device_id'].replace(
+        '{', ''
+    ).replace(
+        '}', ''
+    )
+
+    scan_check = Scan.objects.filter(
+        user=request.user,
+        scan_key=request.POST['scan_key']
+    ).exists()
+
+    if(scan_check):
+
+        scan = Scan.objects.get(
+            user=request.user,
+            scan_key=request.POST['scan_key']
+        )
+    
+        existing_record_check = ScanRecord.objects.filter(
+            scan=scan,
+            device_id=device_id
+        ).exists()
+
+        if(not existing_record_check):
+            scan_record = ScanRecord(
+                scan=scan,
+                device_id=device_id,
+                name=data['CsDNSHostName'],
+                boot_time=convert_date(data['OsLastBootUpTime']),
+                current_user=data['CsUserName'],
+                public_ip=get_ip_address(request),
+            )
+            scan_record.save()
+
+            os_install = OperatingSystemInstall(
+                record=scan_record,
+                operating_system=OperatingSystem.objects.get_or_create(
+                    name=data['OsName'],
+                    version=data['OsVersion']
+                )[0],
+                serial=data['OsSerialNumber'],
+                timezone=data['TimeZone'],
+                install_date=convert_date(data['OsInstallDate']),
+                keyboard=Language.objects.get_or_create(
+                    locale=data['KeyboardLayout']
+                )[0],
+                owner=data['CsPrimaryOwnerName'],
+                logon_server=data['LogonServer'],
+                installed_memory=data['CsPhyicallyInstalledMemory'],
+                domain=data['CsPartOfDomain'],
+                portable=data['OsPortableOperatingSystem'],
+                virtual_machine=data['HyperVisorPresent'],
+                debug_mode=data['OsDebug'],
+            )
+            os_install.save()
+
+            for language in data['OsMuiLanguages']:
+                OperatingSystemInstalledLanguages(
+                    operating_system_installation=os_install,
+                    installed_language=Language.objects.get_or_create(
+                        locale=language
+                    )[0],
+                ).save()
+
+            BiosInstall(
+                record=scan_record,
+                bios=Bios.objects.get_or_create(
+                    name=data['BiosName'],
+                    version=data['BiosVersion'],
+                    manufacturer=data['BiosManufacturer'],
+                    release_date=convert_date(data['BiosReleaseDate'])
+                )[0],
+                install_date=convert_date(data['BiosInstallDate']),
+                status=data['BiosStatus'],
+                primary=data['BiosPrimaryBIOS']
+            ).save()
+
+            return HttpResponse('')
+
+    api_request.response = 403
+    api_request.save()
+
+    return HttpResponseBadRequest()
 
 
 @api_view(['POST', ])
