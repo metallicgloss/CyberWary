@@ -65,7 +65,6 @@ class ScanCreationWizard(LoginRequiredMixin, SessionWizardView):
         self.instance.save()
         return redirect('scan', self.instance.scan_key)
 
-
 @login_required
 def preview_script(request):
     scan_form = ScanFormStep2(request.POST)
@@ -88,11 +87,41 @@ def preview_script(request):
 
 
 @login_required
-def scan(request, scan_key):
-    scan = Scan.objects.get(
-        user=request.user,
-        scan_key=scan_key
+def activity(request, scan_key):
+    try:
+        scan = Scan.objects.get(
+            user=request.user,
+            scan_key=scan_key
+        )
+    except Scan.DoesNotExist:
+        return HttpResponseNotFound()
+
+    scan_records = ScanRecord.objects.filter(
+        scan=scan
     )
+
+    devices = {}
+
+    for record in scan_records:
+        devices[record.device_id] = {
+            'id': record.id,
+            'name': record.name,
+            'country': record.country,
+            'os': record.os_install.operating_system.name,
+            'owner': record.os_install.owner
+        }
+
+    return JsonResponse(devices)
+
+@login_required
+def scan(request, scan_key):
+    try:
+        scan = Scan.objects.get(
+            user=request.user,
+            scan_key=scan_key
+        )
+    except Scan.DoesNotExist:
+        return HttpResponseNotFound()
 
     scan_form = ScanFormStep2(scan)
 
@@ -110,7 +139,8 @@ def scan(request, scan_key):
             ),
             'records': ScanRecord.objects.filter(
                 scan=scan
-            )
+            ),
+            'scan_key': scan_key
         }
     )
 

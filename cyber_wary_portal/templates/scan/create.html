@@ -234,14 +234,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/highlight.min.js" integrity="sha256-GCgWKkl4RE3+M/TNH5d/F80Tz30PQT+Oubq5Q3I5c20=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/languages/powershell.min.js" integrity="sha256-Qlb31PFxI4/tF2K8kUeKja8PR6dLDiwh9MUGRsjA8js=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.js" integrity="sha256-iOVs1FytPbiP3HcnhtFMzo0MwYebwD5OVr6Rnf2a0ik=" crossorigin="anonymous"></script>
-    <script>  
-        {% if wizard.steps.step1 == 2 %}
-            
-        var csrfToken = "{{ csrf_token }}"
-        var scriptPreviewURL = "{% url 'preview_script' %}"
-
-        {% endif %}
-        
+    <script>        
         $(document).ready(function() {
 
             {% if wizard.steps.step1 == 1 %}
@@ -306,7 +299,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             {% elif wizard.steps.step1 == 2 %}
                 
                 $('input[type="checkbox"]').on('change', function() {
-                    $.post(scriptPreviewURL, $('#scan-components').serialize().replace(/1-/g, ""), function(data) {
+                    $.post("{% url 'preview_script' %}", $('#scan-components').serialize().replace(/1-/g, ""), function(data) {
                         // Display the returned data in browser
                         $('#generated-script').text(data)
                         hljs.highlightElement(document.getElementById("generated-script"));

@@ -106,20 +106,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/languages/powershell.min.js" integrity="sha256-Qlb31PFxI4/tF2K8kUeKja8PR6dLDiwh9MUGRsjA8js=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/js/jquery.dataTables.min.js" integrity="sha256-3aHVku6TxTRUkkiibvwTz5k8wc7xuEr1QqTB+Oo5Q7I=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/datatables.net-responsive@2.2.9/js/dataTables.responsive.min.js" integrity="sha256-f+r2TX3KkC6avpv7F8bRhVZZO8nW7xJhmCKd6k7PqGE=" crossorigin="anonymous"></script>
-    <script>    
-        var csrfToken = "{{ csrf_token }}"
+    <script>   
+        var existingRecords = {{ records.count }}
+        var maxDevices = {{ scan.max_devices }}
+        var records = [
+            {% for record in records %}
+                '{{ record.device_id }}',
+            {% endfor %}
+        ]
         
         $(document).ready(function() {
             hljs.highlightElement(document.getElementById("generated-script"));
 
-            existing_records = {{ records.count }}
-            max_devices = {{ scan.max_devices }}
-
-            if(existing_records == max_devices) {
-                $('#dynamic-load').remove()
-            }
-
-            $('#scanned-devices').dataTable( {
+            var table = $('#scanned-devices').DataTable( {
                 "lengthChange": false,
                 "searching": false,
                 "pageLength": 5,
@@ -132,9 +131,40 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 },
             });
 
-            setInterval(function(){ 
-                
-            }, 5000);
+            var checkForUpdates = function(){
+                $.get("{% url 'activity' scan_key=scan_key %}", function(data){
+                    var dataPoints = Object.keys(data).length
+    
+                    if (dataPoints > existingRecords) {
+                        devices = Object.keys(data)
+    
+                        for (var id in devices){
+                            if(!records.includes(devices[id])) {
+                                table.row.add( [
+                                    '<span class="fi fi-' + data[devices[id]]['country'] + ' me-3"></span>' + data[devices[id]]['name'],
+                                    data[devices[id]]['os'],
+                                    data[devices[id]]['owner'],
+                                    '<a href="/portal/scan/record/{{ scan_key }}/' + data[devices[id]]['id'] + '">View Record  <i class="icofont-rounded-double-right"></i></a>'
+                                ] ).draw( false );
+                            }
+                        }
+                        existingRecords += 1
+                    }
+    
+                    if(dataPoints == maxDevices) {
+                        clearInterval(updateInterval);
+                        $('#dynamic-load').remove()
+                    }
+                });
+           };
+
+           
+           if(existingRecords == maxDevices) {
+                $('#dynamic-load').remove()
+            } else {
+                updateInterval = setInterval(checkForUpdates, 10000);
+            }
+
         });
     </script>
 {% endblock%}

@@ -36,7 +36,7 @@ urlpatterns = [
     ),
 
     path(
-        'create',
+        'scan/create',
         ScanCreationWizard.as_view(
             [
                 ScanFormStep1,
@@ -47,27 +47,33 @@ urlpatterns = [
     ),
 
     path(
-        'scan/<scan_key>',
-        views.scan,
-        name='scan'
-    ),
-
-    path(
-        'scan/<scan_key>/<report>',
-        views.report,
-        name='report'
-    ),
-
-    path(
-        'preview-script',
+        'scan/script/preview',
         views.preview_script,
         name='preview_script'
     ),
 
     path(
-        'history',
+        'scan/history',
         views.history,
         name='history'
+    ),
+
+    path(
+        'scan/activity/<scan_key>',
+        views.activity,
+        name='activity'
+    ),
+
+    path(
+        'scan/record/<scan_key>',
+        views.scan,
+        name='scan'
+    ),
+
+    path(
+        'scan/record/<scan_key>/<report>',
+        views.report,
+        name='report'
     ),
 
     # ----------------------------------------------------------------------- #
