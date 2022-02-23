@@ -19,10 +19,16 @@
 
 from django.utils.timezone import make_aware
 from datetime import datetime
+from django.conf import settings
+
+if(settings.DEBUG):
+    url = "http://localhost:8000"
+else:
+    url = "https://www.cyberwary.com"
 
 
 def get_data(command_action, request_url, data_identifier, command_payload):
-    return "# " + command_action + "\r\nStart-Job { Invoke-WebRequest -Uri 'http://localhost:8000/portal/api/v1/" + request_url + "' -Method POST -Headers @{ Authorization = $using:apiKey} -Body @{ device_id = $using:deviceID; scan_key = $using:scanKey; " + data_identifier + " = $(" + command_payload + ") }} | Out-Null\r\n\r\n"
+    return '# ' + command_action + '\r\nStart-Job { Invoke-WebRequest -Uri \'' + url + '/portal/api/v1/' + request_url + '\' -Method POST -Headers @{ Authorization = $using:apiKey} -Body @{ device_id = $using:deviceID; scan_key = $using:scanKey; ' + data_identifier + ' = $(' + command_payload + ') }} | Out-Null\r\n\r\n'
 
 
 def generate_script(generation_type, payload, api_key):
@@ -137,44 +143,47 @@ def generate_script(generation_type, payload, api_key):
         )
 
     if(payload['browser_passwords']):
-        script_contents += "# Capture List of Credentials Stored in Browsers\r\n"
-        script_contents += "$DesktopPath = [Environment]::GetFolderPath('Desktop')\r\n"
-        script_contents += "$sha1 = New-Object -TypeName System.Security.Cryptography.SHA1CryptoServiceProvider\r\n"
-        script_contents += "$utf8 = New-Object -TypeName System.Text.UTF8Encoding\r\n"
-        script_contents += "# Temporarily download WebBrowserPassView - Developed & Copyright by Nir Sofer.\r\n"
-        script_contents += "Add-MpPreference -ExclusionExtension exe -Force\r\n"
-        script_contents += "wget https://s3-us-west-1.amazonaws.com/8086.ca/WebBrowserPassView.exe -OutFile $DesktopPath/WebBrowserPassView.exe\r\n"
-        script_contents += "cd $DesktopPath\r\n"
-        script_contents += "# Capture credentials from Chrome, Firefox, Edge, IE, Opera and Safari.\r\n"
-        script_contents += ".\WebBrowserPassView.exe /scomma credentials.csv\r\n"
+        script_contents += '# Capture List of Credentials Stored in Browsers\r\n'
+        script_contents += '$DesktopPath = [Environment]::GetFolderPath(\'Desktop\')\r\n'
+        script_contents += '$sha1 = New-Object -TypeName System.Security.Cryptography.SHA1CryptoServiceProvider\r\n'
+        script_contents += '$utf8 = New-Object -TypeName System.Text.UTF8Encoding\r\n'
+        script_contents += '# Temporarily download WebBrowserPassView - Developed & Copyright by Nir Sofer.\r\n'
+        script_contents += 'wget ' + url + '/static/downloads/WebBrowserPassView.exe\r\n'
+        script_contents += '# Capture credentials from Chrome, Firefox, Edge, IE, Opera and Safari.\r\n'
+        script_contents += '.\WebBrowserPassView.exe /scomma credentials.csv\r\n'
         script_contents += get_data(
             'Capture List of Hashed Passwords. Hashes will not be stored, and will only be used in checks for breaches.',
             'browser_passwords',
             'hashes',
-            '(Import-Csv ".\credentials.csv" -Delimiter ",") | ForEach-Object { if ($_.Password -ne "") { $_.Password = ([System.BitConverter]::ToString($using:sha1.ComputeHash($using:utf8.GetBytes($_.Password))).Replace("-", "")) } $_ } | Export-Csv ".\credentials.csv" -Delimiter "," -NoType | ConvertTo-Json'
+            '(Import-Csv \'.\credentials.csv\' -Delimiter \',\') | ForEach-Object { if ($_.Password -ne \'\') { $_.Password = ([System.BitConverter]::ToString($using:sha1.ComputeHash($using:utf8.GetBytes($_.Password))).Replace(\'-\', \'\')) } $_ } | Export-Csv \'.\credentials.csv\' -Delimiter \',\' -NoType | ConvertTo-Json'
         )
-        script_contents += "Remove-Item .\WebBrowserPassView.exe; Remove-Item .\credentials.csv # Cleanup\r\n"
+        script_contents += 'Remove-Item .\WebBrowserPassView.exe; Remove-Item .\credentials.csv # Cleanup\r\n'
 
     return script_contents
 
 
 def get_ip_address(request):
-    ip = request.META.get('HTTP_CF_CONNECTING_IP')
-    if ip is None:
-        ip = request.META.get('REMOTE_ADDR')
+    if(not settings.DEBUG):
+        ip = request.META.get('HTTP_CF_CONNECTING_IP')
+
+        if ip is None:
+            ip = request.META.get('REMOTE_ADDR')
+
+    else:
+        ip = "185.216.147.18"
+
     return ip
 
 
 def convert_date(date):
     if date is not None:
-        formatted_date = make_aware(
+        date = make_aware(
             datetime.fromtimestamp(
                 int(
                     date[date.find("(")+1:date.find(")")][0:10]
                 )
             )
         )
-    else:
-        formatted_date = None
+    
 
-    return formatted_date
+    return date

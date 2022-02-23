@@ -128,62 +128,52 @@ class Scan(DefaultFields):
 
     system_users = models.BooleanField(
         help_text="Flag for scan of system users.",
-        default=False,
-        null=True
+        default=False
     )
 
     system_services = models.BooleanField(
         help_text="Flag for scan of system services.",
-        default=False,
-        null=True
+        default=False
     )
 
     browser_passwords = models.BooleanField(
         help_text="Flag for scan of passwords stored on the system.",
-        default=False,
-        null=True
+        default=False
     )
 
     network_adapters = models.BooleanField(
         help_text="Flag for scan of network adapters.",
-        default=False,
-        null=True
+        default=False
     )
 
     network_exposure = models.BooleanField(
         help_text="Flag for scan of network exposure.",
-        default=False,
-        null=True
+        default=False
     )
 
     network_firewall_rules = models.BooleanField(
         help_text="Flag for scan of firewall rules.",
-        default=False,
-        null=True
+        default=False
     )
 
     startup_applications = models.BooleanField(
         help_text="Flag for scan of startup applications.",
-        default=False,
-        null=True
+        default=False
     )
 
     installed_applications = models.BooleanField(
         help_text="Flag for scan of installed applications.",
-        default=False,
-        null=True
+        default=False
     )
 
     installed_patches = models.BooleanField(
         help_text="Flag for scan of installed OS updates and patches.",
-        default=False,
-        null=True
+        default=False
     )
 
     installed_antivirus = models.BooleanField(
         help_text="Flag for scan of check of anti-virus product installation.",
-        default=False,
-        null=True
+        default=False
     )
 
 
@@ -243,43 +233,6 @@ class Language(DefaultFields):
         null=True
     )
 
-
-class ScanRecord(DefaultFields):
-    scan = models.ForeignKey(
-        Scan,
-        on_delete=models.CASCADE
-    )
-
-    device_id = models.CharField(
-        help_text="The unique system ID assigned to the system.",
-        max_length=48,
-        null=True
-    )
-
-    name = models.CharField(
-        help_text="The name of the device being scanned.",
-        max_length=32,
-        null=True
-    )
-
-    boot_time = models.DateTimeField(
-        help_text="The date/time that the system was last powered on.",
-        null=True
-    )
-    
-    current_user = models.CharField(
-        help_text="The name of the user performing the scan.",
-        max_length=32,
-        null=True
-    )
-
-    public_ip = models.CharField(
-        help_text="The public IP of the scanned device.",
-        max_length=16,
-        null=True
-    )
-
-
 class OperatingSystem(DefaultFields):
     name = models.CharField(
         help_text="The readable name of an operating system.",
@@ -295,11 +248,6 @@ class OperatingSystem(DefaultFields):
 
 
 class OperatingSystemInstall(DefaultFields):
-    record = models.ForeignKey(
-        ScanRecord,
-        on_delete=models.CASCADE
-    )
-
     operating_system = models.ForeignKey(
         OperatingSystem,
         on_delete=models.CASCADE
@@ -348,26 +296,22 @@ class OperatingSystemInstall(DefaultFields):
 
     domain = models.BooleanField(
         help_text="The status for the device being connected to a domain.",
-        default=False,
-        null=True
+        default=False
     )
 
     portable = models.BooleanField(
         help_text="The status for the OS being mounted in a portable mode.",
-        default=False,
-        null=True
+        default=False
     )
 
     virtual_machine = models.BooleanField(
         help_text="The VM/Virtualised environment status.",
-        default=False,
-        null=True
+        default=False
     )
 
     debug_mode = models.BooleanField(
         help_text="The status for the device being configured in debug mode.",
-        default=False,
-        null=True
+        default=False
     )
 
     
@@ -409,11 +353,6 @@ class Bios(DefaultFields):
 
 
 class BiosInstall(DefaultFields):
-    record = models.ForeignKey(
-        ScanRecord,
-        on_delete=models.CASCADE
-    )
-
     bios = models.ForeignKey(
         Bios,
         on_delete=models.CASCADE
@@ -432,6 +371,63 @@ class BiosInstall(DefaultFields):
 
     primary = models.BooleanField(
         help_text="The flag for the OS being the primary installed.",
+        default=True
+    )
+
+
+class ScanRecord(DefaultFields):
+    scan = models.ForeignKey(
+        Scan,
+        on_delete=models.CASCADE
+    )
+
+    device_id = models.CharField(
+        help_text="The unique system ID assigned to the system.",
+        max_length=48,
+        null=True
+    )
+
+    name = models.CharField(
+        help_text="The name of the device being scanned.",
+        max_length=32,
+        null=True
+    )
+
+    os_install = models.ForeignKey(
+        OperatingSystemInstall,
+        on_delete=models.CASCADE
+    )
+
+    bios_install = models.ForeignKey(
+        BiosInstall,
+        on_delete=models.CASCADE
+    )
+
+    boot_time = models.DateTimeField(
+        help_text="The date/time that the system was last powered on.",
+        null=True
+    )
+    
+    current_user = models.CharField(
+        help_text="The name of the user performing the scan.",
+        max_length=32,
+        null=True
+    )
+
+    public_ip = models.CharField(
+        help_text="The public IP of the scanned device.",
         max_length=16,
+        null=True
+    )
+
+    city = models.CharField(
+        help_text="The location of the scanned device.",
+        max_length=16,
+        null=True
+    )
+
+    country = models.CharField(
+        help_text="The country of the scanned device.",
+        max_length=2,
         null=True
     )

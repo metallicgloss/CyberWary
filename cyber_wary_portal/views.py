@@ -17,13 +17,13 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from http.client import HTTPResponse
-from warnings import catch_warnings
 from .forms import AccountModificationForm, ApiKeyForm, ScanFormStep2
 from .models import *
 from .utils import generate_script, get_ip_address, convert_date
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.gis.geoip2 import GeoIP2
 from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -34,8 +34,6 @@ from pytz import timezone
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
 import json
-from django.contrib.auth.mixins import LoginRequiredMixin
-import re
 
 
 @login_required
@@ -109,13 +107,16 @@ def scan(request, scan_key):
                 Token.objects.get_or_create(
                     user=request.user
                 )[0].key
+            ),
+            'records': ScanRecord.objects.filter(
+                scan=scan
             )
         }
     )
 
 
 @login_required
-def report(request):
+def report(request, scan_key, report):
     return render(request, 'report.html')
 
 
@@ -299,6 +300,10 @@ def api_payload(request):
 
 @api_view(['POST', ])
 def start_scan(request):
+    data = json.loads(
+        request.POST['system_information']
+    )
+    
     api_request = ApiRequest(
         user=request.user,
         type='start_scan',
@@ -306,10 +311,6 @@ def start_scan(request):
         method=ApiRequest.RequestMethod.POST
     )
     api_request.save()
-
-    data = json.loads(
-        request.POST['system_information']
-    )
 
     device_id = request.POST['device_id'].replace(
         '{', ''
@@ -323,7 +324,6 @@ def start_scan(request):
     ).exists()
 
     if(scan_check):
-
         scan = Scan.objects.get(
             user=request.user,
             scan_key=request.POST['scan_key']
@@ -335,18 +335,9 @@ def start_scan(request):
         ).exists()
 
         if(not existing_record_check):
-            scan_record = ScanRecord(
-                scan=scan,
-                device_id=device_id,
-                name=data['CsDNSHostName'],
-                boot_time=convert_date(data['OsLastBootUpTime']),
-                current_user=data['CsUserName'],
-                public_ip=get_ip_address(request),
-            )
-            scan_record.save()
+            geo_ip = GeoIP2()
 
             os_install = OperatingSystemInstall(
-                record=scan_record,
                 operating_system=OperatingSystem.objects.get_or_create(
                     name=data['OsName'],
                     version=data['OsVersion']
@@ -375,18 +366,29 @@ def start_scan(request):
                     )[0],
                 ).save()
 
-            BiosInstall(
-                record=scan_record,
-                bios=Bios.objects.get_or_create(
-                    name=data['BiosName'],
-                    version=data['BiosVersion'],
-                    manufacturer=data['BiosManufacturer'],
-                    release_date=convert_date(data['BiosReleaseDate'])
-                )[0],
-                install_date=convert_date(data['BiosInstallDate']),
-                status=data['BiosStatus'],
-                primary=data['BiosPrimaryBIOS']
-            ).save()
+            scan_record = ScanRecord(
+                scan=scan,
+                device_id=device_id,
+                name=data['CsDNSHostName'],
+                os_install=os_install,
+                bios_install=BiosInstall.objects.create(
+                    bios=Bios.objects.get_or_create(
+                        name=data['BiosName'],
+                        version=data['BiosVersion'],
+                        manufacturer=data['BiosManufacturer'],
+                        release_date=convert_date(data['BiosReleaseDate'])
+                    )[0],
+                    install_date=convert_date(data['BiosInstallDate']),
+                    status=data['BiosStatus'],
+                    primary=data['BiosPrimaryBIOS']
+                ),
+                boot_time=convert_date(data['OsLastBootUpTime']),
+                current_user=data['CsUserName'],
+                public_ip=get_ip_address(request),
+                city=geo_ip.city(get_ip_address(request))['city'],
+                country=geo_ip.country_code(get_ip_address(request)).lower(),
+            )
+            scan_record.save()
 
             return HttpResponse('')
 

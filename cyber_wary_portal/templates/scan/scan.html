@@ -22,8 +22,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endcomment %}
 
 {% block page_head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.css" integrity="sha256-YY1izqyhIj4W3iyJOaGWOpXDSwrHWFL4Nfk+W0LyCHE=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-responsive-dt@2.2.9/css/responsive.dataTables.min.css" integrity="sha256-Y/AdBW1nhvzPowuT1lvF4PkY6QR+nqYzBcbmkDCG30Y=" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/styles/atom-one-dark.min.css" integrity="sha256-Qjf/ynzmqttDjEV+CmdbElxTS73aW4f0HzoUlWA7zJs=" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.css" integrity="sha256-lP22bsj+dImBpPIJD99KKgo9vlrOLmXEzkbpXWkr2sc=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@6.1.1/css/flag-icons.min.css" integrity="sha256-fqRTUXSq3UECGMghTL/21uwvhdvXls2QhU5HC4FQ8Cw=" crossorigin="anonymous">
 {% endblock %}
 
 {% block page_content %}
@@ -56,17 +59,43 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <p class="ms-3 mb-3">{{ scan.max_devices }} Maximum Device(s)</p>
             </div>
             <div class="scan-form-container">
-                <div class="row">
+                <div class="row mb-4">
                     <div class="col-xl-12">
                         <h3 class="mt-4 mb-0">Associated Devices</h3>
                         <p class="scan-note scan-section pb-1"><i>Devices scanned that are associated with the {{ scan.title }} scan.</i></p>
                     </div>
                 </div>
-                <div class="d-flex flex-row bd-highlight">
-                    <div class="load mt-3"></div>
-                    <span class="mt-3 ms-3 pt-1">Awaiting Scan Data...</span>
-                  </div>
-                </div>
+                <table id="scanned-devices" class="display mb-2 w-100">
+                    <thead>
+                        <tr>
+                            <th class="pb-3 desktop">Scanned Device</th>
+                            <th class="pb-3 desktop">OS Version</th>
+                            <th class="pb-3 desktop">Registered Owner</th>
+                            <th class="pb-3 desktop">Scan Report</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in records %}
+                            <tr>
+                                <td><span class="fi fi-{{ record.country }} me-3"></span>{{ record.name }}</td>
+                                <td>{{ record.os_install.operating_system.name }}</td>
+                                <td>{{ record.os_install.owner }}</td>
+                                <td><a href="{% url 'report' scan_key=scan.scan_key report=record.id  %}">View Report <i class="icofont-rounded-double-right"></i></a></td>
+                            </tr>
+                        {% endfor %}
+                        <tr id="dynamic-load">
+                            <td>
+                                <div class="d-flex flex-row justify-content-left">
+                                    <div class="load"></div>
+                                    <span class="ms-3 pt-1">Awaiting scan data...</span>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -75,13 +104,36 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% block page_scripts %}
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/highlight.min.js" integrity="sha256-GCgWKkl4RE3+M/TNH5d/F80Tz30PQT+Oubq5Q3I5c20=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/languages/powershell.min.js" integrity="sha256-Qlb31PFxI4/tF2K8kUeKja8PR6dLDiwh9MUGRsjA8js=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/js/jquery.dataTables.min.js" integrity="sha256-3aHVku6TxTRUkkiibvwTz5k8wc7xuEr1QqTB+Oo5Q7I=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net-responsive@2.2.9/js/dataTables.responsive.min.js" integrity="sha256-f+r2TX3KkC6avpv7F8bRhVZZO8nW7xJhmCKd6k7PqGE=" crossorigin="anonymous"></script>
     <script>    
         var csrfToken = "{{ csrf_token }}"
         
         $(document).ready(function() {
             hljs.highlightElement(document.getElementById("generated-script"));
+
+            existing_records = {{ records.count }}
+            max_devices = {{ scan.max_devices }}
+
+            if(existing_records == max_devices) {
+                $('#dynamic-load').remove()
+            }
+
+            $('#scanned-devices').dataTable( {
+                "lengthChange": false,
+                "searching": false,
+                "pageLength": 5,
+                "ordering": false,
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+            });
+
             setInterval(function(){ 
-                //code goes here that will be run every 5 seconds.    
+                
             }, 5000);
         });
     </script>

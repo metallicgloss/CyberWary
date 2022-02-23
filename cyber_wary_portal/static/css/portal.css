@@ -56,6 +56,14 @@ body {
     background-color: var(--light-primary);
 }
 
+a {
+    color: var(--dark-primary)
+}
+
+a:hover {
+    color: var(--success)
+}
+
 
 /*-------------------------------------------*\
     2. Overrides
@@ -353,7 +361,7 @@ table.dataTable>tbody>tr.child span.dtr-title {
 #content {
     width: 100%;
     min-height: 100vh;
-    padding: 15px 15px 15px 30px;
+    padding: 15px 30px 15px 30px;
 }
 
 #content p {
@@ -445,6 +453,10 @@ table.dataTable>tbody>tr.child span.dtr-title {
 .payload-action:hover {
     cursor: pointer;
     color: var(--success) !important;
+}
+
+.fi {
+    border-radius: 5px;
 }
 
 @keyframes rotate {

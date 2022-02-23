@@ -53,15 +53,15 @@ urlpatterns = [
     ),
 
     path(
-        'preview-script',
-        views.preview_script,
-        name='preview_script'
+        'scan/<scan_key>/<report>',
+        views.report,
+        name='report'
     ),
 
     path(
-        'report',
-        views.report,
-        name='report'
+        'preview-script',
+        views.preview_script,
+        name='preview_script'
     ),
 
     path(
