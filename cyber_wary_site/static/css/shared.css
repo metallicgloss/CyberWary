@@ -171,6 +171,10 @@ a {
     color: var(--warning) !important;
 }
 
+.text-info {
+    color: #0d6efd !important;
+}
+
 .text-danger {
     color: var(--danger) !important;
 }
@@ -379,7 +383,7 @@ form input:focus {
 
 .form-checkbox-indicator:before {
     /* Reference https://ref.cyberwary.com/bo561 */
-    border: 2px solid white;
+    border: 2px solid var(--light-primary);
     content: "";
     position: Absolute;
     top: 0;

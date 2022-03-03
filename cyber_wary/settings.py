@@ -253,3 +253,6 @@ SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
 # MaxMind GeoIP Setting
 GEOIP_PATH = os.environ.get('CYBERWARY_GEOIP_DIRECTORY')
+
+# Google Maps JavaScript API Key
+MAPS_KEY = os.environ.get('CYBERWARY_GOOGLE_MAPS_API_KEY')

@@ -21,6 +21,7 @@ from .forms import AccountModificationForm, ApiKeyForm, ScanFormStep2
 from .models import *
 from .utils import generate_script, get_ip_address, convert_date
 from datetime import datetime
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.gis.geoip2 import GeoIP2
@@ -64,6 +65,7 @@ class ScanCreationWizard(LoginRequiredMixin, SessionWizardView):
         self.instance.scan_key = get_random_string(length=32)
         self.instance.save()
         return redirect('scan', self.instance.scan_key)
+
 
 @login_required
 def preview_script(request):
@@ -113,6 +115,7 @@ def activity(request, scan_key):
 
     return JsonResponse(devices)
 
+
 @login_required
 def scan(request, scan_key):
     try:
@@ -147,7 +150,30 @@ def scan(request, scan_key):
 
 @login_required
 def report(request, scan_key, report):
-    return render(request, 'report.html')
+    try:
+        scan = Scan.objects.get(
+            user=request.user,
+            scan_key=scan_key
+        )
+    except Scan.DoesNotExist:
+        return HttpResponseNotFound()
+        
+    try:
+        scan_record = ScanRecord.objects.get(
+            scan=scan,
+            id=report
+        )
+    except ScanRecord.DoesNotExist:
+        return HttpResponseNotFound()
+
+    return render(
+        request,
+        'scan/report.html',
+        {
+            'scan_record': scan_record,
+            'maps_key': settings.MAPS_KEY
+        }
+    )
 
 
 @login_required
@@ -333,7 +359,7 @@ def start_scan(request):
     data = json.loads(
         request.POST['system_information']
     )
-    
+
     api_request = ApiRequest(
         user=request.user,
         type='start_scan',
@@ -358,7 +384,7 @@ def start_scan(request):
             user=request.user,
             scan_key=request.POST['scan_key']
         )
-    
+
         existing_record_check = ScanRecord.objects.filter(
             scan=scan,
             device_id=device_id

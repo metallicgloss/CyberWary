@@ -72,7 +72,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <li class="py-2">
                         <a href="{% url 'create' %}" {% if request.resolver_match.url_name == 'create' %}class="text-success"{% endif %}>
                             <i class="icofont-plus me-3"></i>
-                            New Scan
+                            Create Scan
                         </a>
                     </li>
                     <li class="py-2">
@@ -97,9 +97,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                             <p id="user-name" class="mb-0 text-end">{{ request.user.first_name }} {{ request.user.last_name }}</p>
                                             <p id="user-plan" class="mb-0 text-end">Free Tier</p>
                                         </div>
-                                        <img src="{{ request.user.get_gravatar_image }}" alt="Profile Photo" width="48" height="48" class="rounded-circle ms-4">
+                                        <img src="{{ request.user.get_gravatar_image }}" alt="Profile Photo" width="48" height="48" class="circle ms-4">
                                     </a>
-                                    <ul class="dropdown-menu dropdown-menu-dark text-small text-end shadow rounded-0 mt-3 end-0" aria-labelledby="userProfileDropdown">
+                                    <ul class="dropdown-menu dropdown-menu-dark text-small text-end shadow 0 mt-3 end-0" aria-labelledby="userProfileDropdown">
                                         <li><a class="dropdown-item" href="{% url 'account_modify' %}">Account Details</a></li>
                                         <li><a class="dropdown-item" href="{% url 'socialaccount_connections' %}">Third-Party Settings</a></li>
                                         <li><a class="dropdown-item" href="{% url 'api' %}">API Settings</a></li>

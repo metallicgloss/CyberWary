@@ -80,7 +80,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <td><span class="fi fi-{{ record.country }} me-3"></span>{{ record.name }}</td>
                                 <td>{{ record.os_install.operating_system.name }}</td>
                                 <td>{{ record.os_install.owner }}</td>
-                                <td><a href="{% url 'report' scan_key=scan.scan_key report=record.id  %}">View Report <i class="icofont-rounded-double-right"></i></a></td>
+                                <td><a href="{% url 'report' scan_key=scan.scan_key report=record.id  %}">View Report <i class="icofont-double-right"></i></a></td>
                             </tr>
                         {% endfor %}
                         <tr id="dynamic-load">
@@ -144,7 +144,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     '<span class="fi fi-' + data[devices[id]]['country'] + ' me-3"></span>' + data[devices[id]]['name'],
                                     data[devices[id]]['os'],
                                     data[devices[id]]['owner'],
-                                    '<a href="/portal/scan/record/{{ scan_key }}/' + data[devices[id]]['id'] + '">View Record  <i class="icofont-rounded-double-right"></i></a>'
+                                    '<a href="/portal/scan/record/{{ scan_key }}/' + data[devices[id]]['id'] + '">View Record  <i class="icofont-double-right"></i></a>'
                                 ] ).draw( false );
                             }
                         }

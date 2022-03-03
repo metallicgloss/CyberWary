@@ -43,7 +43,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         <tr>
                             <td>{{ scan.created|date:"l jS F Y - H:i:s e" }}</td>
                             <td>{{ scan.get_type_display }} Team</td>
-                            <td><a href="{% url 'scan' scan_key=scan.scan_key  %}"><i class="icofont-rounded-double-right"></i></a></td>
+                            <td><a href="{% url 'scan' scan_key=scan.scan_key  %}"><i class="icofont-double-right"></i></a></td>
                         </tr>
                     {% endfor %}
                 </tbody>
