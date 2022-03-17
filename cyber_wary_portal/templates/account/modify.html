@@ -138,6 +138,22 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <h5 class="mb-4">Account Details</h5>
                 <p class="mb-2">Account Created: <span class="fw-bold">{{ request.user.date_joined|date:"jS F Y - H:i" }} UTC</span></p>
                 <p class="mb-2">Last Login: <span class="fw-bold">{{ request.user.last_login|date:"jS F Y - H:i" }} UTC</span></p>
+                <hr class="my-5">
+                <h5 class="mb-4">Account Deletion</h5>
+                <form method="POST" action="{% url 'account_delete' %}">
+                    {% csrf_token %}
+                    <p class="mb-1 fw-bold">
+                        <i class="icofont-bin me-2"></i> {{ account_delete_form.confirmation.label }}<br>
+                        <small class="fw-normal"><i>{{ account_delete_form.confirmation.help_text }}</i></small>
+                    </p>
+                    <div>
+                        <input id="delete-toggle-off" class="form-radio-toggle toggle-left" name="confirmation" value="false" type="radio" checked>
+                        <label for="delete-toggle-off" class="form-radio-toggle-btn">No</label>
+                        <input id="delete-toggle-on" class="form-radio-toggle toggle-right" name="confirmation" value="true" type="radio">
+                        <label for="delete-toggle-on" class="form-radio-toggle-btn">Yes</label>
+                    </div>
+                    <button id="account-deletion" class="btn btn-danger px-5 py-2 mt-4 text-uppercase" type="submit" style="display:none;">Delete Account <i class="icofont-ui-delete ms-3"></i></button>
+                </form>
             </div>
         </div>
     </div>
@@ -154,6 +170,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 $('.password-field').hide()
                 $('#{{ form.password1.auto_id }}').val("")
                 $('#{{ form.password2.auto_id }}').val("")
+            }
+        });
+        $('input[type=radio][name=confirmation]').change(function() {
+            if (this.value == "true") {
+                $('#account-deletion').show()
+            }
+            else {
+                $('#account-deletion').hide()
             }
         });
         $("input[type=text], input[type=password]").on("input", function(){

@@ -22,7 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endcomment %}
 
 {% block page_content %}
-    <div class="row py-5">
+    <div class="row pb-4">
         <div class="col-lg-12 col-xl-12">
             <button class="btn back-btn p-0 mb-3" onclick="history.back()"><i class="icofont-arrow-left"></i> Back</button>
             <h2 class="mb-0"><span id="scan-title">{{ scan_record.scan.title }}</span></h2>
@@ -39,9 +39,54 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div class="col-lg-12 col-xl-9">
             <div class="scan-report-container">
                 <div class="scan-report pe-4">
-                    Overview
-                    
-                    <div id="map"></div>
+                    <div class="accordion accordion-flush" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                    <i class="icofont-check-circled me-2 pt-1 text-success"></i> Overview
+                                </button>
+                            </h2>
+                            <div id="flush-collapseOne" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <div id="map"></div>
+                                    <div class="nav-buttons mt-3">
+                                        <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                                        <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                    <i class="icofont-close-squared me-2 text-danger"></i> Scan Item
+                                </button>
+                            </h2>
+                            <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <div class="nav-buttons mt-3">
+                                        <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                                        <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                                    Accordion Item #3
+                                </button>
+                            </h2>
+                            <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <div class="nav-buttons mt-3">
+                                        <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                                        <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,12 +109,24 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% block page_scripts %}
 <script async src="https://maps.googleapis.com/maps/api/js?key={{ maps_key }}&callback=initMap"></script>
 <script>
+    $(document).ready(function(){
+        $('.accordion-body button').click(function() {
+            if($(this).is('.next')){
+                $(this).closest('.accordion-item').next().find('.accordion-collapse').collapse('show')
+            } else {
+                $(this).closest('.accordion-item').prev().find('.accordion-collapse').collapse('show')
+            }
+        });
+    });
+    
+
+
     function initMap() {
         const map = new google.maps.Map(document.getElementById("map"), {
             zoom: 9,
             center: {
-                lat: 51.5072,
-                lng: 0.1276
+                lat: {{ coords.0 }},
+                lng: {{ coords.1 }}
             },
             disableDefaultUI: true,
             styles: [
@@ -181,13 +238,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
       
         new google.maps.Marker({
             position: {
-                lat: 51.5072,
-                lng: 0.1276
+                lat: {{ coords.0 }},
+                lng: {{ coords.1 }}
             },
             map,
             icon: "{% static 'imgs/map.png' %}",
             title: "{{ scan_record.name }}",
         });
-      }
+    }
 </script>
 {% endblock %}

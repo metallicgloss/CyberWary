@@ -330,3 +330,12 @@ class ApiKeyForm(forms.Form):
         required=True,
         initial=False
     )
+
+
+class AccountDeletionForm(forms.Form):
+    confirmation = forms.BooleanField(
+        label='Confirm Account Deletion?',
+        help_text='When your account is deleted, it is irrevocably removed from the system.',
+        required=True,
+        initial=False
+    )

@@ -17,7 +17,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from .forms import AccountModificationForm, ApiKeyForm, ScanFormStep2
+from .forms import AccountModificationForm, ApiKeyForm, ScanFormStep2, AccountDeletionForm
 from .models import *
 from .utils import generate_script, get_ip_address, convert_date
 from datetime import datetime
@@ -25,6 +25,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.gis.geoip2 import GeoIP2
+from django.contrib.auth import logout
 from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -171,7 +172,8 @@ def report(request, scan_key, report):
         'scan/report.html',
         {
             'scan_record': scan_record,
-            'maps_key': settings.MAPS_KEY
+            'maps_key': settings.MAPS_KEY,
+            'coords': GeoIP2().lat_lon(scan_record.public_ip)
         }
     )
 
@@ -263,10 +265,33 @@ def modify(request):
         'account/modify.html',
         {
             'form': form,
+            'account_delete_form': AccountDeletionForm(),
             'errors': errors,
             'update': profile_updated
         }
     )
+
+    
+@login_required
+def delete(request):
+    if request.method == 'POST':
+        # Post request, submitting / saving of data.
+        form = AccountDeletionForm(request.POST)
+
+        if form.is_valid():
+            # Get existing user.
+            user = SystemUser.objects.get(
+                pk=request.user.pk
+            )
+
+            logout(request)
+
+            user.delete()
+
+            return redirect(reverse('account_delete'))
+
+    else:
+        return redirect(reverse('account_modify'))
 
 
 # --------------------------------------------------------------------------- #

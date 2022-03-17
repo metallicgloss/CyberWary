@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Custom Packaged Content
+cyber_wary_portal/static/downloads/

@@ -109,6 +109,12 @@ urlpatterns = [
     ),
 
     path(
+        'account/delete/',
+        views.delete,
+        name='account_delete'
+    ),
+
+    path(
         'api/',
         views.api,
         name='api'
