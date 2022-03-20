@@ -1,6 +1,7 @@
 {% extends "portal.html" %}
 
 {% load static %}
+{% load subtract %}
 
 {% comment %}
 GNU General Public License v3.0
@@ -20,6 +21,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endcomment %}
+
+{% block page_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.css" integrity="sha256-YY1izqyhIj4W3iyJOaGWOpXDSwrHWFL4Nfk+W0LyCHE=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-responsive-dt@2.2.9/css/responsive.dataTables.min.css" integrity="sha256-Y/AdBW1nhvzPowuT1lvF4PkY6QR+nqYzBcbmkDCG30Y=" crossorigin="anonymous">
+{% endblock%}
 
 {% block page_content %}
     <div class="row pb-4">
@@ -56,67 +62,65 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 </div>
                             </div>
                         </div>
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="flush-headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                                    <i class="icofont-close-squared me-2 text-danger"></i> Scan Item
-                                </button>
-                            </h2>
-                            <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    <div class="nav-buttons mt-3">
-                                        <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
-                                        <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% if scan_record.scan.browser_passwords %}
+                        {% if scan_record.scan.browser_passwords and scan_data.browser_passwords != None %}
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="heading-browser-passwords">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-browser-passwords" aria-expanded="false" aria-controls="collapse-browser-passwords">
-                                        <i class="icofont-exclamation-tringle me-2 text-warning"></i> Browser Passwords
+                                        {% if scan_data.compromised > 0 %}
+                                            <i class="icofont-exclamation-tringle me-2 text-danger"></i>
+                                        {% elif scan_data.weak > 0 %}
+                                            <i class="icofont-exclamation-tringle me-2 text-warning"></i>
+                                        {% else %}
+                                            <i class="icofont-check-circled me-2 pt-1 text-success"></i>
+                                        {% endif %}
+                                        Browser Passwords
                                     </button>
                                 </h2>
                                 <div id="collapse-browser-passwords" class="accordion-collapse collapse" aria-labelledby="heading-browser-passwords" data-bs-parent="#faqAccordion">
                                     <div class="accordion-body">
-                                        <p>
-                                            {{ scan_data.browser_passwords.count }}
-                                        </p>
+                                        <h5 class="mt-4">Credentials</h5>
+                                        <p class="mb-4">Quisque imperdiet lorem eget diam tristique, vel eleifend nulla malesuada. Cras dapibus eu odio ac pharetra. Fusce at tristique erat, nec fermentum sapien. Sed nec egestas nibh. In hac habitasse platea dictumst. Nunc malesuada molestie lacus vitae tristique. Vivamus a neque nunc. Quisque urna libero, pulvinar non gravida eget, suscipit ac leo. Cras eleifend purus et magna tristique, sed vehicula turpis malesuada. Integer consectetur dolor sed dui luctus iaculis. Vivamus at mollis magna. Sed at elementum neque.</p>
                                         <div class="row">
                                             <div class="col-xl-6">
+                                                <div id="usernames" style="margin:auto; width: 40em; height:350px;"></div>
                                             </div>
                                             <div class="col-xl-6">
-                                                
+                                                <div id="compromised" style="margin:auto; width: 40em; height:350px;"></div>
                                             </div>
                                         </div>
-                                        <table class="display pb-3 w-100">
+                                        <h5 class="mt-2">Detected Credentials</h5>
+                                        <table id="credentials" class="display pb-3 w-100">
                                             <thead>
                                                 <tr>
-                                                    <th class="pb-2 desktop">URL</th>
-                                                    <th class="pb-2 desktop">Username</th>
-                                                    <th class="pb-2 desktop">Password Strength</th>
-                                                    <th class="pb-2 desktop">Compromised</th>
-                                                    <th class="pb-2 desktop">View Details</th>
+                                                    <th class="py-2 desktop">URL</th>
+                                                    <th class="py-2 desktop">Username</th>
+                                                    <th class="py-2 desktop">Strength</th>
+                                                    <th class="py-2 desktop">Compromised</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {% for credential in scan_data.browser_passwords %}
                                                     <tr>
-                                                        <td>{{ credential.url|slice:":48" }}</td>
-                                                        <td>{{ credential.username }}</td>
-                                                        <td>{{ credential.get_password_strength_display }}</td>
-                                                        <td>{% if credential.compromised %}<i class="icofont-exclamation-tringle me-2 text-warning"></i>Potentially Compromised{% else %}Not Detected{% endif %}</td>
+                                                        <td>{{ credential.url|slice:":40" }}</td>
                                                         <td>
                                                             <span class="payload-action" onclick="viewCredential('{{ credential.id }}')">
-                                                                View Credential
+                                                                <i class="icofont-info-circle me-2"></i>{{ credential.username }}
                                                             </span>
                                                         </td>
+                                                        <td>
+                                                            {% if credential.password_strength != 5 %}
+                                                                <span class="text-warning">{{ credential.get_password_strength_display }}</span>
+                                                            {% else %}
+                                                                <span class="text-success">{{ credential.get_password_strength_display }}</span>
+                                                            {% endif %}
+
+                                                            </td>
+                                                        <td>{% if credential.compromised %}<span class="text-danger"><i class="icofont-exclamation-tringle me-2"></i>Potentially Compromised</span>{% else %}Not Detected in Dataset{% endif %}</td>
                                                     </tr>
                                                 {% endfor %}
                                             </tbody>
                                         </table>
-                                        <p>Compromise Status Check Provided By HaveIBeenPwned</p>
+                                        <p class="pb-2"><small>Password breach data supplied by the <a href="https://haveibeenpwned.com/Passwords" class="text-success">Have I Been Pwned</a> project.</small></p>
                                         <div class="nav-buttons mt-3">
                                             <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
                                             <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
@@ -125,21 +129,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 </div>
                             </div>
                         {% endif %}
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="flush-headingThree">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                                    Accordion Item #3
-                                </button>
-                            </h2>
-                            <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    <div class="nav-buttons mt-3">
-                                        <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
-                                        <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -169,13 +158,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <div class="scan-info">
                         <p class="mb-2"><i class="icofont-ui-user me-2"></i>Username: <span id="credUsername"></span></p>
                         <p class="mb-2"><i class="icofont-chart-histogram me-2"></i>Password Strength: <span id="credStrength"></span></p>
-                        <p class="mb-2"><i class="icofont-calendar me-2"></i>Password Creation / Save Date: <span id="credStorage"></span></p>
                         <p class="mb-2"><i class="icofont-web me-2"></i>URL: <span id="credURL"></span></p>
                         <p class="mb-2"><i class="icofont-dashboard-web me-2"></i>Browser: <span id="credBrowser"></span></p>
                         <p class="mb-2"><i class="icofont-file-sql me-2"></i>Storage Location: <span id="credFilename"></span></p>
                         <hr>
                         <p class="mb-2"><i class="icofont-danger-zone me-2"></i>Compromised: <span id="credCompromised"></span></p>
-                        <p class="mb-2"><i class="icofont-pie-chart me-2"></i>Occurrence: <span id="credOccurrence"></span></p>
+                        <p class="mb-2"><i class="icofont-pie-chart me-2"></i>Occurrence (Number of Times Seen in a Breach): <span id="credOccurrence"></span></p>
                     </div>
                 </div>
             </div>
@@ -186,6 +174,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 {% block page_scripts %}
 <script async src="https://maps.googleapis.com/maps/api/js?key={{ maps_key }}&callback=initMap"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/js/jquery.dataTables.min.js" integrity="sha256-3aHVku6TxTRUkkiibvwTz5k8wc7xuEr1QqTB+Oo5Q7I=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-responsive@2.2.9/js/dataTables.responsive.min.js" integrity="sha256-f+r2TX3KkC6avpv7F8bRhVZZO8nW7xJhmCKd6k7PqGE=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js" integrity="sha256-iJxB0L7blNZTAFBu/ESTfVaVTqFrTeISeWk7RUEePFY=" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function(){
         $('.accordion-body button').click(function() {
@@ -197,33 +188,152 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         });
     });
 
-    function viewCredential(credentialID) {
-        $.ajax({
-            type: "POST",
-            url: "{% url 'credential' %}",
-            dataType: "json",
-            data: {
-                csrfmiddlewaretoken: '{{ csrf_token }}',
-                credentialID
-            },
-            success: function(data) {
-                $('#credUsername').text(data.username);
-                $('#credStrength').text(data.password_strength);
-                $('#credStorage').text(data.storage);
-                $('#credURL').text(data.url);
-                $('#credBrowser').text(data.browser);
-                $('#credFilename').text(data.filename);
+    
+    {% if scan_record.scan.browser_passwords and scan_data.browser_passwords != None %}
+        $(document).ready(function(){
+            $('#credentials').dataTable( {
+                "lengthChange": false,
+                "searching": false,
+                "pageLength": 10,
+                "ordering": false,
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+            });
 
-                if(data.compromised) {
-                    $('#credCompromised').text("Potentially Compromised");
-                } else {
-                    $('#credCompromised').text("Not Detected");
-                }
-                $('#credOccurrence').text(data.occurrence);
-                $('#credentialModal').modal('show');
-            }
+            var credentialUsernamesChart = echarts.init(document.getElementById('usernames')).setOption({
+                title: {
+                    display: true,
+                    text: 'Usernames & Email Addresses',
+                    textStyle: {
+                        color: '#34cc96',
+                        fontWeight: 'normal',
+                        fontFamily: 'Space Mono',
+                        fontSize: 16
+                    },
+                    top: '15px',
+                    left: '48%',
+                    textAlign: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a}<br/>{b}: {d}%'
+                },
+                visualMap: {
+                    show: false,
+                    min: 5,
+                    max: 100,
+                    inRange: {
+                        color: '#34cc96',
+                        colorLightness: [0.2, 1]
+                    }
+                },
+                series: [
+                    {
+                        name: 'Usernames',
+                        type: 'pie',
+                        radius: '65%',
+                        center: ['50%', '50%'],
+                        roseType: 'radius',
+                        data: [
+                            {% for username in scan_data.usernames %}
+                                {
+                                    value: {{ username.username__count }},
+                                    name: '{{ username.username }}'
+                                },
+                            {% endfor %}
+                        ].sort(function (a, b) { return a.value - b.value; }),
+                        itemStyle: {
+                            shadowBlur: 30,
+                            shadowColor: 'rgba(0, 0, 0, 0.3)'
+                        },
+                        animationType: 'scale',
+                        animationEasing: 'elasticOut',
+                        animationDelay: function (idx) {
+                            return Math.random() * 200;
+                        }
+                    }
+                ]
+            });
+
+            var compromisedCredentialsChart = echarts.init(document.getElementById('compromised')).setOption({
+                title: {
+                    display: true,
+                    text: 'Compromised Passwords',
+                    textStyle: {
+                        color:  {% if scan_data.compromised > 0 %}'#e9a464'{% else %}'#34cc96'{% endif %},
+                        fontWeight: 'normal',
+                        fontFamily: 'Space Mono',
+                        fontSize: 16
+                    },
+                    top: '15px',
+                    left: '48%',
+                    textAlign: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                series: [
+                    {
+                        name: 'Password',
+                        type: 'pie',
+                        radius: ['45%', '65%'],
+                        center: ['50%', '50%'],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            shadowBlur: 30,
+                            shadowColor: 'rgba(0, 0, 0, 0.3)'
+                        },
+                        data: [
+                            {
+                                value: {{ scan_data.compromised }},
+                                name: 'Potentially Compromised',
+                                itemStyle: {
+                                    color: '#D06262'
+                                }
+                            },
+                            {
+                                value: {{ scan_data.browser_passwords.count|subtract:scan_data.compromised }},
+                                name: 'Not Detected in Dataset',
+                                itemStyle: {
+                                    color: '#4adfab'
+                                }
+                            },
+                        ]
+                    }
+                ]
+            });
         });
-    }
+        function viewCredential(credentialID) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'credential' %}",
+                dataType: "json",
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    credentialID
+                },
+                success: function(data) {
+                    $('#credUsername').text(data.username);
+                    $('#credStrength').text(data.password_strength);
+                    $('#credURL').text(data.url);
+                    $('#credBrowser').text(data.browser);
+                    $('#credFilename').text(data.filename);
+
+                    if(data.compromised) {
+                        $('#credCompromised').text("Potentially Compromised");
+                    } else {
+                        $('#credCompromised').text("Not Detected");
+                    }
+                    $('#credOccurrence').text(data.occurrence);
+                    $('#credentialModal').modal('show');
+                }
+            });
+        }
+    {% endif %}
     
     function initMap() {
         const map = new google.maps.Map(document.getElementById("map"), {

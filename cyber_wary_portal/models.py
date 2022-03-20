@@ -468,7 +468,7 @@ class CredentialRecord(DefaultFields):
     class SecurityRating(models.IntegerChoices):
         VERY_WEAK = 1
         WEAK = 2
-        OK = 3
+        MEDIUM = 3
         STRONG = 4
         VERY_STRONG = 5
 
@@ -498,7 +498,7 @@ class CredentialRecord(DefaultFields):
 
     password_strength = models.IntegerField(
         choices=SecurityRating.choices,
-        default=SecurityRating.OK,
+        default=SecurityRating.MEDIUM,
         validators=[
             MaxValueValidator(5),
             MinValueValidator(1)

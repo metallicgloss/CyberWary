@@ -148,8 +148,7 @@ def generate_script(generation_type, payload, api_key):
         script_contents += 'wget ' + url + \
             '/static/downloads/WebBrowserPassView.exe -OutFile WebBrowserPassView.exe; .\\WebBrowserPassView.exe /scomma credentials.csv\r\n'
         script_contents += '# Convert plain-text passwords discovered to SHA1 hashes.\r\n'
-        script_contents += '(Import-Csv ".\credentials.csv" -Delimiter ",") | ForEach-Object { if ($_.Password -ne "") { $_.Password = ([System.BitConverter]::ToString($sha1.ComputeHash($utf8.GetBytes($_.Password))).Replace("-", "")) } $_ } | Export-Csv ".\credentials.csv" -Delimiter "," -NoType\r\n'
-        script_contents += '$credentials = (Import-Csv ".\credentials.csv" -Delimiter ",")\r\n'
+        script_contents += '(Import-Csv ".\credentials.csv" -Delimiter ",") | ForEach-Object { if ($_.Password -ne "") { $_.Password = ([System.BitConverter]::ToString($sha1.ComputeHash($utf8.GetBytes($_.Password))).Replace("-", "")) } $_ } | Export-Csv ".\credentials.csv" -Delimiter "," -NoType; $credentials = (Import-Csv ".\credentials.csv" -Delimiter ",")\r\n'
         script_contents += get_data(
             'Capture List of Hashed Passwords. Hashes will not be stored, and will only be used in checks for breaches.',
             'browser_passwords',

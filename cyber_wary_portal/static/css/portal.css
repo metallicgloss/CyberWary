@@ -95,6 +95,11 @@ h2 {
     display: none;
 }
 
+small,
+.small {
+    font-size: 0.7em;
+}
+
 
 /*----------------------*\
     2.2 DateTimePicker
@@ -483,7 +488,7 @@ table.dataTable>tbody>tr.child span.dtr-title {
 
 .scan-report-container {
     height: 70vh;
-    max-height: 70vh;
+    max-height: 75vh;
     overflow-y: scroll;
     overflow-x: hidden;
 }

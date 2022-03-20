@@ -68,12 +68,9 @@ def credential(request):
             credential['occurrence'] = credential_record.occurrence
             credential['filename'] = credential_record.filename
 
-            print(credential_record.url)
             if "android" in credential_record.url:
-                print("here")
                 credential['url'] = re.sub(r'/.+?@', '', credential_record.url)
             else:
-                print("here1")
                 credential['url'] = credential_record.url
 
             return JsonResponse(
@@ -95,7 +92,7 @@ def start_scan(request):
         'system_information'
     )
     
-    if(scan is False or scan_record is not False):
+    if(False in [scan, not scan_record]):
         return bad_request(api_request)
     
     geo_ip = GeoIP2()
@@ -358,9 +355,12 @@ def browser_passwords(request):
     api_request.payload = "Pending Processing"
     api_request.save()
 
-    if((scan or scan_record) is False):
-        return bad_request(api_request)
+    existing_scan = CredentialScan.objects.filter(
+        scan_record = scan_record,
+    ).exists()
 
+    if(False in [scan, scan_record, not existing_scan]):
+        return bad_request(api_request)
 
     credential_scan = CredentialScan.objects.create(
         scan_record = scan_record,
@@ -383,6 +383,16 @@ def browser_passwords(request):
         else:
             created = None
         
+        if(credential['Password Strength'] == "Very Strong"):
+            password_strength = CredentialRecord.SecurityRating.VERY_STRONG
+        elif (credential['Password Strength'] == "Strong"):
+            password_strength = CredentialRecord.SecurityRating.STRONG
+        elif (credential['Password Strength'] == "Medium"):
+            password_strength = CredentialRecord.SecurityRating.MEDIUM
+        elif (credential['Password Strength'] == "Weak"):
+            password_strength = CredentialRecord.SecurityRating.WEAK
+        else:
+            password_strength = CredentialRecord.SecurityRating.VERY_WEAK
         
         CredentialRecord.objects.create(
             credential_scan = credential_scan,
@@ -392,12 +402,12 @@ def browser_passwords(request):
             )[0],
             storage = created,
             username = credential['User Name'],
-            password_strength = CredentialRecord.SecurityRating.OK,
+            password_strength = password_strength,
             filename = credential['Filename'],
             compromised = compromised,
             occurrence = occurrence
         )
-        payload[id]['Password'] = "-- FULL HASH NOT STORED --"
+        payload[id]['Password'] = "--- HASH REMOVED - NOT STORED ---"
 
     api_request.payload = payload
     api_request.save()

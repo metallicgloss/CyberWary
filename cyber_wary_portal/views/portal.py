@@ -35,6 +35,7 @@ from django.utils.timezone import make_aware
 from formtools.wizard.views import SessionWizardView
 from pytz import timezone
 from rest_framework.authtoken.models import Token
+from django.db.models import Count
 import json
 
 
@@ -167,11 +168,29 @@ def report(request, scan_key, report):
         return HttpResponseNotFound()
 
     if(scan_record.scan.browser_passwords):
-        scan_data['browser_passwords'] = CredentialRecord.objects.filter(
-            credential_scan = CredentialScan.objects.get(
-                scan_record = scan_record
+        try:
+            scan_data['browser_passwords'] = CredentialRecord.objects.filter(
+                credential_scan=CredentialScan.objects.get(
+                    scan_record=scan_record
+                )
             )
-        )
+            scan_data['usernames'] = scan_data['browser_passwords'].all().values(
+                "username"
+            ).annotate(
+                Count(
+                    'username',
+                    distinct=True
+                )
+            )
+            scan_data['compromised'] = scan_data['browser_passwords'].filter(
+                compromised=True
+            ).count()
+            scan_data['weak'] = scan_data['browser_passwords'].exclude(
+                password_strength=CredentialRecord.SecurityRating.VERY_STRONG
+            ).count()
+
+        except (CredentialRecord.DoesNotExist, CredentialScan.DoesNotExist):
+            scan_data['browser_passwords'] = None
 
     return render(
         request,
@@ -197,6 +216,7 @@ def history(request):
             ).order_by('-created')
         }
     )
+
 
 @login_required
 def modify(request):
@@ -295,6 +315,7 @@ def delete(request):
 
     else:
         return redirect(reverse('account_modify'))
+
 
 @login_required
 def api(request):
