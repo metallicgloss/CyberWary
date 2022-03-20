@@ -92,14 +92,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         </div>
         <div class="col-lg-12 col-xl-3">
             <div class="scan-info ps-4">
-                <h5>Scan Record Information</h5>
-                <p class="mb-2">Scan Initialisation: <span>{{ scan_record.created|date:"d/m/Y H:i" }}</span></p>
-
-                <h5 class="mt-4">Device Information</h5>
-                <p class="mb-1">Device Name: <span>{{ scan_record.name }}</span></p>
-                <p class="mb-1">Registered Owner: <span>{{ scan_record.os_install.owner }}</span></p>
-                <p class="mb-1">Active User: <span>{{ scan_record.current_user }}</span></p>
-                <p class="mb-1">Public IP Address: <span>{{ scan_record.public_ip }}</span></p>
+                <h5>Scan Record</h5>
+                <p class="mb-2">Start Date/Time: <span>{{ scan_record.created|date:"d/m/Y H:i" }}</span></p>
+                <p class="mb-2">End Date/Time: <span>{{ scan_record.updated|date:"d/m/Y H:i" }}</span></p>
+                <p class="mb-2">Duration: <span>{{ scan_duration.0 }}m {{ scan_duration.1 }}s</span></p>
             </div>
         </div>
     </div>

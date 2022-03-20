@@ -57,13 +57,6 @@ class Scan(DefaultFields):
         BLUE = 'B'
         RED = 'R'
 
-    class ScanStatus(models.IntegerChoices):
-        PENDING = 1
-        IN_PROGRESS = 2
-        PARTIALLY_COMPLETED = 3
-        COMPLETED = 4
-        NODATA = 5
-
     # Foreign key to the user that owns the scan.
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -114,16 +107,6 @@ class Scan(DefaultFields):
     expiry = models.DateTimeField(
         help_text="The expiry date/time that new data can be submitted for a scan.",
         null=True
-    )
-
-    progress = models.IntegerField(
-        choices=ScanStatus.choices,
-        default=ScanStatus.PENDING,
-        help_text="The current progress/status of a scan.",
-        validators=[
-            MaxValueValidator(5),
-            MinValueValidator(1)
-        ]
     )
 
     system_users = models.BooleanField(
@@ -233,6 +216,7 @@ class Language(DefaultFields):
         null=True
     )
 
+
 class OperatingSystem(DefaultFields):
     name = models.CharField(
         help_text="The readable name of an operating system.",
@@ -269,7 +253,7 @@ class OperatingSystemInstall(DefaultFields):
         help_text="The date that the version of the OS was installed.",
         null=True
     )
-    
+
     keyboard = models.ForeignKey(
         Language,
         on_delete=models.SET_DEFAULT,
@@ -314,7 +298,7 @@ class OperatingSystemInstall(DefaultFields):
         default=False
     )
 
-    
+
 class OperatingSystemInstalledLanguages(DefaultFields):
     operating_system_installation = models.ForeignKey(
         OperatingSystemInstall,
@@ -334,7 +318,7 @@ class Bios(DefaultFields):
         null=True
     )
 
-    version = models.CharField( 
+    version = models.CharField(
         help_text="The version / revision of the BIOS",
         max_length=16,
         null=True
@@ -376,6 +360,13 @@ class BiosInstall(DefaultFields):
 
 
 class ScanRecord(DefaultFields):
+    class ScanStatus(models.IntegerChoices):
+        PENDING = 1
+        IN_PROGRESS = 2
+        PARTIALLY_COMPLETED = 3
+        COMPLETED = 4
+        NODATA = 5
+
     scan = models.ForeignKey(
         Scan,
         on_delete=models.CASCADE
@@ -407,7 +398,7 @@ class ScanRecord(DefaultFields):
         help_text="The date/time that the system was last powered on.",
         null=True
     )
-    
+
     current_user = models.CharField(
         help_text="The name of the user performing the scan.",
         max_length=32,
@@ -430,4 +421,95 @@ class ScanRecord(DefaultFields):
         help_text="The country of the scanned device.",
         max_length=2,
         null=True
+    )
+
+    progress = models.IntegerField(
+        choices=ScanStatus.choices,
+        default=ScanStatus.PENDING,
+        help_text="The current progress/status of a scan.",
+        validators=[
+            MaxValueValidator(5),
+            MinValueValidator(1)
+        ]
+    )
+
+
+class CredentialScan(DefaultFields):
+    class ScanStatus(models.IntegerChoices):
+        PENDING = 1
+        IN_PROGRESS = 2
+        PARTIALLY_COMPLETED = 3
+        COMPLETED = 4
+
+    scan_record = models.ForeignKey(
+        ScanRecord,
+        on_delete=models.CASCADE
+    )
+
+    progress = models.IntegerField(
+        choices=ScanStatus.choices,
+        default=ScanStatus.PENDING,
+        help_text="The current progress/status of the check.",
+        validators=[
+            MaxValueValidator(5),
+            MinValueValidator(1)
+        ]
+    )
+
+
+class Browser(DefaultFields):
+    browser_name = models.CharField(
+        max_length=64,
+        null=True
+    )
+
+
+class CredentialRecord(DefaultFields):
+    class SecurityRating(models.IntegerChoices):
+        VERY_WEAK = 1
+        WEAK = 2
+        OK = 3
+        STRONG = 4
+        VERY_STRONG = 5
+
+    credential_check = models.ForeignKey(
+        CredentialScan,
+        on_delete=models.CASCADE
+    )
+
+    url = models.CharField(
+        max_length=128,
+        null=True
+    )
+
+    browser = models.ForeignKey(
+        Browser,
+        on_delete=models.CASCADE
+    )
+
+    storage = models.DateField(
+        null=True
+    )
+
+    username = models.CharField(
+        max_length=64,
+        null=True
+    )
+
+    password_strength = models.IntegerField(
+        choices=SecurityRating.choices,
+        default=SecurityRating.OK,
+        validators=[
+            MaxValueValidator(5),
+            MinValueValidator(1)
+        ]
+    )
+
+    filename = models.CharField(
+        max_length=128,
+        null=True
+    )
+
+    compromised = models.BooleanField(
+        default=True
     )

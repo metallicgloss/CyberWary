@@ -17,31 +17,32 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from cyber_wary_site import views
-from django.urls import path
+from datetime import datetime
+from django.conf import settings
+from django.utils.timezone import make_aware
 
-urlpatterns = [
-    path(
-        '',
-        views.index,
-        name='index'
-    ),
 
-    path(
-        'software/',
-        views.software,
-        name='software'
-    ),
+def get_ip_address(request):
+    if(not settings.DEBUG):
+        ip = request.META.get('HTTP_CF_CONNECTING_IP')
 
-    path(
-        'pp/',
-        views.pp,
-        name='pp'
-    ),
+        if ip is None:
+            ip = request.META.get('REMOTE_ADDR')
 
-    path(
-        'tos/',
-        views.tos,
-        name='tos'
-    ),
-]
+    else:
+        ip = "185.216.147.18"
+
+    return ip
+
+
+def convert_date(date):
+    if date is not None:
+        date = make_aware(
+            datetime.fromtimestamp(
+                int(
+                    date[date.find("(")+1:date.find(")")][0:10]
+                )
+            )
+        )
+
+    return date

@@ -17,8 +17,6 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from django.utils.timezone import make_aware
-from datetime import datetime
 from django.conf import settings
 
 if(settings.DEBUG):
@@ -144,13 +142,13 @@ def generate_script(generation_type, payload, api_key):
 
     if(payload['browser_passwords']):
         script_contents += '# Capture List of Credentials Stored in Browsers\r\n'
-        script_contents += '$DesktopPath = [Environment]::GetFolderPath(\'Desktop\')\r\n'
         script_contents += '$sha1 = New-Object -TypeName System.Security.Cryptography.SHA1CryptoServiceProvider\r\n'
         script_contents += '$utf8 = New-Object -TypeName System.Text.UTF8Encoding\r\n'
         script_contents += '# Temporarily download WebBrowserPassView - Developed & Copyright by Nir Sofer.\r\n'
-        script_contents += 'wget ' + url + '/static/downloads/WebBrowserPassView.exe\r\n'
+        script_contents += 'wget ' + url + \
+            '/static/downloads/WebBrowserPassView.exe -OutFile WebBrowserPassView.exe\r\n'
         script_contents += '# Capture credentials from Chrome, Firefox, Edge, IE, Opera and Safari.\r\n'
-        script_contents += '.\WebBrowserPassView.exe /scomma credentials.csv\r\n'
+        script_contents += '.\\WebBrowserPassView.exe /scomma credentials.csv\r\n'
         script_contents += get_data(
             'Capture List of Hashed Passwords. Hashes will not be stored, and will only be used in checks for breaches.',
             'browser_passwords',
@@ -160,30 +158,3 @@ def generate_script(generation_type, payload, api_key):
         script_contents += 'Remove-Item .\WebBrowserPassView.exe; Remove-Item .\credentials.csv # Cleanup\r\n'
 
     return script_contents
-
-
-def get_ip_address(request):
-    if(not settings.DEBUG):
-        ip = request.META.get('HTTP_CF_CONNECTING_IP')
-
-        if ip is None:
-            ip = request.META.get('REMOTE_ADDR')
-
-    else:
-        ip = "185.216.147.18"
-
-    return ip
-
-
-def convert_date(date):
-    if date is not None:
-        date = make_aware(
-            datetime.fromtimestamp(
-                int(
-                    date[date.find("(")+1:date.find(")")][0:10]
-                )
-            )
-        )
-    
-
-    return date

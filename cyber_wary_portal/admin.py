@@ -21,4 +21,7 @@ from .models import SystemUser
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-admin.site.register(SystemUser, UserAdmin)
+admin.site.register(
+    SystemUser,
+    UserAdmin
+)

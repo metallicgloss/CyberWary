@@ -28,6 +28,11 @@ urlpatterns = [
 
     path(
         'portal/',
-        include('cyber_wary_portal.urls')
+        include('cyber_wary_portal.urls.portal')
+    ),
+
+    path(
+        'portal/api/',
+        include('cyber_wary_portal.urls.api')
     ),
 ]
