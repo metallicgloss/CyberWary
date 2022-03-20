@@ -472,7 +472,7 @@ class CredentialRecord(DefaultFields):
         STRONG = 4
         VERY_STRONG = 5
 
-    credential_check = models.ForeignKey(
+    credential_scan = models.ForeignKey(
         CredentialScan,
         on_delete=models.CASCADE
     )
@@ -487,7 +487,7 @@ class CredentialRecord(DefaultFields):
         on_delete=models.CASCADE
     )
 
-    storage = models.DateField(
+    storage = models.DateTimeField(
         null=True
     )
 
@@ -511,5 +511,9 @@ class CredentialRecord(DefaultFields):
     )
 
     compromised = models.BooleanField(
-        default=True
+        default=False
+    )
+
+    occurrence = models.IntegerField(
+        default=0
     )

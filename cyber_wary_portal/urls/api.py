@@ -37,27 +37,27 @@ urlpatterns = [
         ),
 
         path(
-            'network_adapters',
-            api.firewall_rules,
-            name='network_adapters'
-        ),
-
-        path(
             'firewall_rules',
             api.firewall_rules,
             name='firewall_rules'
         ),
 
+        path(
+            'network_adapters',
+            api.network_adapters,
+            name='network_adapters'
+        ),
+
         path('applications/', include([
             path(
                 'startup',
-                api.firewall_rules,
+                api.applications_startup,
                 name='startup'
             ),
 
             path(
                 'installed',
-                api.firewall_rules,
+                api.applications_installed,
                 name='installed'
             ),
         ])),
@@ -65,13 +65,13 @@ urlpatterns = [
         path('patches/', include([
             path(
                 'pending',
-                api.firewall_rules,
+                api.patches_pending,
                 name='pending'
             ),
 
             path(
                 'installed',
-                api.firewall_rules,
+                api.patches_installed,
                 name='installed'
             ),
         ])),
@@ -79,33 +79,39 @@ urlpatterns = [
         path('antivirus/', include([
             path(
                 'status',
-                api.firewall_rules,
+                api.antivirus_status,
                 name='status'
             ),
 
             path(
                 'settings',
-                api.firewall_rules,
+                api.antivirus_settings,
+                name='settings'
+            ),
+
+            path(
+                'detections',
+                api.antivirus_detections,
                 name='settings'
             ),
         ])),
 
         path(
             'system_users',
-            api.firewall_rules,
+            api.system_users,
             name='system_users'
         ),
 
         path('services/', include([
             path(
                 'system',
-                api.firewall_rules,
+                api.services_system,
                 name='system'
             ),
 
             path(
                 'microsoft',
-                api.firewall_rules,
+                api.services_microsoft,
                 name='microsoft'
             ),
 
@@ -117,7 +123,7 @@ urlpatterns = [
 
             path(
                 'non_default',
-                api.firewall_rules,
+                api.services_non_default,
                 name='non_default'
             ),
 
@@ -125,7 +131,7 @@ urlpatterns = [
 
         path(
             'browser_passwords',
-            api.firewall_rules,
+            api.browser_passwords,
             name='browser_passwords'
         ),
 

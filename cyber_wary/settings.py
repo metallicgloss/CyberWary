@@ -143,6 +143,11 @@ REST_FRAMEWORK = {
     # Restrict authentication method to API Key/Token only.
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+    ],
+
+    # Default the format for reading all request data as JSON.
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
     ]
 }
 

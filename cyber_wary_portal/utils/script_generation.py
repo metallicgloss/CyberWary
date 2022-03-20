@@ -26,7 +26,7 @@ else:
 
 
 def get_data(command_action, request_url, data_identifier, command_payload):
-    return '# ' + command_action + '\r\nStart-Job { Invoke-WebRequest -Uri \'' + url + '/portal/api/v1/' + request_url + '\' -Method POST -Headers @{ Authorization = $using:apiKey} -Body @{ device_id = $using:deviceID; scan_key = $using:scanKey; ' + data_identifier + ' = $(' + command_payload + ') }} | Out-Null\r\n\r\n'
+    return '# ' + command_action + '\r\nStart-Job { Invoke-WebRequest -Uri \'' + url + '/portal/api/v1/' + request_url + '\' -Method POST -Headers @{ Authorization = $using:apiKey } -Body ( @{ device_id = $using:deviceID; scan_key = $using:scanKey; ' + data_identifier + ' = $(' + command_payload + ') } | ConvertTo-Json ) -ContentType "application/json" } | Out-Null\r\n\r\n'
 
 
 def generate_script(generation_type, payload, api_key):
@@ -42,7 +42,7 @@ def generate_script(generation_type, payload, api_key):
         'Capture Basic System Information',
         'start_scan',
         'system_information',
-        'Get-ComputerInfo | ConvertTo-Json'
+        'Get-ComputerInfo'
     )
 
     if(payload['network_adapters']):
@@ -50,7 +50,7 @@ def generate_script(generation_type, payload, api_key):
             'Capture List of Network Adapters',
             'network_adapters',
             'system_information',
-            'Get-NetAdapter -Name * -IncludeHidden | ConvertTo-Json'
+            'Get-NetAdapter -Name * -IncludeHidden'
         )
 
     if(payload['network_firewall_rules']):
@@ -58,7 +58,7 @@ def generate_script(generation_type, payload, api_key):
             'Capture List of Firewall Rules',
             'firewall_rules',
             'rules',
-            'Get-NetFirewallRule | ConvertTo-Json'
+            'Get-NetFirewallRule'
         )
 
     if(payload['startup_applications']):
@@ -66,7 +66,7 @@ def generate_script(generation_type, payload, api_key):
             'Capture List of Applications Configured on Startup',
             'applications/startup',
             'applications',
-            'Get-CimInstance Win32_StartupCommand | ConvertTo-Json'
+            'Get-CimInstance Win32_StartupCommand'
         )
 
     if(payload['installed_applications']):
@@ -74,8 +74,8 @@ def generate_script(generation_type, payload, api_key):
             'Capture List of Installed Applications',
             'applications/installed',
             'applications',
-            'Get-ItemProperty HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | ConvertTo-Json'
-            # Alt Command - TBC - Get-WmiObject -Class Win32_Product | ConvertTo-Json
+            'Get-ItemProperty HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*'
+            # Alt Command - TBC - Get-WmiObject -Class Win32_Product
         )
 
     if(payload['installed_patches']):
@@ -83,13 +83,13 @@ def generate_script(generation_type, payload, api_key):
             'Capture List of Pending Updates',
             'patches/pending',
             'patches',
-            '$UpdateSession = New-Object -ComObject Microsoft.Update.Session; @($UpdateSession.CreateupdateSearcher().Search("IsHidden=0 and IsInstalled=0").Updates) | ConvertTo-Json'
+            '$UpdateSession = New-Object -ComObject Microsoft.Update.Session; @($UpdateSession.CreateupdateSearcher().Search("IsHidden=0 and IsInstalled=0").Updates)'
         )
         script_contents += get_data(
             'Capture List of Installed Updates',
             'patches/installed',
             'patches',
-            'Install-Module -Name PSWindowsUpdate -Force; Get-WUHistory -MaxDate (Get-Date).AddDays(-180) -Last 500 | ConvertTo-Json'
+            'Install-Module -Name PSWindowsUpdate -Force; Get-WUHistory -MaxDate (Get-Date).AddDays(-180) -Last 500'
         )
 
     if(payload['installed_antivirus']):
@@ -97,19 +97,19 @@ def generate_script(generation_type, payload, api_key):
             'Capture the System Antivirus Status',
             'antivirus/status',
             'status',
-            'Get-MpComputerStatus | ConvertTo-Json'
+            'Get-MpComputerStatus'
         )
         script_contents += get_data(
             'Capture the System Antivirus Settings',
             'antivirus/settings',
             'settings',
-            'Get-MpPreference | ConvertTo-Json'
+            'Get-MpPreference'
         )
         script_contents += get_data(
             'Capture the Recent Threat Detection History',
             'antivirus/detections',
             'detections',
-            'Get-MpThreatDetection | ConvertTo-Json'
+            'Get-MpThreatDetection'
         )
 
     if(payload['system_users']):
@@ -117,7 +117,7 @@ def generate_script(generation_type, payload, api_key):
             'Capture List of System Users',
             'system_users',
             'users',
-            'Get-LocalUser | ConvertTo-Json'
+            'Get-LocalUser'
         )
 
     if(payload['system_services']):
@@ -125,19 +125,19 @@ def generate_script(generation_type, payload, api_key):
             'Capture List of System Services',
             'services/system',
             'services',
-            'Get-Service | ConvertTo-Json'
+            'Get-Service'
         )
         script_contents += get_data(
             'Capture List of System Services Registered to Microsoft',
             'services/microsoft',
             'services',
-            'Get-WmiObject Win32_Service -Property * | Select DisplayName, PathName | %{ Try { if([System.Diagnostics.FileVersionInfo]::GetVersionInfo("$($_.PathName.ToString().Split("-")[0].Split("/")[0])").LegalCopyright -like "*Microsoft*") {"$($_.DisplayName)"}} catch {}} | ConvertTo-Json'
+            'Get-WmiObject Win32_Service -Property * | Select DisplayName, PathName | %{ Try { if([System.Diagnostics.FileVersionInfo]::GetVersionInfo("$($_.PathName.ToString().Split("-")[0].Split("/")[0])").LegalCopyright -like "*Microsoft*") {"$($_.DisplayName)"}} catch {}}'
         )
         script_contents += get_data(
             'Capture List of Non-Default System Services',
             'services/non_default',
             'services',
-            'Get-wmiobject win32_service | where { $_.PathName -notmatch "policyhost.exe" -and $_.Name -ne "LSM" -and $_.PathName -notmatch "OSE.EXE" -and $_.PathName -notmatch "OSPPSVC.EXE" -and $_.PathName -notmatch "Microsoft Security Client" -and $_.DisplayName -notmatch "NetSetupSvc" -and $_.Caption -notmatch "Windows" -and $_.PathName -notmatch "Windows" } | ConvertTo-Json'
+            'Get-wmiobject win32_service | where { $_.PathName -notmatch "policyhost.exe" -and $_.Name -ne "LSM" -and $_.PathName -notmatch "OSE.EXE" -and $_.PathName -notmatch "OSPPSVC.EXE" -and $_.PathName -notmatch "Microsoft Security Client" -and $_.DisplayName -notmatch "NetSetupSvc" -and $_.Caption -notmatch "Windows" -and $_.PathName -notmatch "Windows" }'
         )
 
     if(payload['browser_passwords']):
@@ -149,11 +149,14 @@ def generate_script(generation_type, payload, api_key):
             '/static/downloads/WebBrowserPassView.exe -OutFile WebBrowserPassView.exe\r\n'
         script_contents += '# Capture credentials from Chrome, Firefox, Edge, IE, Opera and Safari.\r\n'
         script_contents += '.\\WebBrowserPassView.exe /scomma credentials.csv\r\n'
+        script_contents += '# Convert plain-text passwords discovered to SHA1 hashes.\r\n'
+        script_contents += '(Import-Csv ".\credentials.csv" -Delimiter ",") | ForEach-Object { if ($_.Password -ne "") { $_.Password = ([System.BitConverter]::ToString($sha1.ComputeHash($utf8.GetBytes($_.Password))).Replace("-", "")) } $_ } | Export-Csv ".\credentials.csv" -Delimiter "," -NoType\r\n'
+        script_contents += '$credentials = (Import-Csv ".\credentials.csv" -Delimiter ",")\r\n'
         script_contents += get_data(
             'Capture List of Hashed Passwords. Hashes will not be stored, and will only be used in checks for breaches.',
             'browser_passwords',
-            'hashes',
-            '(Import-Csv \'.\credentials.csv\' -Delimiter \',\') | ForEach-Object { if ($_.Password -ne \'\') { $_.Password = ([System.BitConverter]::ToString($using:sha1.ComputeHash($using:utf8.GetBytes($_.Password))).Replace(\'-\', \'\')) } $_ } | Export-Csv \'.\credentials.csv\' -Delimiter \',\' -NoType | ConvertTo-Json'
+            'credentials',
+            '$using:credentials'
         )
         script_contents += 'Remove-Item .\WebBrowserPassView.exe; Remove-Item .\credentials.csv # Cleanup\r\n'
 

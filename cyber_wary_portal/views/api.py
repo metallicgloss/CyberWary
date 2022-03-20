@@ -18,10 +18,10 @@
 #
 
 from cyber_wary_portal.models import *
-from cyber_wary_portal.utils.data_import import get_ip_address, convert_date
+from cyber_wary_portal.utils.data_import import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.gis.geoip2 import GeoIP2
-from django.http.response import HttpResponse, JsonResponse, HttpResponseNotFound, HttpResponseBadRequest
+from django.http.response import HttpResponse, JsonResponse, HttpResponseNotFound
 from rest_framework.decorators import api_view
 import json
 
@@ -39,11 +39,11 @@ def api_payload(request):
         return JsonResponse(
             json.loads(
                 ApiRequest.objects.get(
-                    user=request.user,
-                    pk=payload_id,
-                    type=request_type,
+                    user = request.user,
+                    pk = payload_id,
+                    type = request_type,
                 ).payload
-            ), safe=False
+            ), safe = False
         )
     except ApiRequest.DoesNotExist:
         return HttpResponseNotFound()
@@ -51,115 +51,317 @@ def api_payload(request):
 
 @api_view(['POST', ])
 def start_scan(request):
-    data = json.loads(
-        request.POST['system_information']
+    api_request, device, scan, scan_record, payload = setup_request(
+        request,
+        'browser_passwords',
+        'system_information'
+    )
+    
+    if(scan is False or scan_record is not False):
+        return bad_request(api_request)
+    
+    geo_ip = GeoIP2()
+
+    os_install = OperatingSystemInstall.objects.create(
+        operating_system = OperatingSystem.objects.get_or_create(
+            name = payload['OsName'],
+            version = payload['OsVersion']
+        )[0],
+        serial = payload['OsSerialNumber'],
+        timezone = payload['TimeZone'],
+        install_date = convert_date(payload['OsInstallDate']),
+        keyboard = Language.objects.get_or_create(
+            locale = payload['KeyboardLayout']
+        )[0],
+        owner = payload['CsPrimaryOwnerName'],
+        logon_server = payload['LogonServer'],
+        installed_memory = payload['CsPhyicallyInstalledMemory'],
+        domain = payload['CsPartOfDomain'],
+        portable = payload['OsPortableOperatingSystem'],
+        virtual_machine = payload['HyperVisorPresent'],
+        debug_mode = payload['OsDebug'],
     )
 
-    api_request = ApiRequest(
-        user=request.user,
-        type='start_scan',
-        payload=json.dumps(data),
-        method=ApiRequest.RequestMethod.POST
-    )
-    api_request.save()
-
-    device_id = request.POST['device_id'].replace(
-        '{', ''
-    ).replace(
-        '}', ''
-    )
-
-    scan_check = Scan.objects.filter(
-        user=request.user,
-        scan_key=request.POST['scan_key']
-    ).exists()
-
-    if(scan_check):
-        scan = Scan.objects.get(
-            user=request.user,
-            scan_key=request.POST['scan_key']
+    for language in payload['OsMuiLanguages']:
+        OperatingSystemInstalledLanguages.objects.create(
+            operating_system_installation = os_install,
+            installed_language = Language.objects.get_or_create(
+                locale = language
+            )[0],
         )
 
-        existing_record_check = ScanRecord.objects.filter(
-            scan=scan,
-            device_id=device_id
-        ).exists()
+    ScanRecord.objects.create(
+        scan = scan,
+        device_id = device,
+        name = payload['CsDNSHostName'],
+        os_install = os_install,
+        bios_install = BiosInstall.objects.create(
+            bios = Bios.objects.get_or_create(
+                name = payload['BiosName'],
+                version = payload['BiosVersion'],
+                manufacturer = payload['BiosManufacturer'],
+                release_date = convert_date(payload['BiosReleaseDate'])
+            )[0],
+            install_date = convert_date(payload['BiosInstallDate']),
+            status = payload['BiosStatus'],
+            primary = payload['BiosPrimaryBIOS']
+        ),
+        boot_time = convert_date(payload['OsLastBootUpTime']),
+        current_user = payload['CsUserName'],
+        public_ip = get_ip_address(request),
+        city = geo_ip.city(get_ip_address(request))['city'],
+        country = geo_ip.country_code(get_ip_address(request)).lower(),
+    )
 
-        if(not existing_record_check):
-            geo_ip = GeoIP2()
-
-            os_install = OperatingSystemInstall(
-                operating_system=OperatingSystem.objects.get_or_create(
-                    name=data['OsName'],
-                    version=data['OsVersion']
-                )[0],
-                serial=data['OsSerialNumber'],
-                timezone=data['TimeZone'],
-                install_date=convert_date(data['OsInstallDate']),
-                keyboard=Language.objects.get_or_create(
-                    locale=data['KeyboardLayout']
-                )[0],
-                owner=data['CsPrimaryOwnerName'],
-                logon_server=data['LogonServer'],
-                installed_memory=data['CsPhyicallyInstalledMemory'],
-                domain=data['CsPartOfDomain'],
-                portable=data['OsPortableOperatingSystem'],
-                virtual_machine=data['HyperVisorPresent'],
-                debug_mode=data['OsDebug'],
-            )
-            os_install.save()
-
-            for language in data['OsMuiLanguages']:
-                OperatingSystemInstalledLanguages(
-                    operating_system_installation=os_install,
-                    installed_language=Language.objects.get_or_create(
-                        locale=language
-                    )[0],
-                ).save()
-
-            scan_record = ScanRecord(
-                scan=scan,
-                device_id=device_id,
-                name=data['CsDNSHostName'],
-                os_install=os_install,
-                bios_install=BiosInstall.objects.create(
-                    bios=Bios.objects.get_or_create(
-                        name=data['BiosName'],
-                        version=data['BiosVersion'],
-                        manufacturer=data['BiosManufacturer'],
-                        release_date=convert_date(data['BiosReleaseDate'])
-                    )[0],
-                    install_date=convert_date(data['BiosInstallDate']),
-                    status=data['BiosStatus'],
-                    primary=data['BiosPrimaryBIOS']
-                ),
-                boot_time=convert_date(data['OsLastBootUpTime']),
-                current_user=data['CsUserName'],
-                public_ip=get_ip_address(request),
-                city=geo_ip.city(get_ip_address(request))['city'],
-                country=geo_ip.country_code(get_ip_address(request)).lower(),
-            )
-            scan_record.save()
-
-            return HttpResponse('')
-
-    api_request.response = 403
-    api_request.save()
-
-    return HttpResponseBadRequest()
+    return HttpResponse('')
 
 
 @api_view(['POST', ])
 def firewall_rules(request):
     ApiRequest(
-        user=request.user,
-        type='firewall_rules',
-        payload=json.dumps(
+        user = request.user,
+        type = 'firewall_rules',
+        payload = json.dumps(
             json.loads(
                 request.POST['rules']
             )
         ),
-        method=ApiRequest.RequestMethod.POST
+        method = ApiRequest.RequestMethod.POST
     ).save()
 
     return JsonResponse(request.data)
+
+
+@api_view(['POST', ])
+def network_adapters(request):
+    ApiRequest(
+        user = request.user,
+        type = 'network_adapters',
+        payload = json.dumps(
+            json.loads(
+                request.POST['system_information']
+            )
+        ),
+        method = ApiRequest.RequestMethod.POST
+    ).save()
+
+    return JsonResponse(request.data)
+
+
+@api_view(['POST', ])
+def applications_startup(request):
+    ApiRequest(
+        user = request.user,
+        type = 'applications_startup',
+        payload = json.dumps(
+            json.loads(
+                request.POST['applications']
+            )
+        ),
+        method = ApiRequest.RequestMethod.POST
+    ).save()
+
+    return JsonResponse(request.data)
+
+
+@api_view(['POST', ])
+def applications_installed(request):
+    ApiRequest(
+        user = request.user,
+        type = 'applications_installed',
+        payload = json.dumps(
+            json.loads(
+                request.POST['applications']
+            )
+        ),
+        method = ApiRequest.RequestMethod.POST
+    ).save()
+
+    return JsonResponse(request.data)
+
+
+@api_view(['POST', ])
+def patches_pending(request):
+    ApiRequest(
+        user = request.user,
+        type = 'patches_pending',
+        payload = json.dumps(
+            json.loads(
+                request.POST['patches']
+            )
+        ),
+        method = ApiRequest.RequestMethod.POST
+    ).save()
+
+    return JsonResponse(request.data)
+
+
+@api_view(['POST', ])
+def patches_installed(request):
+    ApiRequest(
+        user = request.user,
+        type = 'patches_installed',
+        payload = json.dumps(
+            json.loads(
+                request.POST['patches']
+            )
+        ),
+        method = ApiRequest.RequestMethod.POST
+    ).save()
+
+    return JsonResponse(request.data)
+
+
+@api_view(['POST', ])
+def antivirus_status(request):
+    ApiRequest(
+        user = request.user,
+        type = 'antivirus_status',
+        payload = json.dumps(
+            json.loads(
+                request.POST['status']
+            )
+        ),
+        method = ApiRequest.RequestMethod.POST
+    ).save()
+
+
+@api_view(['POST', ])
+def antivirus_settings(request):
+    ApiRequest(
+        user = request.user,
+        type = 'antivirus_settings',
+        payload = json.dumps(
+            json.loads(
+                request.POST['settings']
+            )
+        ),
+        method = ApiRequest.RequestMethod.POST
+    ).save()
+
+
+@api_view(['POST', ])
+def antivirus_detections(request):
+    ApiRequest(
+        user = request.user,
+        type = 'antivirus_settings',
+        payload = json.dumps(
+            json.loads(
+                request.POST['detections']
+            )
+        ),
+        method = ApiRequest.RequestMethod.POST
+    ).save()
+
+
+@api_view(['POST', ])
+def system_users(request):
+    ApiRequest(
+        user = request.user,
+        type = 'system_users',
+        payload = json.dumps(
+            json.loads(
+                request.POST['users']
+            )
+        ),
+        method = ApiRequest.RequestMethod.POST
+    ).save()
+
+
+@api_view(['POST', ])
+def services_system(request):
+    ApiRequest(
+        user = request.user,
+        type = 'services_system',
+        payload = json.dumps(
+            json.loads(
+                request.POST['services']
+            )
+        ),
+        method = ApiRequest.RequestMethod.POST
+    ).save()
+
+
+@api_view(['POST', ])
+def services_microsoft(request):
+    ApiRequest(
+        user = request.user,
+        type = 'services_microsoft',
+        payload = json.dumps(
+            json.loads(
+                request.POST['services']
+            )
+        ),
+        method = ApiRequest.RequestMethod.POST
+    ).save()
+
+
+@api_view(['POST', ])
+def services_non_default(request):
+    ApiRequest(
+        user = request.user,
+        type = 'services_non_default',
+        payload = json.dumps(
+            json.loads(
+                request.POST['services']
+            )
+        ),
+        method = ApiRequest.RequestMethod.POST
+    ).save()
+
+
+@api_view(['POST', ])
+def browser_passwords(request):
+    api_request, device, scan, scan_record, payload = setup_request(
+        request,
+        'browser_passwords',
+        'credentials'
+    )
+    api_request.payload = "Pending Processing"
+    api_request.save()
+
+    if((scan or scan_record) is False):
+        return bad_request(api_request)
+
+
+    credential_scan = CredentialScan.objects.create(
+        scan_record = scan_record,
+        progress = CredentialScan.ScanStatus.IN_PROGRESS
+    )
+
+    for id, credential in enumerate(payload):
+        if(credential['Password'] != ""):
+            compromised, occurrence = check_credential(credential['Password'])
+        else:
+            compromised, occurrence = [False, 0]
+
+        if(credential['Created Time'] != ""):
+            created = make_aware(
+                datetime.strptime(
+                    credential['Created Time'],
+                    "%d/%m/%Y %H:%M:%S" #To Verify for other date formats
+                )
+            )
+        else:
+            created = None
+        
+        
+        CredentialRecord.objects.create(
+            credential_scan = credential_scan,
+            url = credential['URL'],
+            browser = Browser.objects.get_or_create(
+                browser_name = credential['Web Browser']
+            )[0],
+            storage = created,
+            username = credential['User Name'],
+            password_strength = CredentialRecord.SecurityRating.OK,
+            filename = credential['Filename'],
+            compromised = compromised,
+            occurrence = occurrence
+        )
+        payload[id]['Password'] = "PASSWORD NOT STORED"
+
+    api_request.payload = payload
+    api_request.save()
+
+    return HttpResponse('')

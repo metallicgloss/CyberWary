@@ -20,6 +20,7 @@
 from cyber_wary_portal.forms import AccountModificationForm, ApiKeyForm, ScanFormStep2, AccountDeletionForm
 from cyber_wary_portal.models import *
 from cyber_wary_portal.utils.script_generation import generate_script
+from cyber_wary_portal.utils.data_import import check_credential
 from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
