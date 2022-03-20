@@ -151,24 +151,27 @@ def scan(request, scan_key):
 
 @login_required
 def report(request, scan_key, report):
-    try:
-        scan = Scan.objects.get(
-            user=request.user,
-            scan_key=scan_key
-        )
-    except Scan.DoesNotExist:
-        return HttpResponseNotFound()
+    scan_data = {}
 
     try:
         scan_record = ScanRecord.objects.get(
-            scan=scan,
+            scan=Scan.objects.get(
+                user=request.user,
+                scan_key=scan_key
+            ),
             id=report
         )
-
         scan_duration = scan_record.updated - scan_record.created
 
-    except ScanRecord.DoesNotExist:
+    except (ScanRecord.DoesNotExist, Scan.DoesNotExist):
         return HttpResponseNotFound()
+
+    if(scan_record.scan.browser_passwords):
+        scan_data['browser_passwords'] = CredentialRecord.objects.filter(
+            credential_scan = CredentialScan.objects.get(
+                scan_record = scan_record
+            )
+        )
 
     return render(
         request,
@@ -176,6 +179,7 @@ def report(request, scan_key, report):
         {
             'coords': GeoIP2().lat_lon(scan_record.public_ip),
             'maps_key': settings.MAPS_KEY,
+            'scan_data': scan_data,
             'scan_duration': divmod(scan_duration.days * 86400 + scan_duration.seconds, 60),
             'scan_record': scan_record,
         }

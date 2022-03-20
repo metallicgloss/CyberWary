@@ -71,6 +71,60 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 </div>
                             </div>
                         </div>
+                        {% if scan_record.scan.browser_passwords %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading-browser-passwords">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-browser-passwords" aria-expanded="false" aria-controls="collapse-browser-passwords">
+                                        <i class="icofont-exclamation-tringle me-2 text-warning"></i> Browser Passwords
+                                    </button>
+                                </h2>
+                                <div id="collapse-browser-passwords" class="accordion-collapse collapse" aria-labelledby="heading-browser-passwords" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>
+                                            {{ scan_data.browser_passwords.count }}
+                                        </p>
+                                        <div class="row">
+                                            <div class="col-xl-6">
+                                            </div>
+                                            <div class="col-xl-6">
+                                                
+                                            </div>
+                                        </div>
+                                        <table class="display pb-3 w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th class="pb-2 desktop">URL</th>
+                                                    <th class="pb-2 desktop">Username</th>
+                                                    <th class="pb-2 desktop">Password Strength</th>
+                                                    <th class="pb-2 desktop">Compromised</th>
+                                                    <th class="pb-2 desktop">View Details</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for credential in scan_data.browser_passwords %}
+                                                    <tr>
+                                                        <td>{{ credential.url|slice:":48" }}</td>
+                                                        <td>{{ credential.username }}</td>
+                                                        <td>{{ credential.get_password_strength_display }}</td>
+                                                        <td>{% if credential.compromised %}<i class="icofont-exclamation-tringle me-2 text-warning"></i>Potentially Compromised{% else %}Not Detected{% endif %}</td>
+                                                        <td>
+                                                            <span class="payload-action" onclick="viewCredential('{{ credential.id }}')">
+                                                                View Credential
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        <p>Compromise Status Check Provided By HaveIBeenPwned</p>
+                                        <div class="nav-buttons mt-3">
+                                            <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                                            <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="flush-headingThree">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
@@ -94,8 +148,36 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <div class="scan-info ps-4">
                 <h5>Scan Record</h5>
                 <p class="mb-2">Start Date/Time: <span>{{ scan_record.created|date:"d/m/Y H:i" }}</span></p>
-                <p class="mb-2">End Date/Time: <span>{{ scan_record.updated|date:"d/m/Y H:i" }}</span></p>
-                <p class="mb-2">Duration: <span>{{ scan_duration.0 }}m {{ scan_duration.1 }}s</span></p>
+                {% if scan_record.progress != 3 or 4 %}
+                    <span><i class="icofont-infinite"></i> Scan In Progress</span>
+                {% else %}
+                    <p class="mb-2">End Date/Time: <span>{{ scan_record.updated|date:"d/m/Y H:i" }}</span></p>
+                    <p class="mb-2">Duration: <span>{{ scan_duration.0 }}m {{ scan_duration.1 }}s</span></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="credentialModal" tabindex="-1" aria-labelledby="credentialModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Credential Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="scan-info">
+                        <p class="mb-2"><i class="icofont-ui-user me-2"></i>Username: <span id="credUsername"></span></p>
+                        <p class="mb-2"><i class="icofont-chart-histogram me-2"></i>Password Strength: <span id="credStrength"></span></p>
+                        <p class="mb-2"><i class="icofont-calendar me-2"></i>Password Creation / Save Date: <span id="credStorage"></span></p>
+                        <p class="mb-2"><i class="icofont-web me-2"></i>URL: <span id="credURL"></span></p>
+                        <p class="mb-2"><i class="icofont-dashboard-web me-2"></i>Browser: <span id="credBrowser"></span></p>
+                        <p class="mb-2"><i class="icofont-file-sql me-2"></i>Storage Location: <span id="credFilename"></span></p>
+                        <hr>
+                        <p class="mb-2"><i class="icofont-danger-zone me-2"></i>Compromised: <span id="credCompromised"></span></p>
+                        <p class="mb-2"><i class="icofont-pie-chart me-2"></i>Occurrence: <span id="credOccurrence"></span></p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -114,9 +196,35 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             }
         });
     });
+
+    function viewCredential(credentialID) {
+        $.ajax({
+            type: "POST",
+            url: "{% url 'credential' %}",
+            dataType: "json",
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                credentialID
+            },
+            success: function(data) {
+                $('#credUsername').text(data.username);
+                $('#credStrength').text(data.password_strength);
+                $('#credStorage').text(data.storage);
+                $('#credURL').text(data.url);
+                $('#credBrowser').text(data.browser);
+                $('#credFilename').text(data.filename);
+
+                if(data.compromised) {
+                    $('#credCompromised').text("Potentially Compromised");
+                } else {
+                    $('#credCompromised').text("Not Detected");
+                }
+                $('#credOccurrence').text(data.occurrence);
+                $('#credentialModal').modal('show');
+            }
+        });
+    }
     
-
-
     function initMap() {
         const map = new google.maps.Map(document.getElementById("map"), {
             zoom: 9,
@@ -126,110 +234,110 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             },
             disableDefaultUI: true,
             styles: [
-            {
-              "elementType": "geometry",
-              "stylers": [
                 {
-                  "color": "#1d1c28"
-                }
-              ]
-            },
-            {
-              "elementType": "labels.icon",
-              "stylers": [
+                    "elementType":"geometry",
+                    "stylers":[
+                        {
+                            "color":"#1d1c28"
+                        }
+                    ]
+                },
                 {
-                  "visibility": "off"
-                }
-              ]
-            },
-            {
-              "elementType": "labels.text.stroke",
-              "stylers": [
+                    "elementType":"labels.icon",
+                    "stylers":[
+                        {
+                            "visibility":"off"
+                        }
+                    ]
+                },
                 {
-                  "visibility": "off"
-                }
-              ]
-            },
-            {
-              "featureType": "administrative",
-              "elementType": "labels.text.fill",
-              "stylers": [
+                    "elementType":"labels.text.stroke",
+                    "stylers":[
+                        {
+                            "visibility":"off"
+                        }
+                    ]
+                },
                 {
-                  "color": "#e9e9e9"
-                }
-              ]
-            },
-            {
-              "featureType": "landscape.natural",
-              "elementType": "labels",
-              "stylers": [
+                    "featureType":"administrative",
+                    "elementType":"labels.text.fill",
+                    "stylers":[
+                        {
+                            "color":"#e9e9e9"
+                        }
+                    ]
+                },
                 {
-                  "visibility": "off"
-                }
-              ]
-            },
-            {
-              "featureType": "poi",
-              "stylers": [
+                    "featureType":"landscape.natural",
+                    "elementType":"labels",
+                    "stylers":[
+                        {
+                            "visibility":"off"
+                        }
+                    ]
+                },
                 {
-                  "visibility": "off"
-                }
-              ]
-            },
-            {
-              "featureType": "road",
-              "elementType": "geometry",
-              "stylers": [
+                    "featureType":"poi",
+                    "stylers":[
+                        {
+                            "visibility":"off"
+                        }
+                    ]
+                },
                 {
-                  "color": "#2e2d40"
-                }
-              ]
-            },
-            {
-              "featureType": "road",
-              "elementType": "labels",
-              "stylers": [
+                    "featureType":"road",
+                    "elementType":"geometry",
+                    "stylers":[
+                        {
+                            "color":"#2e2d40"
+                        }
+                    ]
+                },
                 {
-                  "visibility": "off"
-                }
-              ]
-            },
-            {
-              "featureType": "road",
-              "elementType": "labels.icon",
-              "stylers": [
+                    "featureType":"road",
+                    "elementType":"labels",
+                    "stylers":[
+                        {
+                            "visibility":"off"
+                        }
+                    ]
+                },
                 {
-                  "visibility": "off"
-                }
-              ]
-            },
-            {
-              "featureType": "transit",
-              "stylers": [
+                    "featureType":"road",
+                    "elementType":"labels.icon",
+                    "stylers":[
+                        {
+                            "visibility":"off"
+                        }
+                    ]
+                },
                 {
-                  "visibility": "off"
-                }
-              ]
-            },
-            {
-              "featureType": "water",
-              "elementType": "geometry",
-              "stylers": [
+                    "featureType":"transit",
+                    "stylers":[
+                        {
+                            "visibility":"off"
+                        }
+                    ]
+                },
                 {
-                  "color": "#3a3850"
-                }
-              ]
-            },
-            {
-              "featureType": "water",
-              "elementType": "labels.text.fill",
-              "stylers": [
+                    "featureType":"water",
+                    "elementType":"geometry",
+                    "stylers":[
+                        {
+                            "color":"#3a3850"
+                        }
+                    ]
+                },
                 {
-                  "color": "#ffffff"
+                    "featureType":"water",
+                    "elementType":"labels.text.fill",
+                    "stylers":[
+                        {
+                            "color":"#ffffff"
+                        }
+                    ]
                 }
-              ]
-            }
-          ],
+            ],
         });
       
         new google.maps.Marker({

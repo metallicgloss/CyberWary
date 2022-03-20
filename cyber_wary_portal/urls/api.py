@@ -28,6 +28,12 @@ urlpatterns = [
         name='api_payload'
     ),
 
+    path(
+        'credential',
+        api.credential,
+        name='credential'
+    ),
+
 
     path('v1/', include([
         path(

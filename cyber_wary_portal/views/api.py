@@ -17,6 +17,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+from http.client import HTTPResponse
 from cyber_wary_portal.models import *
 from cyber_wary_portal.utils.data_import import *
 from django.contrib.auth.decorators import login_required
@@ -24,6 +25,7 @@ from django.contrib.gis.geoip2 import GeoIP2
 from django.http.response import HttpResponse, JsonResponse, HttpResponseNotFound
 from rest_framework.decorators import api_view
 import json
+import re
 
 
 @login_required
@@ -47,6 +49,42 @@ def api_payload(request):
         )
     except ApiRequest.DoesNotExist:
         return HttpResponseNotFound()
+
+@login_required
+def credential(request):
+    if request.method == 'POST':
+        try:
+            credential_record = CredentialRecord.objects.filter(
+                credential_scan__scan_record__scan__user = request.user,
+                pk = request.POST['credentialID']
+            )[0]
+
+            credential = {}
+            credential['username'] = credential_record.username
+            credential['password_strength'] = credential_record.get_password_strength_display()
+            credential['storage'] = credential_record.storage
+            credential['browser'] = credential_record.browser.browser_name
+            credential['compromised'] = credential_record.compromised
+            credential['occurrence'] = credential_record.occurrence
+            credential['filename'] = credential_record.filename
+
+            print(credential_record.url)
+            if "android" in credential_record.url:
+                print("here")
+                credential['url'] = re.sub(r'/.+?@', '', credential_record.url)
+            else:
+                print("here1")
+                credential['url'] = credential_record.url
+
+            return JsonResponse(
+                credential
+            )
+        except CredentialRecord.DoesNotExist:
+            return HttpResponseNotFound()
+    
+    else:
+        return HttpResponseBadRequest()
+
 
 
 @api_view(['POST', ])
@@ -359,7 +397,7 @@ def browser_passwords(request):
             compromised = compromised,
             occurrence = occurrence
         )
-        payload[id]['Password'] = "PASSWORD NOT STORED"
+        payload[id]['Password'] = "-- FULL HASH NOT STORED --"
 
     api_request.payload = payload
     api_request.save()
