@@ -1,4 +1,4 @@
-{% extends "portal.html" %}
+{% extends "structure/portal.html" %}
 
 {% load static %}
 {% load account socialaccount %}
@@ -23,83 +23,97 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endcomment %}
 
 {% block page_content %}
-    <h2>Third-Party Authentication</h2>
-    <p>View, manage and connect third-party social media accounts to simplify authentication.</p>
-    <div class="row mt-5">
-        <div class="col-lg-12 col-xl-4">
-            <h4>Connect a New Third Party Account</h4>
-            <div class="row">
-                <div class="col-lg-12 col-xl-4">
-                    <form method="post" action="{% provider_login_url 'github' process='connect' %}">
-                        {% csrf_token %}
-                        <button class="social-login mt-2">
-                            <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="github" class="svg-inline--fa fa-github fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
-                                <path fill="currentColor" d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path>
-                            </svg>
-                            <span class="ms-3 d-inline-flex fw-bold">GitHub</span>
-                        </button>
-                    </form>
-                </div>
-                <div class="col-lg-12 col-xl-4">
-                    <form method="post" action="{% provider_login_url 'google' process='connect' %}">
-                        {% csrf_token %}
-                        <button class="social-login mt-2">
-                            <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" class="svg-inline--fa fa-google fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-                                <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path>
-                            </svg>
-                            <span class="ms-3 d-inline-flex fw-bold">Google</span>
-                        </button>
-                    </form>
-                </div>
-                <div class="col-lg-12 col-xl-4">
-                    <form method="post" action="{% provider_login_url 'microsoft' process='connect' %}">
-                        {% csrf_token %}
-                        <button class="social-login mt-2">
-                            <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="microsoft" class="svg-inline--fa fa-microsoft fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                                <path fill="currentColor" d="M0 32h214.6v214.6H0V32zm233.4 0H448v214.6H233.4V32zM0 265.4h214.6V480H0V265.4zm233.4 0H448V480H233.4V265.4z"></path>
-                            </svg>
-                            <span class="ms-3 d-inline-flex fw-bold">Microsoft</span>
-                        </button>
-                    </form>
+    <section>
+        <!-- Page Title & Scan Details -->
+        <h2>Third-Party Authentication</h2>
+        <p>View, manage and connect third-party social media accounts to simplify authentication.</p>
+        
+        <!-- Social Media Authentication Management -->
+        <div class="row mt-5">
+            <div class="col-lg-12 col-xl-4">
+                <h4>Connect a New Third Party Account</h4>
+                <div class="row">
+
+                    <!-- Connect new GitHub Account -->
+                    <div class="col-lg-12 col-xl-4">
+                        <form method="post" action="{% provider_login_url 'github' process='connect' %}">
+                            {% csrf_token %}
+                            <button class="social-login mt-2">
+                                <img src="{% static 'imgs/icons/github.svg' %}" alt="GitHub Logo" />
+                                <span class="ms-2 d-inline-flex fw-bold">GitHub</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Connect new Google Account -->
+                    <div class="col-lg-12 col-xl-4">
+                        <form method="post" action="{% provider_login_url 'google' process='connect' %}">
+                            {% csrf_token %}
+                            <button class="social-login mt-2">
+                                <img src="{% static 'imgs/icons/google.svg' %}" alt="Google Logo" />
+                                <span class="ms-2 d-inline-flex fw-bold">Google</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Connect new Microsoft Account -->
+                    <div class="col-lg-12 col-xl-4">
+                        <form method="post" action="{% provider_login_url 'microsoft' process='connect' %}">
+                            {% csrf_token %}
+                            <button class="social-login mt-2">
+                                <img src="{% static 'imgs/icons/microsoft.svg' %}" alt="Microsoft Logo" />
+                                <span class="ms-2 d-inline-flex fw-bold">Microsoft</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
+
+            <!-- Vertical Divider -->
+            <div class="col-xl-1 d-lg-none d-xl-block">
+                <div class="section-divider"></div>
+            </div>
+
+            <!-- List of Existing Accounts -->
+            <div class="col-lg-12 col-xl-4">
+                {% if form.accounts %}
+                    <!-- Existing Connections -->
+                    <h4>Connected Accounts</h4>
+                    <form method="post" action="{% url 'socialaccount_connections' %}">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            <div id="errorMsg">{{ form.non_field_errors }}</div>
+                        {% endif %}
+                        {% for base_account in form.accounts %}
+                            {% with base_account.get_provider_account as account %}
+                                <div>
+                                    <label class="form-field form-radio" for="id_account_{{ base_account.id }}">
+                                        <span class="socialaccount_provider text-success">{{account.get_brand.name}}</span> <span class="px-1">-</span> {{ account }} {{ account.id }}
+                                        <input id="id_account_{{ base_account.id }}" value="{{ base_account.id }}" type="radio" name="account" />
+                                        <div class="form-radio-indicator"></div>
+                                    </label>
+                                </div>
+                            {% endwith %}
+                        {% endfor %}
+                        
+                        <!-- Remove Connection Button -->
+                        <div class="form-actions">
+                            <button type="submit" id="disconnect" class="btn btn-secondary mt-4 w-50" style="display:none">Disconnect Account</button>
+                        </div>
+                    </form>
+                {% else %}
+                    <!-- No Existing Connections -->
+                    <p>There are currently no third-party accounts connected.</p>
+                {% endif %}
+            </div>
         </div>
-        <div class="col-xl-1 d-lg-none d-xl-block">
-            <div class="section-divider"></div>
-        </div>
-        <div class="col-lg-12 col-xl-4">
-            {% if form.accounts %}
-                <h4>Connected Accounts</h4>
-                <form method="post" action="{% url 'socialaccount_connections' %}">
-                    {% csrf_token %}
-                    {% if form.non_field_errors %}
-                        <div id="errorMsg">{{ form.non_field_errors }}</div>
-                    {% endif %}
-                    {% for base_account in form.accounts %}
-                        {% with base_account.get_provider_account as account %}
-                            <div>
-                                <label class="form-field form-radio" for="id_account_{{ base_account.id }}">
-                                    <span class="socialaccount_provider text-success">{{account.get_brand.name}}</span> <span class="px-1">-</span> {{ account }} {{ account.id }}
-                                    <input id="id_account_{{ base_account.id }}" value="{{ base_account.id }}" type="radio" name="account" />
-                                    <div class="form-radio-indicator"></div>
-                                </label>
-                            </div>
-                        {% endwith %}
-                    {% endfor %}
-                    <div class="form-actions">
-                        <button type="submit" id="disconnect" class="btn btn-secondary mt-4 w-50" style="display:none">Disconnect Account</button>
-                    </div>
-                </form>
-            {% else %}
-                <p>There are currently no third-party accounts connected.</p>
-            {% endif %}
-        </div>
-    </div>
+    </section>
 {% endblock %}
 
 {% block page_scripts %}
     <script>
         $(document).ready(function(){
+            // Show disconnect button after radio option selected.
             $('input[type=radio]').on("input", function(){
                 $('#disconnect').show()
             });

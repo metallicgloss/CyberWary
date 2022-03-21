@@ -17,6 +17,9 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+from tokenize import Name
+from unicodedata import name
+from MySQLdb import Date
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -56,13 +59,6 @@ class Scan(DefaultFields):
     class ScanTypes(models.TextChoices):
         BLUE = 'B'
         RED = 'R'
-
-    class ScanStatus(models.IntegerChoices):
-        PENDING = 1
-        IN_PROGRESS = 2
-        PARTIALLY_COMPLETED = 3
-        COMPLETED = 4
-        NODATA = 5
 
     # Foreign key to the user that owns the scan.
     user = models.ForeignKey(
@@ -116,23 +112,8 @@ class Scan(DefaultFields):
         null=True
     )
 
-    progress = models.IntegerField(
-        choices=ScanStatus.choices,
-        default=ScanStatus.PENDING,
-        help_text="The current progress/status of a scan.",
-        validators=[
-            MaxValueValidator(5),
-            MinValueValidator(1)
-        ]
-    )
-
     system_users = models.BooleanField(
         help_text="Flag for scan of system users.",
-        default=False
-    )
-
-    system_services = models.BooleanField(
-        help_text="Flag for scan of system services.",
         default=False
     )
 
@@ -233,6 +214,7 @@ class Language(DefaultFields):
         null=True
     )
 
+
 class OperatingSystem(DefaultFields):
     name = models.CharField(
         help_text="The readable name of an operating system.",
@@ -269,7 +251,7 @@ class OperatingSystemInstall(DefaultFields):
         help_text="The date that the version of the OS was installed.",
         null=True
     )
-    
+
     keyboard = models.ForeignKey(
         Language,
         on_delete=models.SET_DEFAULT,
@@ -314,7 +296,7 @@ class OperatingSystemInstall(DefaultFields):
         default=False
     )
 
-    
+
 class OperatingSystemInstalledLanguages(DefaultFields):
     operating_system_installation = models.ForeignKey(
         OperatingSystemInstall,
@@ -334,7 +316,7 @@ class Bios(DefaultFields):
         null=True
     )
 
-    version = models.CharField( 
+    version = models.CharField(
         help_text="The version / revision of the BIOS",
         max_length=16,
         null=True
@@ -376,6 +358,13 @@ class BiosInstall(DefaultFields):
 
 
 class ScanRecord(DefaultFields):
+    class ScanStatus(models.IntegerChoices):
+        PENDING = 1
+        IN_PROGRESS = 2
+        PARTIALLY_COMPLETED = 3
+        COMPLETED = 4
+        NODATA = 5
+
     scan = models.ForeignKey(
         Scan,
         on_delete=models.CASCADE
@@ -407,7 +396,7 @@ class ScanRecord(DefaultFields):
         help_text="The date/time that the system was last powered on.",
         null=True
     )
-    
+
     current_user = models.CharField(
         help_text="The name of the user performing the scan.",
         max_length=32,
@@ -429,5 +418,168 @@ class ScanRecord(DefaultFields):
     country = models.CharField(
         help_text="The country of the scanned device.",
         max_length=2,
+        null=True
+    )
+
+    progress = models.IntegerField(
+        choices=ScanStatus.choices,
+        default=ScanStatus.PENDING,
+        help_text="The current progress/status of a scan.",
+        validators=[
+            MaxValueValidator(5),
+            MinValueValidator(1)
+        ]
+    )
+
+
+class CredentialScan(DefaultFields):
+    class ScanStatus(models.IntegerChoices):
+        PENDING = 1
+        IN_PROGRESS = 2
+        PARTIALLY_COMPLETED = 3
+        COMPLETED = 4
+
+    scan_record = models.ForeignKey(
+        ScanRecord,
+        on_delete=models.CASCADE
+    )
+
+    progress = models.IntegerField(
+        choices=ScanStatus.choices,
+        default=ScanStatus.PENDING,
+        help_text="The current progress/status of the check.",
+        validators=[
+            MaxValueValidator(5),
+            MinValueValidator(1)
+        ]
+    )
+
+
+class Browser(DefaultFields):
+    browser_name = models.CharField(
+        max_length=64,
+        null=True
+    )
+
+
+class CredentialRecord(DefaultFields):
+    class SecurityRating(models.IntegerChoices):
+        VERY_WEAK = 1
+        WEAK = 2
+        MEDIUM = 3
+        STRONG = 4
+        VERY_STRONG = 5
+
+    credential_scan = models.ForeignKey(
+        CredentialScan,
+        on_delete=models.CASCADE
+    )
+
+    url = models.CharField(
+        max_length=128,
+        null=True
+    )
+
+    browser = models.ForeignKey(
+        Browser,
+        on_delete=models.CASCADE
+    )
+
+    storage = models.DateTimeField(
+        null=True
+    )
+
+    username = models.CharField(
+        max_length=64,
+        null=True
+    )
+
+    password_strength = models.IntegerField(
+        choices=SecurityRating.choices,
+        default=SecurityRating.MEDIUM,
+        validators=[
+            MaxValueValidator(5),
+            MinValueValidator(1)
+        ]
+    )
+
+    filename = models.CharField(
+        max_length=128,
+        null=True
+    )
+
+    compromised = models.BooleanField(
+        default=False
+    )
+
+    occurrence = models.IntegerField(
+        default=0
+    )
+
+
+class UserRecord(DefaultFields):
+    class AccountType(models.IntegerChoices):
+        LOCAL = 1
+        MICROSOFT = 2
+
+    scan_record = models.ForeignKey(
+        ScanRecord,
+        on_delete=models.CASCADE
+    )
+    
+    name = models.CharField(
+        max_length=32,
+        null=True
+    )
+    
+    full_name = models.CharField(
+        max_length=32,
+        null=True
+    )
+    
+    description = models.CharField(
+        max_length=128,
+        null=True
+    )
+    
+    sid = models.CharField(
+        max_length=48,
+        null=True
+    )
+
+    source = models.IntegerField(
+        choices=AccountType.choices,
+        default=AccountType.LOCAL,
+        validators=[
+            MaxValueValidator(2),
+            MinValueValidator(1)
+        ]
+    )
+
+    enabled = models.BooleanField(
+        default=False
+    )
+
+    last_logon = models.DateTimeField(
+        null=True
+    )
+
+    password_changeable = models.DateTimeField(
+        null=True
+    )
+    
+    password_expiry = models.DateTimeField(
+        null=True
+    )
+    
+    password_permission = models.BooleanField(
+        default=False
+    )
+    
+    password_required = models.BooleanField(
+        default=False
+    )
+    
+    password_last_set = models.DateTimeField(
         null=True
     )

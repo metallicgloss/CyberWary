@@ -1,6 +1,7 @@
-{% extends "portal.html" %}
+{% extends "structure/portal.html" %}
 
 {% load static %}
+{% load subtract %}
 
 {% comment %}
 GNU General Public License v3.0
@@ -21,6 +22,301 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endcomment %}
 
+{% block page_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.css" integrity="sha256-YY1izqyhIj4W3iyJOaGWOpXDSwrHWFL4Nfk+W0LyCHE=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-responsive-dt@2.2.9/css/responsive.dataTables.min.css" integrity="sha256-Y/AdBW1nhvzPowuT1lvF4PkY6QR+nqYzBcbmkDCG30Y=" crossorigin="anonymous">
+{% endblock%}
+
 {% block page_content %}
-    Dashboard TBC
+    <section>
+        <!-- Page Title -->
+        <div class="row pb-4">
+            <div class="col-lg-12 col-xl-12">
+                <button class="btn back-btn p-0 mb-3" onclick="history.back()"><i class="icofont-arrow-left"></i> Back</button>
+                <h2 class="mb-0"><span id="scan-title">{{ scan_record.scan.title }}</span></h2>
+                <div class="d-flex align-items-start scan-brief">
+                    <p class="me-3 mb-3">{% now "l jS F Y" %}</p>
+                    <svg width="3" height="3" viewBox="0 0 3 3" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="3" height="3" fill="#34CC96" />
+                    </svg>
+                    <p class="ms-3 mb-3"><span id="scan-type" class="{% if scan_record.scan.type == "B" %}text-info{% else %}text-danger-alt{% endif %}">{% if scan_record.scan.type == "B" %}Blue{% else %}Red{% endif %} Team</span> Scan</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Content -->
+        <div class="row">
+            <!-- Report Details -->
+            <div class="col-lg-12 col-xl-9">
+                <div class="scan-report-container">
+                    <div class="scan-report pe-4">
+                        <!-- Report Accordion -->
+                        <div class="accordion accordion-flush" id="faqAccordion">
+
+                            <!-- Scan Overview -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="flush-headingOne">
+                                    <!-- Accordion Tab Title -->
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                        <i class="icofont-check-circled me-2 pt-1 text-success"></i> Overview
+                                    </button>
+                                </h2>
+                                <div id="flush-collapseOne" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        
+                                        <!-- Google Maps -->
+                                        <div id="map"></div>
+
+                                        <!-- Accordion Controls -->
+                                        <div class="nav-buttons mt-4">
+                                            <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                                            <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- System Users -->
+                            {% if scan_record.scan.system_users and scan_data.system_users != None %}
+                                <div class="accordion-item">
+                                    <!-- Accordion Tab Title -->
+                                    <h2 class="accordion-header" id="heading-system-users">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-system-users" aria-expanded="false" aria-controls="collapse-system-users">
+                                            {% if scan_data.enabled_defaults > 0 or scan_data.system_users.count > 5 %}
+                                                <i class="icofont-exclamation-tringle me-2 text-warning"></i>
+                                            {% else %}
+                                                <i class="icofont-check-circled me-2 pt-1 text-success"></i>
+                                            {% endif %}
+                                            System Users
+                                        </button>
+                                    </h2>
+
+                                    <div id="collapse-system-users" class="accordion-collapse collapse" aria-labelledby="heading-system-users" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            <!-- System User Explainer -->
+                                            <h5 class="mt-4">User Accounts</h5>
+                                            <p class="mb-4">Quisque imperdiet lorem eget diam tristique, vel eleifend nulla malesuada. Cras dapibus eu odio ac pharetra. Fusce at tristique erat, nec fermentum sapien. Sed nec egestas nibh. In hac habitasse platea dictumst. Nunc malesuada molestie lacus vitae tristique. Vivamus a neque nunc. Quisque urna libero, pulvinar non gravida eget, suscipit ac leo. Cras eleifend purus et magna tristique, sed vehicula turpis malesuada. Integer consectetur dolor sed dui luctus iaculis. Vivamus at mollis magna. Sed at elementum neque.</p>
+
+                                            <!-- System User List -->
+                                            <h5 class="mt-5">System Users</h5>
+                                            <table id="system-users" class="display pb-3 w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="py-2 desktop">Name</th>
+                                                        <th class="py-2 desktop">Type</th>
+                                                        <th class="py-2 desktop">Last Login</th>
+                                                        <th class="py-2 desktop">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for user in scan_data.system_users %}
+                                                        <tr>
+                                                            <td>{{ user.name }} {% if user.full_name %}({{ user.full_name }}){% endif %}</td>
+                                                            <td>
+                                                                {% if user.name not in 'Administrator,DefaultAccount,Guest,WDAGUtilityAccount' and user.source != 2 %}
+                                                                    <span class="text-warning" data-toggle="tooltip" data-placement="top" title="Account should be converted to a Microsoft login to improve security."><i class="icofont-info-circle me-1"></i>
+                                                                {% else %}
+                                                                    <span class="text-success">
+                                                                {% endif %}
+                                                                    {{ user.get_source_display }}
+                                                                </span>
+                                                            </td>
+                                                            <td>{% if user.last_logon %}{{ user.last_logon|date:"l jS F Y - H:i e" }}{% else %}Never Logged In{% endif %}</td>
+                                                            <td>
+                                                                {% if user.name in 'Administrator,DefaultAccount,Guest,WDAGUtilityAccount' and user.enabled %}
+                                                                    <span class="text-danger" data-toggle="tooltip" data-placement="top" title="Default system accounts should not be enabled."><i class="icofont-info-circle me-1"></i>
+                                                                {% else %}
+                                                                    <span class="text-success">
+                                                                {% endif %}
+                                                                        {% if user.enabled %}Enabled</span>{% else %}Disabled{% endif %}
+                                                                    </span>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+
+                                            <!-- Accordion Controls -->
+                                            <div class="nav-buttons mt-4">
+                                                <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                                                <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <!-- Browser Passwords -->
+                            {% if scan_record.scan.browser_passwords and scan_data.browser_passwords != None %}
+                                <div class="accordion-item">
+                                    <!-- Accordion Tab Title -->
+                                    <h2 class="accordion-header" id="heading-browser-passwords">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-browser-passwords" aria-expanded="false" aria-controls="collapse-browser-passwords">
+                                            {% if scan_data.compromised > 0 %}
+                                                <i class="icofont-exclamation-tringle me-2 text-danger"></i>
+                                            {% elif scan_data.weak > 0 %}
+                                                <i class="icofont-exclamation-tringle me-2 text-warning"></i>
+                                            {% else %}
+                                                <i class="icofont-check-circled me-2 pt-1 text-success"></i>
+                                            {% endif %}
+                                            Browser Passwords
+                                        </button>
+                                    </h2>
+
+                                    <div id="collapse-browser-passwords" class="accordion-collapse collapse" aria-labelledby="heading-browser-passwords" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            <!-- Credentials Explainer -->
+                                            <h5 class="mt-4">Credentials</h5>
+                                            <p class="mb-4">Quisque imperdiet lorem eget diam tristique, vel eleifend nulla malesuada. Cras dapibus eu odio ac pharetra. Fusce at tristique erat, nec fermentum sapien. Sed nec egestas nibh. In hac habitasse platea dictumst. Nunc malesuada molestie lacus vitae tristique. Vivamus a neque nunc. Quisque urna libero, pulvinar non gravida eget, suscipit ac leo. Cras eleifend purus et magna tristique, sed vehicula turpis malesuada. Integer consectetur dolor sed dui luctus iaculis. Vivamus at mollis magna. Sed at elementum neque.</p>
+
+                                            <!-- Credentials Metrics / Charts -->
+                                            <div class="row">
+                                                <div class="col-xl-6">
+                                                    <div id="usernames" style="margin:auto; width: 40em; height:350px;"></div>
+                                                </div>
+                                                <div class="col-xl-6">
+                                                    <div id="compromised" style="margin:auto; width: 40em; height:350px;"></div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Credentials List -->
+                                            <h5 class="mt-5">Detected Credentials</h5>
+                                            <table id="credentials" class="display pb-3 w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="py-2 desktop">URL</th>
+                                                        <th class="py-2 desktop">Username</th>
+                                                        <th class="py-2 desktop">Strength</th>
+                                                        <th class="py-2 desktop">Compromised</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for credential in scan_data.browser_passwords %}
+                                                        <tr>
+                                                            <td>{{ credential.url|slice:":40" }}</td>
+                                                            <td>
+                                                                <span class="payload-action" onclick="viewCredential('{{ credential.id }}')" data-toggle="tooltip" data-placement="top" title="Click for full record.">
+                                                                    <i class="icofont-info-circle me-2"></i>{{ credential.username }}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                {% if credential.password_strength != 5 %}
+                                                                    <span class="text-warning">{{ credential.get_password_strength_display }}</span>
+                                                                {% else %}
+                                                                    <span class="text-success">{{ credential.get_password_strength_display }}</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                {% if credential.compromised %}
+                                                                    <span class="text-danger"><i class="icofont-exclamation-tringle me-2"></i>Potentially Compromised</span>
+                                                                {% else %}
+                                                                    Not Detected in Dataset
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                            <p class="pb-2"><small>Password breach data supplied by the <a href="https://haveibeenpwned.com/Passwords" class="text-success">Have I Been Pwned</a> project.</small></p>
+
+                                            <!-- Accordion Controls -->
+                                            <div class="nav-buttons mt-4">
+                                                <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                                                <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div> <!-- End of Accordion -->
+                    </div> <!-- End of Report -->
+                </div> <!-- End of Container -->
+            </div> <!-- End of Column -->
+            
+            <!-- Scan Metrics -->
+            <div class="col-lg-12 col-xl-3">
+                <div class="scan-info ps-4">
+                    <h5>Scan Record</h5>
+                    <p class="mb-2">Start Date/Time: <span>{{ scan_record.created|date:"d/m/Y H:i" }}</span></p>
+                    {% if scan_record.progress not in '3,4' %}
+                        <!-- Scan Actively Processing / Collecting Stats -->
+                        <span><i class="icofont-infinite"></i> Scan In Progress</span>
+                    {% else %}
+                        <!-- Scan Completed -->
+                        <p class="mb-2">End Date/Time: <span>{{ scan_record.updated|date:"d/m/Y H:i" }}</span></p>
+                        <p class="mb-2">Duration: <span>{{ scan_duration.0 }}m {{ scan_duration.1 }}s</span></p>
+                    {% endif %}
+                </div>
+            </div> <!-- End of Column -->
+        </div> <!-- End of Row -->
+        
+        <!-- Credential Popup Modal -->
+        <div class="modal fade" id="credentialModal" tabindex="-1" aria-labelledby="credentialModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title">Credential Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Modal Body / Contents -->
+                    <div class="modal-body">
+                        <div class="scan-info">
+                            <!-- Credential Details -->
+                            <p class="mb-2"><i class="icofont-ui-user me-2"></i>Username: <span id="credUsername"></span></p>
+                            <p class="mb-2"><i class="icofont-chart-histogram me-2"></i>Password Strength: <span id="credStrength"></span></p>
+                            <p class="mb-2"><i class="icofont-web me-2"></i>URL: <span id="credURL"></span></p>
+                            <p class="mb-2"><i class="icofont-dashboard-web me-2"></i>Browser: <span id="credBrowser"></span></p>
+                            <p class="mb-2"><i class="icofont-file-sql me-2"></i>Storage Location: <span id="credFilename"></span></p>
+
+                            <!-- Horizontal Divider -->
+                            <hr>
+                            
+                            <!-- Compromise Details -->
+                            <p class="mb-2"><i class="icofont-danger-zone me-2"></i>Compromised: <span id="credCompromised"></span></p>
+                            <p class="mb-2"><i class="icofont-pie-chart me-2"></i>Occurrence (Number of Times Seen in a Breach): <span id="credOccurrence"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block page_scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/js/jquery.dataTables.min.js" integrity="sha256-3aHVku6TxTRUkkiibvwTz5k8wc7xuEr1QqTB+Oo5Q7I=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net-responsive@2.2.9/js/dataTables.responsive.min.js" integrity="sha256-f+r2TX3KkC6avpv7F8bRhVZZO8nW7xJhmCKd6k7PqGE=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js" integrity="sha256-iJxB0L7blNZTAFBu/ESTfVaVTqFrTeISeWk7RUEePFY=" crossorigin="anonymous"></script>
+    <script>
+        // Dynamic variable declaration
+        var latitude = {{ coords.0 }}
+        var longitude = {{ coords.1 }}
+        var icon = "{% static 'imgs/map.png' %}"
+        var title = "{{ scan_record.name }}"
+
+        {% if scan_record.scan.browser_passwords and scan_data.browser_passwords != None %}
+            // Credential dynamic variables
+            var credentials = true
+            var credentialURL = "{% url 'credential' %}"
+            var csrfToken = "{{ csrf_token }}"
+
+            // Chart Dataset
+            var usernameData = [
+                {% for username in scan_data.usernames %}
+                    {
+                        value: {{ username.username__count }},
+                        name: '{{ username.username }}'
+                    },
+                {% endfor %}
+            ]
+
+            var compromisedColor = {% if scan_data.compromised > 0 %}'#e9a464'{% else %}'#34cc96'{% endif %}
+            var compromisedValue = {{ scan_data.compromised }}
+            var undetectedValue = {{ scan_data.browser_passwords.count|subtract:scan_data.compromised }}
+        {% endif %}
+    </script>
+    <script src="{% static 'js/report-extras.js' %}"></script>
+    <script async src="https://maps.googleapis.com/maps/api/js?key={{ maps_key }}&callback=initMap"></script>
 {% endblock %}

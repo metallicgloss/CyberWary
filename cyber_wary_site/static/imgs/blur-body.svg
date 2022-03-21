@@ -1,0 +1,9 @@
+<svg width="880" height="689" viewBox="0 0 880 689" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse opacity="0.5" cx="658.5" cy="344.5" rx="658.5" ry="344.5" fill="url(#oval_blur)" />
+    <defs>
+        <linearGradient id="oval_blur" x1="53" y1="-591.084" x2="986.107" y2="933.03" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#1BF0A3" />
+            <stop offset="1" stop-color="#1B3DF0" stop-opacity="0" />
+        </linearGradient>
+    </defs>
+</svg>

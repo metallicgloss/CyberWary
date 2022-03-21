@@ -18,15 +18,9 @@
 #
 
 from cyber_wary_site import views
-from django.conf.urls import include
-from django.contrib.auth import views as auth_views
 from django.urls import path
 
 urlpatterns = [
-    # ----------------------------------------------------------------------- #
-    #                                Core URLs                                #
-    # ----------------------------------------------------------------------- #
-
     path(
         '',
         views.index,

@@ -238,13 +238,6 @@ class ScanFormStep2(forms.ModelForm):
         initial=False
     )
 
-    system_services = forms.BooleanField(
-        label='Services',
-        help_text='Analyses the system services installed on the device.',
-        required=False,
-        initial=False
-    )
-
     browser_passwords = forms.BooleanField(
         label='System/Browser Passwords',
         help_text='Analyses the system and browser passwords accessible/stored on the device.',
@@ -305,7 +298,6 @@ class ScanFormStep2(forms.ModelForm):
         model = Scan
         fields = (
             'system_users',
-            'system_services',
             'browser_passwords',
             'network_adapters',
             'network_exposure',
@@ -327,6 +319,15 @@ class ApiKeyForm(forms.Form):
     confirmation = forms.BooleanField(
         label='Confirm Key Regeneration?',
         help_text='When you re-generate your key, any requests made with the existing key will be rejected.',
+        required=True,
+        initial=False
+    )
+
+
+class AccountDeletionForm(forms.Form):
+    confirmation = forms.BooleanField(
+        label='Confirm Account Deletion?',
+        help_text='When your account is deleted, it is irrevocably removed from the system.',
         required=True,
         initial=False
     )

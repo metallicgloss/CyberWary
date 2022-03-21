@@ -45,6 +45,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <link rel="stylesheet" href="{% static 'css/icofont.css' %}">
     </head>
     <body>
+        <!-- Header -->
         <header class="p-3 text-white">
             <nav class="navbar navbar-expand-lg navbar-dark">
                 <div class="container">
@@ -52,6 +53,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarCyberWary">
+                        <!-- Navar Logo -->
                         <a href="/" class="navbar-brand me-auto header-logo">
                             <svg width="116" height="27" viewBox="0 0 116 27" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect width="27" height="27" fill="white"/>
@@ -61,6 +63,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <rect y="14" width="116" height="3" fill="#1D1C28"/>
                             </svg>
                         </a>
+                        <!-- Navar links-->
                         <ul class="navbar-nav text-white mt-4 mt-lg-0">
                             <li class="nav-item {% if request.path == "/" %}active{% endif %}">
                                 <a href="{% url 'index' %}" class="nav-link px-lg-3">Home</a>
@@ -69,10 +72,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <a href="{% url 'software' %}" class="nav-link px-lg-3">Features</a>
                             </li>
                             {% if user.is_authenticated %}
+                                <!-- User Logged In-->
                                 <li class="nav-item ps-lg-5">
                                     <a href="{% url 'portal' %}" class="btn btn-secondary mt-1 mt-lg-0 w-100 w-lg-0">Dashboard</a>
                                 </li>
                             {% else %}
+                                <!-- Unauthenticated User-->
                                 <li class="nav-item ps-lg-5 pe-lg-3">
                                     <a href="{% url 'account_login' %}" class="nav-link">Login</a>
                                 </li>
@@ -86,8 +91,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             </nav>
         </header>
 
+        <!-- Primary Content -->
         {% block page_content %}{% endblock %}
 
+        <!-- Footer -->
         <div class="footer text-white">
             <div class="container">
                 <div class="d-flex justify-content-left">
@@ -108,6 +115,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
         <script>
             $(document).ready(function(){
+                // Define default required tooltip.
                 $('.required').tooltip({title: "This is a required field." });
                 
                 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))

@@ -1,4 +1,4 @@
-{% extends "portal.html" %}
+{% extends "structure/portal.html" %}
 
 {% load static %}
 {% load account socialaccount %}
@@ -23,144 +23,189 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endcomment %}
 
 {% block page_content %}
+    <!-- Header / Title -->
     <h2>CyberWary Profile</h2>
     <p>View, update or correct your account details, including your name, email address and password.</p>
-    <div class="row mt-5">
-        <div class="col-lg-12 col-xl-7">
-            <form method="POST">
-                {% csrf_token %}
-                {{ form.non_field_errors }}
-                {% for hidden in form.hidden_fields %}
-                    {{ hidden }}
-                {% endfor %}
-                <div class="row">
-                    <div class="col-lg-12 col-xl-4 {% if form.first_name.errors %}field-error{% endif %}">
-                        <p class="mb-1 fw-bold">
-                            <i class="icofont-ui-user me-2"></i> {{ form.first_name.label }}<span class="text-danger">*</span>
-                        </p>
-                        <div class="position-relative">
-                            {{ form.first_name }}
-                            <span class="focus-border">
-                                <i></i>
-                            </span>
+
+    <!-- Account Modification -->
+    <section>
+        <div class="row mt-5">
+            <div class="col-lg-12 col-xl-7">
+                <!-- Account Details Form -->
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    {% for hidden in form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+
+                    <div class="row">
+                        <!-- Forename -->
+                        <div class="col-lg-12 col-xl-4 {% if form.first_name.errors %}field-error{% endif %}">
+                            <p class="mb-1 fw-bold"><i class="icofont-ui-user me-2"></i> {{ form.first_name.label }}<span class="text-danger">*</span></p>
+                            <div class="position-relative form-input-animation">
+                                {{ form.first_name }}
+                                <span class="focus-border"><i></i></span>
+                            </div>
+                        </div>
+
+                        <!-- Surname -->
+                        <div class="col-lg-12 col-xl-4 {% if form.last_name.errors %}field-error{% endif %}">
+                            <p class="mb-1 fw-bold"><i class="icofont-ui-user me-2"></i> {{ form.last_name.label }}<span class="text-danger">*</span></p>
+                            <div class="position-relative form-input-animation">
+                                {{ form.last_name }}
+                                <span class="focus-border"><i></i></span>
+                            </div>
+                        </div>
+
+                        <!-- Email Address -->
+                        <div class="col-lg-12 col-xl-4 {% if form.email.errors %}field-error{% endif %}">
+                            <p class="mb-1 fw-bold"><i class="icofont-ui-email me-2"></i> {{ form.email.label }}<span class="text-danger">*</span></p>
+                            <div class="position-relative form-input-animation">
+                                {{ form.email }}
+                                <span class="focus-border"><i></i></span>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-12 col-xl-4 {% if form.last_name.errors %}field-error{% endif %}">
-                        <p class="mb-1 fw-bold">
-                            <i class="icofont-ui-user me-2"></i> {{ form.last_name.label }}<span class="text-danger">*</span>
-                        </p>
-                        <div class="position-relative">
-                            {{ form.last_name }}
-                            <span class="focus-border">
-                                <i></i>
-                            </span>
+
+                    <!-- Update Password Toggle -->
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <p class="mt-4 mb-1 fw-bold"><i class="icofont-exchange me-2"></i> Update Your Password?</p>
+                            <input id="selection-no" class="form-radio-toggle toggle-left" name="update_password" value="false" type="radio" checked>
+                            <label for="selection-no" class="form-radio-toggle-btn">No</label>
+                            <input id="selection-yes" class="form-radio-toggle toggle-right" name="update_password" value="true" type="radio">
+                            <label for="selection-yes" class="form-radio-toggle-btn">Yes</label>
                         </div>
                     </div>
-                    <div class="col-lg-12 col-xl-4 {% if form.email.errors %}field-error{% endif %}">
-                        <p class="mb-1 fw-bold">
-                            <i class="icofont-ui-email me-2"></i> {{ form.email.label }}<span class="text-danger">*</span>
-                        </p>
-                        <div class="position-relative">
-                            {{ form.email }}
-                            <span class="focus-border">
-                                <i></i>
-                            </span>
+
+                    <!-- Hidden Password Change - Visible on Confirmation -->
+                    <div class="row password-field" style="display:none;">
+                        <!-- Password -->
+                        <div class="col-lg-12 col-xl-6 {% if form.password1.errors or form.password2.errors %}field-error{% endif %}">
+                            <p class="mt-4 mb-1 fw-bold">
+                                <i class="icofont-ui-password me-2"></i> {{ form.password1.label }}<span class="text-danger">*</span>
+                            </p>
+                            <div class="position-relative form-input-animation">
+                                {{ form.password1 }}
+                                <span class="focus-border"><i></i></span>
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="col-lg-12 col-xl-6 {% if form.password1.errors or form.password2.errors %}field-error{% endif %}">
+                            <p class="mt-4 mb-1 fw-bold">
+                                <i class="icofont-ui-password me-2"></i> {{ form.password2.label }}<span class="text-danger">*</span>
+                            </p>
+                            <div class="position-relative form-input-animation">
+                                {{ form.password2 }}
+                                <span class="focus-border"><i></i></span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-xl-12">
-                        <p class="mt-4 mb-1 fw-bold">
-                            <i class="icofont-exchange me-2"></i> Update Your Password?
-                        </p>
-                        <input id="toggle-off" class="form-radio-toggle toggle-left" name="update_password" value="false" type="radio" checked>
-                        <label for="toggle-off" class="form-radio-toggle-btn">No</label>
-                        <input id="toggle-on" class="form-radio-toggle toggle-right" name="update_password" value="true" type="radio">
-                        <label for="toggle-on" class="form-radio-toggle-btn">Yes</label>
-                    </div>
-                </div>
-                <div class="row password-field" style="display:none;">
-                    <div class="col-lg-12 col-xl-6 {% if form.password1.errors or form.password2.errors %}field-error{% endif %}">
-                        <p class="mt-4 mb-1 fw-bold">
-                            <i class="icofont-ui-password me-2"></i> {{ form.password1.label }}<span class="text-danger">*</span>
-                        </p>
-                        <div class="position-relative">
-                            {{ form.password1 }}
-                            <span class="focus-border">
-                                <i></i>
-                            </span>
+                    
+                    <!-- Save Changes Button -->
+                    <div class="row update-button" style="display:none;">
+                        <div class="col-lg-12">
+                            <button class="btn bg-success text-white px-5 py-2 mt-4 text-uppercase" type="submit">Save Changes <i class="icofont-save ms-3"></i></button>
                         </div>
                     </div>
-                    <div class="col-lg-12 col-xl-6 {% if form.password1.errors or form.password2.errors %}field-error{% endif %}">
-                        <p class="mt-4 mb-1 fw-bold">
-                            <i class="icofont-ui-password me-2"></i> {{ form.password2.label }}<span class="text-danger">*</span>
-                        </p>
-                        <div class="position-relative">
-                            {{ form.password2 }}
-                            <span class="focus-border">
-                                <i></i>
-                            </span>
+
+                    {% if update %}
+                        <!-- Successfully Updated Message -->
+                        <div class="form-errors success-message mt-4">
+                            <h5 class="text-success">Success.</h5>
+                            <ul>
+                                <li>Your account was updated successfully.</li>
+                            </ul>
                         </div>
-                    </div>
-                </div>
-                <div class="row update-button" style="display:none;">
-                    <div class="col-lg-12">
-                        <button class="btn bg-success text-white px-5 py-2 mt-4 text-uppercase" type="submit">Save Changes <i class="icofont-save ms-3"></i></button>
-                    </div>
-                </div>
-                {% if update %}
-                    <div class="form-errors success-message mt-4">
-                        <h5 class="text-success">Success.</h5>
-                        <ul>
-                            <li>Your account was updated successfully.</li>
-                        </ul>
-                    </div>
-                {% endif %}
-                {% if form.errors %}
-                    <div class="form-errors my-5">
-                        <h5 class="text-danger">Sorry! There was a problem with your request.</h5>
-                        <ul>
-                        {% for field, errors in form.errors.items %}
-                            {% for error in errors %}
-                                <li>{{ error }}</li>
+                    {% elif form.errors %}
+                        <!-- Form Contains Errors -->
+                        <div class="form-errors my-5">
+                            <h5 class="text-danger">Sorry! There was a problem with your request.</h5>
+                            <ul>
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
                             {% endfor %}
-                        {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
-            </form>
-        </div>
-        <div class="col-xl-1 d-lg-none d-xl-block">
-            <div class="section-divider"></div>
-        </div>
-        <div class="col-lg-12 col-xl-4 order-xs-first">
-            <div class="account-information">
-                <h5 class="mb-4">Account Details</h5>
-                <p class="mb-2">Account Created: <span class="fw-bold">{{ request.user.date_joined|date:"jS F Y - H:i" }} UTC</span></p>
-                <p class="mb-2">Last Login: <span class="fw-bold">{{ request.user.last_login|date:"jS F Y - H:i" }} UTC</span></p>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+
+            <!-- Vertical Divider -->
+            <div class="col-xl-1 d-lg-none d-xl-block">
+                <div class="section-divider"></div>
+            </div>
+            
+            <!-- Account Information -->
+            <div class="col-lg-12 col-xl-4 order-xs-first">
+                <div class="account-information">
+                    <h5 class="mb-4">Account Details</h5>
+                    <p class="mb-2">Account Created: <span class="fw-bold">{{ request.user.date_joined|date:"jS F Y - H:i" }} UTC</span></p>
+                    <p class="mb-2">Last Login: <span class="fw-bold">{{ request.user.last_login|date:"jS F Y - H:i" }} UTC</span></p>
+
+                    <!-- Horizontal Divider -->
+                    <hr class="my-5">
+
+                    <!-- Account Deletion Menu -->
+                    <h5 class="mb-4">Account Deletion</h5>
+                    <form method="POST" action="{% url 'account_delete' %}">
+                        <!-- Confirm Account Deletion -->
+                        {% csrf_token %}
+                        <p class="mb-1 fw-bold">
+                            <i class="icofont-bin me-2"></i> {{ account_delete_form.confirmation.label }}<br>
+                            <small class="fw-normal"><i>{{ account_delete_form.confirmation.help_text }}</i></small>
+                        </p>
+                        <!-- Confirmation Toggle -->
+                        <div class="mt-2">
+                            <input id="delete-selection-no" class="form-radio-toggle toggle-left" name="confirmation" value="false" type="radio" checked>
+                            <label for="delete-selection-no" class="form-radio-toggle-btn">No</label>
+                            <input id="delete-selection-yes" class="form-radio-toggle toggle-right" name="confirmation" value="true" type="radio">
+                            <label for="delete-selection-yes" class="form-radio-toggle-btn">Yes</label>
+                        </div>
+                        <button id="account-deletion" class="btn btn-danger px-5 py-2 mt-4 text-uppercase" type="submit" style="display:none;">Delete Account <i class="icofont-ui-delete ms-3"></i></button>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+    <section>
 {% endblock %}
 
 {% block page_scripts %}
-<script>
-    $(document).ready(function(){
-        $('input[type=radio][name=update_password]').change(function() {
-            if (this.value == "true") {
-                $('.password-field').show()
-            }
-            else {
-                $('.password-field').hide()
-                $('#{{ form.password1.auto_id }}').val("")
-                $('#{{ form.password2.auto_id }}').val("")
-            }
+    <script>
+        $(document).ready(function(){
+            // On confirmation of password change, display password fields and button.
+            $('input[type=radio][name=update_password]').change(function() {
+                if (this.value == "true") {
+                    $('.password-field').show()
+                }
+                else {
+                    // Confirmation withdrawn; hide password fields and clear contents.
+                    $('.password-field').hide()
+                    $('#{{ form.password1.auto_id }}').val("")
+                    $('#{{ form.password2.auto_id }}').val("")
+                }
+            });
+
+            // Confirmation for account deletion; hide/show button.
+            $('input[type=radio][name=confirmation]').change(function() {
+                if (this.value == "true") {
+                    $('#account-deletion').show()
+                }
+                else {
+                    $('#account-deletion').hide()
+                }
+            });
+
+            // Account details updated; display save button.
+            $("input[type=text], input[type=password]").on("input", function(){
+                $('.update-button').show()
+                $('.success-message').hide()
+                $("input[type=text], input[type=password]").off()
+            });
         });
-        $("input[type=text], input[type=password]").on("input", function(){
-            $('.update-button').show()
-            $('.success-message').hide()
-            $("input[type=text], input[type=password]").off()
-        });
-    });
-</script>
+    </script>
 {% endblock%}

@@ -1,4 +1,4 @@
-{% extends "portal.html" %}
+{% extends "structure/portal.html" %}
 
 {% load static %}
 
@@ -27,29 +27,34 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endblock%}
 
 {% block page_content %}
-    <h2>Scans</h2>
-    <div class="row">
-        <div class="col-xl-12">
-            <table id="scan-history" class="display pb-5 w-100">
-                <thead>
-                    <tr>
-                        <th class="pb-3 desktop">Scan Created Date/Time</th>
-                        <th class="pb-3 desktop">Scan Type</th>
-                        <th class="pb-3 desktop"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for scan in user_scans %}
+    <section>
+        <!-- Page Title & Scan Information -->
+        <h2>Scans</h2>
+
+        <!-- List of Past Scans -->
+        <div class="row">
+            <div class="col-xl-12">
+                <table id="scan-history" class="display pb-5 w-100">
+                    <thead>
                         <tr>
-                            <td>{{ scan.created|date:"l jS F Y - H:i:s e" }}</td>
-                            <td>{{ scan.get_type_display }} Team</td>
-                            <td><a href="{% url 'scan' scan_key=scan.scan_key  %}"><i class="icofont-rounded-double-right"></i></a></td>
+                            <th class="pb-3 desktop">Scan Created Date/Time</th>
+                            <th class="pb-3 desktop">Scan Type</th>
+                            <th class="pb-3 desktop"></th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for scan in user_scans %}
+                            <tr>
+                                <td>{{ scan.created|date:"l jS F Y - H:i:s e" }}</td>
+                                <td>{{ scan.get_type_display }} Team</td>
+                                <td><a href="{% url 'scan' scan_key=scan.scan_key  %}"><i class="icofont-double-right"></i></a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    </section>
 {% endblock %}
 
 {% block page_scripts %}
@@ -57,6 +62,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <script src="https://cdn.jsdelivr.net/npm/datatables.net-responsive@2.2.9/js/dataTables.responsive.min.js" integrity="sha256-f+r2TX3KkC6avpv7F8bRhVZZO8nW7xJhmCKd6k7PqGE=" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function(){
+            // Format table into datatable.
             $('#scan-history').dataTable( {
                 "lengthChange": false,
                 "searching": false,

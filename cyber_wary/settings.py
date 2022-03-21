@@ -143,6 +143,11 @@ REST_FRAMEWORK = {
     # Restrict authentication method to API Key/Token only.
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+    ],
+
+    # Default the format for reading all request data as JSON.
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
     ]
 }
 
@@ -250,6 +255,10 @@ SOCIALACCOUNT_PROVIDERS = {
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 SENDGRID_API_KEY = os.environ.get('CYBERWARY_SENDGRID_API_KEY')
 SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+DEFAULT_FROM_EMAIL = os.environ.get('CYBERWARY_SENDGRID_EMAIL')
 
 # MaxMind GeoIP Setting
 GEOIP_PATH = os.environ.get('CYBERWARY_GEOIP_DIRECTORY')
+
+# Google Maps JavaScript API Key
+MAPS_KEY = os.environ.get('CYBERWARY_GOOGLE_MAPS_API_KEY')

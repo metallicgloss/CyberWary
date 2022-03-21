@@ -17,162 +17,180 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endcomment %}
 
-<form id="scan-components" method="POST">
-    {% csrf_token %}
-    {{ wizard.management_form }}
-    {% for hidden in form.hidden_fields %}
-        {{ hidden }}
-    {% endfor %}
-    <div class="row">
-        <div class="col-xl-12">
-            <h3 class="mt-4 mb-0">Scan Components</h3>
-            <p class="scan-note scan-section pb-1"><i>Select the modules you wish to be activated during the scan.</i></p>
+<section>
+    <!-- Scan Components Form -->
+    <form id="scan-components" method="POST">
+        {% csrf_token %}
+        {{ wizard.management_form }}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+        
+        <!-- Scan Section Title -->
+        <div class="row">
+            <div class="col-xl-12">
+                <h3 class="mt-4 mb-0">Scan Components</h3>
+                <p class="scan-note scan-section pb-1"><i>Select the modules you wish to be activated during the scan.</i></p>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-xl-12">
-            <h5 class="mt-4 mb-0 pb-1 scan-section">Network Analysis</h5>
+
+        <!-- Network Group -->
+        <div class="row">
+            <div class="col-xl-12">
+                <h5 class="mt-4 mb-0 pb-1 scan-section">Network Analysis</h5>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col {% if form.network_exposure.errors %}field-error{% endif %}">
-            <label class="form-field form-checkbox mt-3 mb-3">
-                <span class="fw-bold">{{ form.network_exposure.label }} <i class="icofont-danger-zone ms-1"></i></span><br>
-                <span class="position-absolute scan-note"><i>{{ form.network_exposure.help_text }}</i></span>
-                <input type="checkbox" name="1-{{ form.network_exposure.name }}" />
-                <div class="form-checkbox-indicator mt-2"></div>
-            </label>
-            {% for error in form.network_exposure.errors %}
-                <p class="text-red mt-2">{{ error }}</p>
-            {% endfor %}
+
+        <!-- Network Exposure -->
+        <div class="row">
+            <div class="col {% if form.network_exposure.errors %}field-error{% endif %}">
+                <label class="form-field form-checkbox mt-3 mb-3">
+                    <span class="fw-bold">{{ form.network_exposure.label }} <i class="icofont-danger-zone ms-1"></i></span><br>
+                    <span class="position-absolute scan-note"><i>{{ form.network_exposure.help_text }}</i></span>
+                    <input type="checkbox" name="1-{{ form.network_exposure.name }}" />
+                    <div class="form-checkbox-indicator mt-2"></div>
+                </label>
+                {% for error in form.network_exposure.errors %}
+                    <p class="text-red mt-2">{{ error }}</p>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col {% if form.network_adapters.errors %}field-error{% endif %}">
-            <label class="form-field form-checkbox mt-3 mb-3">
-                <span class="fw-bold">{{ form.network_adapters.label }} <i class="icofont-ui-network ms-1"></i></span><br>
-                <span class="position-absolute scan-note"><i>{{ form.network_adapters.help_text }}</i></span>
-                <input type="checkbox" name="1-{{ form.network_adapters.name }}" />
-                <div class="form-checkbox-indicator mt-2"></div>
-            </label>
-            {% for error in form.network_adapters.errors %}
-                <p class="text-red mt-2">{{ error }}</p>
-            {% endfor %}
+
+        <!-- Network Adapters -->
+        <div class="row">
+            <div class="col {% if form.network_adapters.errors %}field-error{% endif %}">
+                <label class="form-field form-checkbox mt-3 mb-3">
+                    <span class="fw-bold">{{ form.network_adapters.label }} <i class="icofont-ui-network ms-1"></i></span><br>
+                    <span class="position-absolute scan-note"><i>{{ form.network_adapters.help_text }}</i></span>
+                    <input type="checkbox" name="1-{{ form.network_adapters.name }}" />
+                    <div class="form-checkbox-indicator mt-2"></div>
+                </label>
+                {% for error in form.network_adapters.errors %}
+                    <p class="text-red mt-2">{{ error }}</p>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col {% if form.network_firewall_rules.errors %}field-error{% endif %}">
-            <label class="form-field form-checkbox mt-3 mb-3">
-                <span class="fw-bold">{{ form.network_firewall_rules.label }} <i class="icofont-ui-fire-wall ms-1"></i></span><br>
-                <span class="position-absolute scan-note"><i>{{ form.network_firewall_rules.help_text }}</i></span>
-                <input type="checkbox" name="1-{{ form.network_firewall_rules.name }}" />
-                <div class="form-checkbox-indicator mt-2"></div>
-            </label>
-            {% for error in form.network_firewall_rules.errors %}
-                <p class="text-red mt-2">{{ error }}</p>
-            {% endfor %}
+
+        <!-- Network Firewall -->
+        <div class="row">
+            <div class="col {% if form.network_firewall_rules.errors %}field-error{% endif %}">
+                <label class="form-field form-checkbox mt-3 mb-3">
+                    <span class="fw-bold">{{ form.network_firewall_rules.label }} <i class="icofont-ui-fire-wall ms-1"></i></span><br>
+                    <span class="position-absolute scan-note"><i>{{ form.network_firewall_rules.help_text }}</i></span>
+                    <input type="checkbox" name="1-{{ form.network_firewall_rules.name }}" />
+                    <div class="form-checkbox-indicator mt-2"></div>
+                </label>
+                {% for error in form.network_firewall_rules.errors %}
+                    <p class="text-red mt-2">{{ error }}</p>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-xl-12">
-            <h5 class="mt-5 mb-0 pb-1 scan-section">Software Analysis</h5>
+
+        <!-- Software Group -->
+        <div class="row">
+            <div class="col-xl-12">
+                <h5 class="mt-5 mb-0 pb-1 scan-section">Software Analysis</h5>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col {% if form.startup_applications.errors %}field-error{% endif %}">
-            <label class="form-field form-checkbox mt-3 mb-3">
-                <span class="fw-bold">{{ form.startup_applications.label }} <i class="icofont-automation ms-1"></i></span><br>
-                <span class="position-absolute scan-note"><i>{{ form.startup_applications.help_text }}</i></span>
-                <input type="checkbox" name="1-{{ form.startup_applications.name }}" />
-                <div class="form-checkbox-indicator mt-2"></div>
-            </label>
-            {% for error in form.startup_applications.errors %}
-                <p class="text-red mt-2">{{ error }}</p>
-            {% endfor %}
+
+        <!-- Startup Software -->
+        <div class="row">
+            <div class="col {% if form.startup_applications.errors %}field-error{% endif %}">
+                <label class="form-field form-checkbox mt-3 mb-3">
+                    <span class="fw-bold">{{ form.startup_applications.label }} <i class="icofont-automation ms-1"></i></span><br>
+                    <span class="position-absolute scan-note"><i>{{ form.startup_applications.help_text }}</i></span>
+                    <input type="checkbox" name="1-{{ form.startup_applications.name }}" />
+                    <div class="form-checkbox-indicator mt-2"></div>
+                </label>
+                {% for error in form.startup_applications.errors %}
+                    <p class="text-red mt-2">{{ error }}</p>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col {% if form.installed_applications.errors %}field-error{% endif %}">
-            <label class="form-field form-checkbox mt-3 mb-3">
-                <span class="fw-bold">{{ form.installed_applications.label }} <i class="icofont-console ms-1"></i></span><br>
-                <span class="position-absolute scan-note"><i>{{ form.installed_applications.help_text }}</i></span>
-                <input type="checkbox" name="1-{{ form.installed_applications.name }}" />
-                <div class="form-checkbox-indicator mt-2"></div>
-            </label>
-            {% for error in form.installed_applications.errors %}
-                <p class="text-red mt-2">{{ error }}</p>
-            {% endfor %}
+
+        <!-- Installed Software -->
+        <div class="row">
+            <div class="col {% if form.installed_applications.errors %}field-error{% endif %}">
+                <label class="form-field form-checkbox mt-3 mb-3">
+                    <span class="fw-bold">{{ form.installed_applications.label }} <i class="icofont-console ms-1"></i></span><br>
+                    <span class="position-absolute scan-note"><i>{{ form.installed_applications.help_text }}</i></span>
+                    <input type="checkbox" name="1-{{ form.installed_applications.name }}" />
+                    <div class="form-checkbox-indicator mt-2"></div>
+                </label>
+                {% for error in form.installed_applications.errors %}
+                    <p class="text-red mt-2">{{ error }}</p>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-xl-12">
-            <h5 class="mt-5 mb-0 pb-1 scan-section">Operating System Security Analysis</h5>
+
+        <!-- OS Group -->
+        <div class="row">
+            <div class="col-xl-12">
+                <h5 class="mt-5 mb-0 pb-1 scan-section">Operating System Security Analysis</h5>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col {% if form.installed_patches.errors %}field-error{% endif %}">
-            <label class="form-field form-checkbox mt-3 mb-3">
-                <span class="fw-bold">{{ form.installed_patches.label }} <i class="icofont-heart-beat-alt ms-1"></i></span><br>
-                <span class="position-absolute scan-note"><i>{{ form.installed_patches.help_text }}</i></span>
-                <input type="checkbox" name="1-{{ form.installed_patches.name }}" />
-                <div class="form-checkbox-indicator mt-2"></div>
-            </label>
-            {% for error in form.installed_patches.errors %}
-                <p class="text-red mt-2">{{ error }}</p>
-            {% endfor %}
+
+        <!-- Installed Updates -->
+        <div class="row">
+            <div class="col {% if form.installed_patches.errors %}field-error{% endif %}">
+                <label class="form-field form-checkbox mt-3 mb-3">
+                    <span class="fw-bold">{{ form.installed_patches.label }} <i class="icofont-heart-beat-alt ms-1"></i></span><br>
+                    <span class="position-absolute scan-note"><i>{{ form.installed_patches.help_text }}</i></span>
+                    <input type="checkbox" name="1-{{ form.installed_patches.name }}" />
+                    <div class="form-checkbox-indicator mt-2"></div>
+                </label>
+                {% for error in form.installed_patches.errors %}
+                    <p class="text-red mt-2">{{ error }}</p>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col {% if form.installed_antivirus.errors %}field-error{% endif %}">
-            <label class="form-field form-checkbox mt-3 mb-3">
-                <span class="fw-bold">{{ form.installed_antivirus.label }} <i class="icofont-bug ms-1"></i></span><br>
-                <span class="position-absolute scan-note"><i>{{ form.installed_antivirus.help_text }}</i></span>
-                <input type="checkbox" name="1-{{ form.installed_antivirus.name }}" />
-                <div class="form-checkbox-indicator mt-2"></div>
-            </label>
-            {% for error in form.installed_antivirus.errors %}
-                <p class="text-red mt-2">{{ error }}</p>
-            {% endfor %}
+
+        <!-- Antivirus Settings -->
+        <div class="row">
+            <div class="col {% if form.installed_antivirus.errors %}field-error{% endif %}">
+                <label class="form-field form-checkbox mt-3 mb-3">
+                    <span class="fw-bold">{{ form.installed_antivirus.label }} <i class="icofont-bug ms-1"></i></span><br>
+                    <span class="position-absolute scan-note"><i>{{ form.installed_antivirus.help_text }}</i></span>
+                    <input type="checkbox" name="1-{{ form.installed_antivirus.name }}" />
+                    <div class="form-checkbox-indicator mt-2"></div>
+                </label>
+                {% for error in form.installed_antivirus.errors %}
+                    <p class="text-red mt-2">{{ error }}</p>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col {% if form.system_users.errors %}field-error{% endif %}">
-            <label class="form-field form-checkbox mt-3 mb-3">
-                <span class="fw-bold">{{ form.system_users.label }} <i class="icofont-ui-user-group ms-1"></i></span><br>
-                <span class="position-absolute scan-note"><i>{{ form.system_users.help_text }}</i></span>
-                <input type="checkbox" name="1-{{ form.system_users.name }}" />
-                <div class="form-checkbox-indicator mt-2"></div>
-            </label>
-            {% for error in form.system_users.errors %}
-                <p class="text-red mt-2">{{ error }}</p>
-            {% endfor %}
+
+        <!-- System Users -->
+        <div class="row">
+            <div class="col {% if form.system_users.errors %}field-error{% endif %}">
+                <label class="form-field form-checkbox mt-3 mb-3">
+                    <span class="fw-bold">{{ form.system_users.label }} <i class="icofont-ui-user-group ms-1"></i></span><br>
+                    <span class="position-absolute scan-note"><i>{{ form.system_users.help_text }}</i></span>
+                    <input type="checkbox" name="1-{{ form.system_users.name }}" />
+                    <div class="form-checkbox-indicator mt-2"></div>
+                </label>
+                {% for error in form.system_users.errors %}
+                    <p class="text-red mt-2">{{ error }}</p>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col {% if form.system_services.errors %}field-error{% endif %}">
-            <label class="form-field form-checkbox mt-3 mb-3">
-                <span class="fw-bold">{{ form.system_services.label }} <i class="icofont-cubes ms-1"></i></span><br>
-                <span class="position-absolute scan-note"><i>{{ form.system_services.help_text }}</i></span>
-                <input type="checkbox" name="1-{{ form.system_services.name }}" />
-                <div class="form-checkbox-indicator mt-2"></div>
-            </label>
-            {% for error in form.system_services.errors %}
-                <p class="text-red mt-2">{{ error }}</p>
-            {% endfor %}
+
+        <!-- Browser Passwords -->
+        <div class="row">
+            <div class="col {% if form.browser_passwords.errors %}field-error{% endif %}">
+                <label class="form-field form-checkbox mt-3 mb-3">
+                    <span class="fw-bold">{{ form.browser_passwords.label }} <i class="icofont-ui-password ms-1"></i></span><br>
+                    <span class="position-absolute scan-note"><i>{{ form.browser_passwords.help_text }}</i></span>
+                    <input type="checkbox" name="1-{{ form.browser_passwords.name }}" />
+                    <div class="form-checkbox-indicator mt-2"></div>
+                </label>
+                {% for error in form.browser_passwords.errors %}
+                    <p class="text-red mt-2">{{ error }}</p>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col {% if form.browser_passwords.errors %}field-error{% endif %}">
-            <label class="form-field form-checkbox mt-3 mb-3">
-                <span class="fw-bold">{{ form.browser_passwords.label }} <i class="icofont-ui-password ms-1"></i></span><br>
-                <span class="position-absolute scan-note"><i>{{ form.browser_passwords.help_text }}</i></span>
-                <input type="checkbox" name="1-{{ form.browser_passwords.name }}" />
-                <div class="form-checkbox-indicator mt-2"></div>
-            </label>
-            {% for error in form.browser_passwords.errors %}
-                <p class="text-red mt-2">{{ error }}</p>
-            {% endfor %}
-        </div>
-    </div>
-    <button type="submit" class="btn btn-success text-start text-white px-3 py-1 mt-4 w-100">Initialise Scan <i class="icofont-rounded-double-right"></i></button>
-</form>
+
+        <!-- Scan Action -->
+        <button type="submit" class="btn btn-success text-start text-white px-3 py-1 mt-4 w-100">Initialise Scan <i class="icofont-double-right"></i></button>
+    </form>
+</section>

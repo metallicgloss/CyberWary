@@ -17,14 +17,17 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from .forms import AccountModificationForm, ApiKeyForm, ScanFormStep2
-from .models import *
-from .utils import generate_script, get_ip_address, convert_date
+from cyber_wary_portal.forms import AccountModificationForm, ApiKeyForm, ScanFormStep2, AccountDeletionForm
+from cyber_wary_portal.models import *
+from cyber_wary_portal.utils.script_generation import generate_script
+from cyber_wary_portal.utils.data_import import check_credential
 from datetime import datetime
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.gis.geoip2 import GeoIP2
-from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotFound, HttpResponseBadRequest
+from django.contrib.auth import logout
+from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -32,7 +35,7 @@ from django.utils.timezone import make_aware
 from formtools.wizard.views import SessionWizardView
 from pytz import timezone
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view
+from django.db.models import Count
 import json
 
 
@@ -64,6 +67,7 @@ class ScanCreationWizard(LoginRequiredMixin, SessionWizardView):
         self.instance.scan_key = get_random_string(length=32)
         self.instance.save()
         return redirect('scan', self.instance.scan_key)
+
 
 @login_required
 def preview_script(request):
@@ -113,6 +117,7 @@ def activity(request, scan_key):
 
     return JsonResponse(devices)
 
+
 @login_required
 def scan(request, scan_key):
     try:
@@ -147,7 +152,71 @@ def scan(request, scan_key):
 
 @login_required
 def report(request, scan_key, report):
-    return render(request, 'report.html')
+    scan_data = {}
+
+    try:
+        scan_record = ScanRecord.objects.get(
+            scan=Scan.objects.get(
+                user=request.user,
+                scan_key=scan_key
+            ),
+            id=report
+        )
+        scan_duration = scan_record.updated - scan_record.created
+
+    except (ScanRecord.DoesNotExist, Scan.DoesNotExist):
+        return HttpResponseNotFound()
+
+    if(scan_record.scan.system_users):
+        try:
+            scan_data['system_users'] = UserRecord.objects.filter(
+                scan_record=scan_record
+            )
+            scan_data['enabled_defaults'] = scan_data['system_users'].filter(
+                name__in = ['Administrator', 'DefaultAccount', 'Guest', 'WDAGUtilityAccount'],
+                enabled = True
+            ).count()
+        except (UserRecord.DoesNotExist):
+            scan_data['system_users'] = None
+
+    if(scan_record.scan.browser_passwords):
+        try:
+            scan_data['browser_passwords'] = CredentialRecord.objects.filter(
+                credential_scan=CredentialScan.objects.get(
+                    scan_record=scan_record
+                )
+            ).order_by('-occurrence')
+            scan_data['usernames'] = scan_data['browser_passwords'].all().values(
+                "username"
+            ).annotate(
+                Count(
+                    'username',
+                    distinct=True
+                )
+            )
+            scan_data['compromised'] = scan_data['browser_passwords'].filter(
+                compromised=True
+            ).count()
+            scan_data['weak'] = scan_data['browser_passwords'].exclude(
+                password_strength=CredentialRecord.SecurityRating.VERY_STRONG
+            ).count()
+
+        except (CredentialRecord.DoesNotExist, CredentialScan.DoesNotExist):
+            scan_data['browser_passwords'] = None
+
+            
+
+    return render(
+        request,
+        'scan/report.html',
+        {
+            'coords': GeoIP2().lat_lon(scan_record.public_ip),
+            'maps_key': settings.MAPS_KEY,
+            'scan_data': scan_data,
+            'scan_duration': divmod(scan_duration.days * 86400 + scan_duration.seconds, 60),
+            'scan_record': scan_record,
+        }
+    )
 
 
 @login_required
@@ -162,10 +231,6 @@ def history(request):
         }
     )
 
-
-# --------------------------------------------------------------------------- #
-#                           6. Account Modification                           #
-# --------------------------------------------------------------------------- #
 
 @login_required
 def modify(request):
@@ -237,15 +302,34 @@ def modify(request):
         'account/modify.html',
         {
             'form': form,
+            'account_delete_form': AccountDeletionForm(),
             'errors': errors,
             'update': profile_updated
         }
     )
 
 
-# --------------------------------------------------------------------------- #
-#                           6. Account Modification                           #
-# --------------------------------------------------------------------------- #
+@login_required
+def delete(request):
+    if request.method == 'POST':
+        # Post request, submitting / saving of data.
+        form = AccountDeletionForm(request.POST)
+
+        if form.is_valid():
+            # Get existing user.
+            user = SystemUser.objects.get(
+                pk=request.user.pk
+            )
+
+            logout(request)
+
+            user.delete()
+
+            return redirect(reverse('account_delete'))
+
+    else:
+        return redirect(reverse('account_modify'))
+
 
 @login_required
 def api(request):
@@ -303,142 +387,3 @@ def api(request):
             'api_log': api_log
         }
     )
-
-
-@login_required
-def api_payload(request):
-    if request.method == 'POST':
-        payload_id = request.POST['payloadID']
-        request_type = request.POST['type']
-    else:
-        payload_id = request.GET['payloadID']
-        request_type = request.GET['type']
-
-    try:
-        return JsonResponse(
-            json.loads(
-                ApiRequest.objects.get(
-                    user=request.user,
-                    pk=payload_id,
-                    type=request_type,
-                ).payload
-            ), safe=False
-        )
-    except ApiRequest.DoesNotExist:
-        return HttpResponseNotFound()
-
-
-@api_view(['POST', ])
-def start_scan(request):
-    data = json.loads(
-        request.POST['system_information']
-    )
-    
-    api_request = ApiRequest(
-        user=request.user,
-        type='start_scan',
-        payload=json.dumps(data),
-        method=ApiRequest.RequestMethod.POST
-    )
-    api_request.save()
-
-    device_id = request.POST['device_id'].replace(
-        '{', ''
-    ).replace(
-        '}', ''
-    )
-
-    scan_check = Scan.objects.filter(
-        user=request.user,
-        scan_key=request.POST['scan_key']
-    ).exists()
-
-    if(scan_check):
-        scan = Scan.objects.get(
-            user=request.user,
-            scan_key=request.POST['scan_key']
-        )
-    
-        existing_record_check = ScanRecord.objects.filter(
-            scan=scan,
-            device_id=device_id
-        ).exists()
-
-        if(not existing_record_check):
-            geo_ip = GeoIP2()
-
-            os_install = OperatingSystemInstall(
-                operating_system=OperatingSystem.objects.get_or_create(
-                    name=data['OsName'],
-                    version=data['OsVersion']
-                )[0],
-                serial=data['OsSerialNumber'],
-                timezone=data['TimeZone'],
-                install_date=convert_date(data['OsInstallDate']),
-                keyboard=Language.objects.get_or_create(
-                    locale=data['KeyboardLayout']
-                )[0],
-                owner=data['CsPrimaryOwnerName'],
-                logon_server=data['LogonServer'],
-                installed_memory=data['CsPhyicallyInstalledMemory'],
-                domain=data['CsPartOfDomain'],
-                portable=data['OsPortableOperatingSystem'],
-                virtual_machine=data['HyperVisorPresent'],
-                debug_mode=data['OsDebug'],
-            )
-            os_install.save()
-
-            for language in data['OsMuiLanguages']:
-                OperatingSystemInstalledLanguages(
-                    operating_system_installation=os_install,
-                    installed_language=Language.objects.get_or_create(
-                        locale=language
-                    )[0],
-                ).save()
-
-            scan_record = ScanRecord(
-                scan=scan,
-                device_id=device_id,
-                name=data['CsDNSHostName'],
-                os_install=os_install,
-                bios_install=BiosInstall.objects.create(
-                    bios=Bios.objects.get_or_create(
-                        name=data['BiosName'],
-                        version=data['BiosVersion'],
-                        manufacturer=data['BiosManufacturer'],
-                        release_date=convert_date(data['BiosReleaseDate'])
-                    )[0],
-                    install_date=convert_date(data['BiosInstallDate']),
-                    status=data['BiosStatus'],
-                    primary=data['BiosPrimaryBIOS']
-                ),
-                boot_time=convert_date(data['OsLastBootUpTime']),
-                current_user=data['CsUserName'],
-                public_ip=get_ip_address(request),
-                city=geo_ip.city(get_ip_address(request))['city'],
-                country=geo_ip.country_code(get_ip_address(request)).lower(),
-            )
-            scan_record.save()
-
-            return HttpResponse('')
-
-    api_request.response = 403
-    api_request.save()
-
-    return HttpResponseBadRequest()
-
-
-@api_view(['POST', ])
-def firewall_rules(request):
-    ApiRequest(
-        user=request.user,
-        type='firewall_rules',
-        payload=json.dumps(
-            json.loads(
-                request.POST['rules']
-            )
-        ),
-        method=ApiRequest.RequestMethod.POST
-    ).save()
-
-    return JsonResponse(request.data)
