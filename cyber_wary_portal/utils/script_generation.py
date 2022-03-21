@@ -117,27 +117,7 @@ def generate_script(generation_type, payload, api_key):
             'Capture List of System Users',
             'system_users',
             'users',
-            'Get-LocalUser; (Get-LocalGroupMember "Administrators").Name'
-        )
-
-    if(payload['system_services']):
-        script_contents += get_data(
-            'Capture List of System Services',
-            'services/system',
-            'services',
-            'Get-Service'
-        )
-        script_contents += get_data(
-            'Capture List of System Services Registered to Microsoft',
-            'services/microsoft',
-            'services',
-            'Get-WmiObject Win32_Service -Property * | Select DisplayName, PathName | %{ Try { if([System.Diagnostics.FileVersionInfo]::GetVersionInfo("$($_.PathName.ToString().Split("-")[0].Split("/")[0])").LegalCopyright -like "*Microsoft*") {"$($_.DisplayName)"}} catch {}}'
-        )
-        script_contents += get_data(
-            'Capture List of Non-Default System Services',
-            'services/non_default',
-            'services',
-            'Get-wmiobject win32_service | where { $_.PathName -notmatch "policyhost.exe" -and $_.Name -ne "LSM" -and $_.PathName -notmatch "OSE.EXE" -and $_.PathName -notmatch "OSPPSVC.EXE" -and $_.PathName -notmatch "Microsoft Security Client" -and $_.DisplayName -notmatch "NetSetupSvc" -and $_.Caption -notmatch "Windows" -and $_.PathName -notmatch "Windows" }'
+            'Get-LocalUser'
         )
 
     if(payload['browser_passwords']):

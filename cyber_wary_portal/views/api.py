@@ -329,48 +329,6 @@ def system_users(request):
 
 
 @api_view(['POST', ])
-def services_system(request):
-    ApiRequest(
-        user = request.user,
-        type = 'services_system',
-        payload = json.dumps(
-            json.loads(
-                request.POST['services']
-            )
-        ),
-        method = ApiRequest.RequestMethod.POST
-    ).save()
-
-
-@api_view(['POST', ])
-def services_microsoft(request):
-    ApiRequest(
-        user = request.user,
-        type = 'services_microsoft',
-        payload = json.dumps(
-            json.loads(
-                request.POST['services']
-            )
-        ),
-        method = ApiRequest.RequestMethod.POST
-    ).save()
-
-
-@api_view(['POST', ])
-def services_non_default(request):
-    ApiRequest(
-        user = request.user,
-        type = 'services_non_default',
-        payload = json.dumps(
-            json.loads(
-                request.POST['services']
-            )
-        ),
-        method = ApiRequest.RequestMethod.POST
-    ).save()
-
-
-@api_view(['POST', ])
 def browser_passwords(request):
     api_request, device, scan, scan_record, payload = setup_request(
         request,

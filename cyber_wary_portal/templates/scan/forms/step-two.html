@@ -175,21 +175,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             </div>
         </div>
 
-        <!-- System Services -->
-        <div class="row">
-            <div class="col {% if form.system_services.errors %}field-error{% endif %}">
-                <label class="form-field form-checkbox mt-3 mb-3">
-                    <span class="fw-bold">{{ form.system_services.label }} <i class="icofont-cubes ms-1"></i></span><br>
-                    <span class="position-absolute scan-note"><i>{{ form.system_services.help_text }}</i></span>
-                    <input type="checkbox" name="1-{{ form.system_services.name }}" />
-                    <div class="form-checkbox-indicator mt-2"></div>
-                </label>
-                {% for error in form.system_services.errors %}
-                    <p class="text-red mt-2">{{ error }}</p>
-                {% endfor %}
-            </div>
-        </div>
-
         <!-- Browser Passwords -->
         <div class="row">
             <div class="col {% if form.browser_passwords.errors %}field-error{% endif %}">

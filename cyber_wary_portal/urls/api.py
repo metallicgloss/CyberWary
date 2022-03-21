@@ -114,33 +114,6 @@ urlpatterns = [
             name='system_users'
         ),
 
-        path('services/', include([
-            path(
-                'system',
-                api.services_system,
-                name='system'
-            ),
-
-            path(
-                'microsoft',
-                api.services_microsoft,
-                name='microsoft'
-            ),
-
-            path(
-                'microsoft',
-                api.firewall_rules,
-                name='microsoft'
-            ),
-
-            path(
-                'non_default',
-                api.services_non_default,
-                name='non_default'
-            ),
-
-        ])),
-
         path(
             'browser_passwords',
             api.browser_passwords,

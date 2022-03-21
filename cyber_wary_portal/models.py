@@ -117,11 +117,6 @@ class Scan(DefaultFields):
         default=False
     )
 
-    system_services = models.BooleanField(
-        help_text="Flag for scan of system services.",
-        default=False
-    )
-
     browser_passwords = models.BooleanField(
         help_text="Flag for scan of passwords stored on the system.",
         default=False

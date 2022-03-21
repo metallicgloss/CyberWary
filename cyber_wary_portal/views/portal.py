@@ -185,7 +185,7 @@ def report(request, scan_key, report):
                 credential_scan=CredentialScan.objects.get(
                     scan_record=scan_record
                 )
-            )
+            ).order_by('-occurrence')
             scan_data['usernames'] = scan_data['browser_passwords'].all().values(
                 "username"
             ).annotate(
