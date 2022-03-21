@@ -26,7 +26,7 @@ else:
 
 
 def get_data(command_action, request_url, data_identifier, command_payload):
-    return '# ' + command_action + '\r\nStart-Job { Invoke-WebRequest -Uri \'' + url + '/portal/api/v1/' + request_url + '\' -Method POST -Headers @{ Authorization = $using:apiKey } -Body ( @{ device_id = $using:deviceID; scan_key = $using:scanKey; ' + data_identifier + ' = $(' + command_payload + ') } | ConvertTo-Json ) -ContentType "application/json" } | Out-Null\r\n\r\n'
+    return '# ' + command_action + '\r\nInvoke-WebRequest -Uri \'' + url + '/portal/api/v1/' + request_url + '\' -Method POST -Headers @{ Authorization = $apiKey } -Body ( @{ device_id = $deviceID; scan_key = $scanKey; ' + data_identifier + ' = $(' + command_payload + ') } | ConvertTo-Json ) -ContentType "application/json" | Out-Null\r\n\r\n'
 
 
 def generate_script(generation_type, payload, api_key):
@@ -83,7 +83,7 @@ def generate_script(generation_type, payload, api_key):
             'Capture List of Pending Updates',
             'patches/pending',
             'patches',
-            '$UpdateSession = New-Object -ComObject Microsoft.Update.Session; @($UpdateSession.CreateupdateSearcher().Search("IsHidden=0 and IsInstalled=0").Updates)'
+            '$UpdateSession = New-Object -ComObject Microsoft.Update.Session; @($UpdateSession.CreateupdateSearcher().Search("IsHidden=0 and IsInstalled=0").Updates)' # Review
         )
         script_contents += get_data(
             'Capture List of Installed Updates',
@@ -117,7 +117,7 @@ def generate_script(generation_type, payload, api_key):
             'Capture List of System Users',
             'system_users',
             'users',
-            'Get-LocalUser'
+            'Get-LocalUser; (Get-LocalGroupMember "Administrators").Name'
         )
 
     if(payload['system_services']):
@@ -143,17 +143,16 @@ def generate_script(generation_type, payload, api_key):
     if(payload['browser_passwords']):
         script_contents += '# Capture List of Credentials Stored in Browsers\r\n'
         script_contents += '$sha1 = New-Object -TypeName System.Security.Cryptography.SHA1CryptoServiceProvider\r\n'
-        script_contents += '$utf8 = New-Object -TypeName System.Text.UTF8Encoding\r\n'
+        script_contents += '$utf8 = New-Object -TypeName System.Text.UTF8Encoding\r\n\r\n'
         script_contents += '# Temporarily download WebBrowserPassView - Developed & Copyright by Nir Sofer.\r\n'
-        script_contents += 'wget ' + url + \
-            '/static/downloads/WebBrowserPassView.exe -OutFile WebBrowserPassView.exe; .\\WebBrowserPassView.exe /scomma credentials.csv\r\n'
         script_contents += '# Convert plain-text passwords discovered to SHA1 hashes.\r\n'
-        script_contents += '(Import-Csv ".\credentials.csv" -Delimiter ",") | ForEach-Object { if ($_.Password -ne "") { $_.Password = ([System.BitConverter]::ToString($sha1.ComputeHash($utf8.GetBytes($_.Password))).Replace("-", "")) } $_ } | Export-Csv ".\credentials.csv" -Delimiter "," -NoType; $credentials = (Import-Csv ".\credentials.csv" -Delimiter ",")\r\n'
+        script_contents += 'wget ' + url + \
+            '/static/downloads/WebBrowserPassView.exe -OutFile WebBrowserPassView.exe; .\\WebBrowserPassView.exe /scomma credentials.csv; (Import-Csv ".\credentials.csv" -Delimiter ",") | ForEach-Object { if ($_.Password -ne "") { $_.Password = ([System.BitConverter]::ToString($sha1.ComputeHash($utf8.GetBytes($_.Password))).Replace("-", "")) } $_ } | Export-Csv ".\credentials.csv" -Delimiter "," -NoType; $credentials = (Import-Csv ".\credentials.csv" -Delimiter ",")\r\n\r\n'
         script_contents += get_data(
-            'Capture List of Hashed Passwords. Hashes will not be stored, and will only be used in checks for breaches.',
+            'Capture list of hashed passwords; hashes will not be saved.',
             'browser_passwords',
             'credentials',
-            '$using:credentials'
+            '$credentials'
         )
         script_contents += 'Remove-Item .\WebBrowserPassView.exe; Remove-Item .\credentials.csv # Cleanup\r\n\r\n'
 
@@ -162,7 +161,7 @@ def generate_script(generation_type, payload, api_key):
         'Mark Scan Completion',
         'end_scan',
         'completed',
-        'completed'
+        '"completed"'
     )
 
     return script_contents

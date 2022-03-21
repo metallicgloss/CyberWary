@@ -140,6 +140,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                     return new bootstrap.Tooltip(tooltipTriggerEl)
                 });
+
+                // Enable all other tooltips.
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip()
+                })
             
                 // Handle sidebar collapse.
                 $('#sidebarCollapse').on('click', function () {

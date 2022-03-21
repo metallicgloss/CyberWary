@@ -301,17 +301,22 @@ def system_users(request):
     ).exists()
 
     if(False in [scan, scan_record, not existing_import]):
+        print("here")
         return bad_request(api_request)
 
     
     for user in payload:
+        if(user['PrincipalSource'] == 4):
+            user['PrincipalSource'] = 2
+
         UserRecord.objects.create(
             scan_record = scan_record,
             name = user['Name'],
             full_name = user['FullName'],
             description = user['Description'],
             sid = user['SID'],
-            type = user['ObjectClass'],
+            source = user['PrincipalSource'],
+            last_logon = convert_date(user['LastLogon']),
             enabled = user['Enabled'],
             password_changeable = convert_date(user['PasswordChangeableDate']),
             password_expiry = convert_date(user['PasswordExpires']),

@@ -523,6 +523,10 @@ class CredentialRecord(DefaultFields):
 
 
 class UserRecord(DefaultFields):
+    class AccountType(models.IntegerChoices):
+        LOCAL = 1
+        MICROSOFT = 2
+
     scan_record = models.ForeignKey(
         ScanRecord,
         on_delete=models.CASCADE
@@ -547,10 +551,14 @@ class UserRecord(DefaultFields):
         max_length=48,
         null=True
     )
-    
-    type = models.CharField(
-        max_length=32,
-        null=True
+
+    source = models.IntegerField(
+        choices=AccountType.choices,
+        default=AccountType.LOCAL,
+        validators=[
+            MaxValueValidator(2),
+            MinValueValidator(1)
+        ]
     )
 
     enabled = models.BooleanField(

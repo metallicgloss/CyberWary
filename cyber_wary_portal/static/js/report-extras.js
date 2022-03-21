@@ -27,23 +27,23 @@ $(document).ready(function() {
             $(this).closest('.accordion-item').prev().find('.accordion-collapse').collapse('show')
         }
     });
+
+    $('#credentials, #system-users').dataTable({
+        "lengthChange": false,
+        "searching": false,
+        "pageLength": 10,
+        "ordering": false,
+        responsive: {
+            details: {
+                type: 'column',
+                target: 'tr'
+            }
+        },
+    });
 });
 
-if (credentials) {
+if (typeof credentials !== 'undefined') {
     $(document).ready(function() {
-        $('#credentials').dataTable({
-            "lengthChange": false,
-            "searching": false,
-            "pageLength": 10,
-            "ordering": false,
-            responsive: {
-                details: {
-                    type: 'column',
-                    target: 'tr'
-                }
-            },
-        });
-
         echarts.init(document.getElementById('usernames')).setOption({
             title: {
                 display: true,

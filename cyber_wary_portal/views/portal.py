@@ -167,6 +167,18 @@ def report(request, scan_key, report):
     except (ScanRecord.DoesNotExist, Scan.DoesNotExist):
         return HttpResponseNotFound()
 
+    if(scan_record.scan.system_users):
+        try:
+            scan_data['system_users'] = UserRecord.objects.filter(
+                scan_record=scan_record
+            )
+            scan_data['enabled_defaults'] = scan_data['system_users'].filter(
+                name__in = ['Administrator', 'DefaultAccount', 'Guest', 'WDAGUtilityAccount'],
+                enabled = True
+            ).count()
+        except (UserRecord.DoesNotExist):
+            scan_data['system_users'] = None
+
     if(scan_record.scan.browser_passwords):
         try:
             scan_data['browser_passwords'] = CredentialRecord.objects.filter(
@@ -191,6 +203,8 @@ def report(request, scan_key, report):
 
         except (CredentialRecord.DoesNotExist, CredentialScan.DoesNotExist):
             scan_data['browser_passwords'] = None
+
+            
 
     return render(
         request,
