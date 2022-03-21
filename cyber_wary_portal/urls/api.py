@@ -43,6 +43,12 @@ urlpatterns = [
         ),
 
         path(
+            'end_scan',
+            api.end_scan,
+            name='end_scan'
+        ),
+
+        path(
             'firewall_rules',
             api.firewall_rules,
             name='firewall_rules'

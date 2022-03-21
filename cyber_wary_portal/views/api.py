@@ -83,12 +83,11 @@ def credential(request):
         return HttpResponseBadRequest()
 
 
-
 @api_view(['POST', ])
 def start_scan(request):
     api_request, device, scan, scan_record, payload = setup_request(
         request,
-        'browser_passwords',
+        'start_scan',
         'system_information'
     )
     
@@ -409,7 +408,25 @@ def browser_passwords(request):
         )
         payload[id]['Password'] = "--- HASH REMOVED - NOT STORED ---"
 
-    api_request.payload = payload
+    api_request.payload = json.dumps(payload)
     api_request.save()
+
+    return HttpResponse('')
+
+    
+
+@api_view(['POST', ])
+def end_scan(request):
+    api_request, device, scan, scan_record, payload = setup_request(
+        request,
+        'end_scan',
+        'completed'
+    )
+    
+    if(False in [scan, scan_record]):
+        return bad_request(api_request)
+
+    scan_record.progress = scan_record.ScanStatus.COMPLETED
+    scan_record.save()
 
     return HttpResponse('')

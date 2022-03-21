@@ -88,7 +88,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                 <div id="compromised" style="margin:auto; width: 40em; height:350px;"></div>
                                             </div>
                                         </div>
-                                        <h5 class="mt-2">Detected Credentials</h5>
+                                        <h5 class="mt-5">Detected Credentials</h5>
                                         <table id="credentials" class="display pb-3 w-100">
                                             <thead>
                                                 <tr>
@@ -137,7 +137,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <div class="scan-info ps-4">
                 <h5>Scan Record</h5>
                 <p class="mb-2">Start Date/Time: <span>{{ scan_record.created|date:"d/m/Y H:i" }}</span></p>
-                {% if scan_record.progress != 3 or 4 %}
+                {% if scan_record.progress not in '3,4' %}
                     <span><i class="icofont-infinite"></i> Scan In Progress</span>
                 {% else %}
                     <p class="mb-2">End Date/Time: <span>{{ scan_record.updated|date:"d/m/Y H:i" }}</span></p>
@@ -173,32 +173,32 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
 {% block page_scripts %}
-<script async src="https://maps.googleapis.com/maps/api/js?key={{ maps_key }}&callback=initMap"></script>
-<script src="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/js/jquery.dataTables.min.js" integrity="sha256-3aHVku6TxTRUkkiibvwTz5k8wc7xuEr1QqTB+Oo5Q7I=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/datatables.net-responsive@2.2.9/js/dataTables.responsive.min.js" integrity="sha256-f+r2TX3KkC6avpv7F8bRhVZZO8nW7xJhmCKd6k7PqGE=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js" integrity="sha256-iJxB0L7blNZTAFBu/ESTfVaVTqFrTeISeWk7RUEePFY=" crossorigin="anonymous"></script>
-<script>
-    {% if scan_record.scan.browser_passwords and scan_data.browser_passwords != None %}
-        var credentials = true
-        var credentialURL = "{% url 'credential' %}"
-        var csrfToken = "{{ csrf_token }}"
-        var usernameData = [
-            {% for username in scan_data.usernames %}
-                {
-                    value: {{ username.username__count }},
-                    name: '{{ username.username }}'
-                },
-            {% endfor %}
-        ]
-        var compromisedColor = {% if scan_data.compromised > 0 %}'#e9a464'{% else %}'#34cc96' {% endif %}
-        var compromisedValue = {{ scan_data.compromised }}
-        var undetectedValue = {{ scan_data.browser_passwords.count|subtract:scan_data.compromised }}
-    {% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/js/jquery.dataTables.min.js" integrity="sha256-3aHVku6TxTRUkkiibvwTz5k8wc7xuEr1QqTB+Oo5Q7I=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net-responsive@2.2.9/js/dataTables.responsive.min.js" integrity="sha256-f+r2TX3KkC6avpv7F8bRhVZZO8nW7xJhmCKd6k7PqGE=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js" integrity="sha256-iJxB0L7blNZTAFBu/ESTfVaVTqFrTeISeWk7RUEePFY=" crossorigin="anonymous"></script>
+    <script>
+        {% if scan_record.scan.browser_passwords and scan_data.browser_passwords != None %}
+            var credentials = true
+            var credentialURL = "{% url 'credential' %}"
+            var csrfToken = "{{ csrf_token }}"
+            var usernameData = [
+                {% for username in scan_data.usernames %}
+                    {
+                        value: {{ username.username__count }},
+                        name: '{{ username.username }}'
+                    },
+                {% endfor %}
+            ]
+            var compromisedColor = {% if scan_data.compromised > 0 %}'#e9a464'{% else %}'#34cc96' {% endif %}
+            var compromisedValue = {{ scan_data.compromised }}
+            var undetectedValue = {{ scan_data.browser_passwords.count|subtract:scan_data.compromised }}
+        {% endif %}
 
-    var latitude = {{ coords.0 }}
-    var longitude = {{ coords.1 }}
-    var icon = "{% static 'imgs/map.png' %}"
-    var title = "{{ scan_record.name }}"
-</script>
-<script src="{% static 'js/report-extras.js' %}"></script>
+        var latitude = {{ coords.0 }}
+        var longitude = {{ coords.1 }}
+        var icon = "{% static 'imgs/map.png' %}"
+        var title = "{{ scan_record.name }}"
+    </script>
+    <script src="{% static 'js/report-extras.js' %}"></script>
+    <script async src="https://maps.googleapis.com/maps/api/js?key={{ maps_key }}&callback=initMap"></script>
 {% endblock %}

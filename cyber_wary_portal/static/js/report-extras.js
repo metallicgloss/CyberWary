@@ -54,7 +54,7 @@ if (credentials) {
                     fontFamily: 'Space Mono',
                     fontSize: 16
                 },
-                top: '15px',
+                top: '10px',
                 left: '48%',
                 textAlign: 'center'
             },
@@ -100,7 +100,7 @@ if (credentials) {
                     fontFamily: 'Space Mono',
                     fontSize: 16
                 },
-                top: '15px',
+                top: '10px',
                 left: '48%',
                 textAlign: 'center'
             },
@@ -142,7 +142,7 @@ if (credentials) {
             url: credentialURL,
             dataType: "json",
             data: {
-                csrfmiddlewaretoken: csrf_token,
+                csrfmiddlewaretoken: csrfToken,
                 credentialID
             },
             success: function(data) {
