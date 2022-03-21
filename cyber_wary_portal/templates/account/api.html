@@ -1,4 +1,4 @@
-{% extends "portal.html" %}
+{% extends "structure/portal.html" %}
 
 {% load static %}
 
@@ -22,108 +22,124 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endcomment %}
 
 {% block page_head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/styles/atom-one-dark.min.css" integrity="sha256-Qjf/ynzmqttDjEV+CmdbElxTS73aW4f0HzoUlWA7zJs=" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.css" integrity="sha256-YY1izqyhIj4W3iyJOaGWOpXDSwrHWFL4Nfk+W0LyCHE=" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-responsive-dt@2.2.9/css/responsive.dataTables.min.css" integrity="sha256-Y/AdBW1nhvzPowuT1lvF4PkY6QR+nqYzBcbmkDCG30Y=" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/styles/atom-one-dark.min.css" integrity="sha256-Qjf/ynzmqttDjEV+CmdbElxTS73aW4f0HzoUlWA7zJs=" crossorigin="anonymous">
 {% endblock%}
 
 {% block page_content %}
+    <!-- Header / Title -->
     <h2>CyberWary API</h2>
     <p>View and regenerate your API key, or explore your request history.</p>
-    <div class="row mt-5">
-        <div class="col-lg-12 col-xl-3">
-            <div class="account-information">
-                <h5 class="mb-4">API Details</h5>
-                <p class="mb-0 fw-bold">Current API Key</p>
-                <p><code><span class="fw-bold">{{ api_key.key }}</span></code></p>
-                <p class="mb-0 fw-bold">Key Creation</p>
-                <p><code><span class="fw-bold">{{ api_key.created|date:"l jS F Y - H:i e" }}</span></code></p>
+
+    <!-- API Details -->
+    <section>
+        <div class="row mt-5">
+            <div class="col-lg-12 col-xl-3">
+                <!-- API Key Information -->
+                <div class="account-information">
+                    <h5 class="mb-4">API Details</h5>
+                    <p class="mb-0 fw-bold">Current API Key</p>
+                    <p><code><span class="fw-bold">{{ api_key.key }}</span></code></p>
+                    <p class="mb-0 fw-bold">Key Creation</p>
+                    <p><code><span class="fw-bold">{{ api_key.created|date:"l jS F Y - H:i e" }}</span></code></p>
+                </div>
+            </div>
+
+            <!-- Vertical Divider -->
+            <div class="col-xl-1 d-lg-none d-xl-block">
+                <div class="section-divider"></div>
+            </div>
+
+            <!-- Re-Generate API Key -->
+            <div class="col-lg-12 col-xl-8">
+                <h5 class="mb-4">Regenerate API Key</h5>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    {% for hidden in form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <p class="mb-0 fw-bold"><i class="icofont-check-circled me-2"></i> {{ form.confirmation.label }}<span class="text-danger">*</span></p>
+                            <p class="mb-3 text-tertiary help-text"><i>{{ form.confirmation.help_text }}</i></p>
+
+                            <!-- No/Yes Confirmation Toggle -->
+                            <input id="selection-no" class="form-radio-toggle toggle-left" name="{{ form.confirmation.name }}" value="false" type="radio" checked>
+                            <label for="selection-no" class="form-radio-toggle-btn">No</label>
+                            <input id="selection-yes" class="form-radio-toggle toggle-right" name="{{ form.confirmation.name }}" value="true" type="radio">
+                            <label for="selection-yes" class="form-radio-toggle-btn">Yes</label>
+                        </div>
+                    </div>
+                    <div class="row update-button" style="display:none;">
+                        <div class="col-lg-12">
+                            <button class="btn bg-success text-white px-5 py-2 mt-4 text-uppercase" type="submit">Reset API Key <i class="icofont-refresh ms-3"></i></i></button>
+                        </div>
+                    </div>
+                    {% if update %}
+                        <!-- Successfully Re-Generated Key -->
+                        <div class="form-errors success-message mt-4">
+                            <h5 class="text-success">Success.</h5>
+                            <ul>
+                                <li>Your API key has been successfully re-generated.</li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </form>
             </div>
         </div>
-        <div class="col-xl-1 d-lg-none d-xl-block">
-            <div class="section-divider"></div>
+    </section>
+
+    
+    <!-- API Log Section -->
+    <section>
+        <div class="row mt-5 pt-5" style="border-top: 1px solid var(--light-border);">
+            <div class="col-xl-12">
+                <h5 class="mb-4">API Request Activity</h5>
+            </div>
         </div>
-        <div class="col-lg-12 col-xl-8">
-            <h5 class="mb-4">Regenerate API Key</h5>
-            <form method="POST">
-                {% csrf_token %}
-                {{ form.non_field_errors }}
-                {% for hidden in form.hidden_fields %}
-                    {{ hidden }}
-                {% endfor %}
-                <div class="row">
-                    <div class="col-xl-12">
-                        <p class="mb-0 fw-bold">
-                            <i class="icofont-check-circled me-2"></i> {{ form.confirmation.label }}<span class="text-danger">*</span>
-                        </p>
-                        <p class="mb-3 text-tertiary help-text"><i>{{ form.confirmation.help_text }}</i></p>
-                        <input id="toggle-on" class="form-radio-toggle toggle-left" name="{{ form.confirmation.name }}" value="false" type="radio" checked>
-                        <label for="toggle-on" class="form-radio-toggle-btn">No</label>
-                        <input id="toggle-off" class="form-radio-toggle toggle-right" name="{{ form.confirmation.name }}" value="true" type="radio">
-                        <label for="toggle-off" class="form-radio-toggle-btn">Yes</label>
-                    </div>
-                </div>
-                <div class="row update-button" style="display:none;">
-                    <div class="col-lg-12">
-                        <button class="btn bg-success text-white px-5 py-2 mt-4 text-uppercase" type="submit">Reset API Key <i class="icofont-refresh ms-3"></i></i></button>
-                    </div>
-                </div>
-                {% if update %}
-                    <div class="form-errors success-message mt-4">
-                        <h5 class="text-success">Success.</h5>
-                        <ul>
-                            <li>Your API key has been successfully re-generated.</li>
-                        </ul>
-                    </div>
-                {% endif %}
-            </form>
-        </div>
-    </div>
-    <div class="row mt-5 pt-5" style="border-top: 1px solid var(--light-border);">
-        <div class="col-xl-12">
-            <h5 class="mb-4">API Request Activity</h5>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xl-12">
-            <table id="api-logs" class="display pb-3">
-                <thead>
-                    <tr>
-                        <th class="pb-2 desktop">Date/Time</th>
-                        <th class="pb-2 desktop">Request Action</th>
-                        <th class="pb-2 desktop">Request Method</th>
-                        <th class="pb-2 desktop">Payload Size</th>
-                        <th class="pb-2 desktop">Response Code</th>
-                        <th class="pb-2 desktop">Raw Payload</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for record in api_log %}
+        <div class="row">
+            <div class="col-xl-12">
+                <!-- API Request History Table -->
+                <table id="api-logs" class="display pb-3">
+                    <thead>
                         <tr>
-                            <td>{{ record.created|date:"l jS F Y - H:i:s e" }}</td>
-                            <td>{{ record.type }}</td>
-                            <td>{{ record.get_method_display|upper }}</td>
-                            <td>{{ record.get_payload_size }} Bytes</td>
-                            <td>{{ record.response }}</td>
-                            <td>
-                                {% if record.get_payload_size < 100000 %}
-                                    <span class="payload-action" onclick="viewPayload('{{ record.id }}', '{{ record.type }}', '{{ record.created|date:"l jS F Y - H:i:s e" }}')">
-                                        View Request Payload
-                                    </span>
-                                {% else %}
-                                    <a href="{% url 'api_payload' %}?payloadID={{ record.id }}&type={{ record.type }}" target="_blank" class="text-primary">
-                                        <span class="payload-action">
-                                            View in New Tab <i class="icofont-exit ms-1"></i>
-                                        </span>
-                                    </a>
-                                {% endif %}
-                            </td>
+                            <th class="pb-2 desktop">Date/Time</th>
+                            <th class="pb-2 desktop">Request Action</th>
+                            <th class="pb-2 desktop">Request Method</th>
+                            <th class="pb-2 desktop">Payload Size</th>
+                            <th class="pb-2 desktop">Response Code</th>
+                            <th class="pb-2 desktop">Raw Payload</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for record in api_log %}
+                            <tr>
+                                <td>{{ record.created|date:"l jS F Y - H:i:s e" }}</td>
+                                <td>{{ record.type }}</td>
+                                <td>{{ record.get_method_display|upper }}</td>
+                                <td>{{ record.get_payload_size }} Bytes</td>
+                                <td>{{ record.response }}</td>
+                                <td>
+                                    {% if record.get_payload_size < 100000 %}
+                                        <!-- Request payload too large; redirect to new page to view. -->
+                                        <span class="payload-action" onclick="viewPayload('{{ record.id }}', '{{ record.type }}', '{{ record.created|date:"l jS F Y - H:i:s e" }}')">View Request Payload</span>
+                                    {% else %}
+                                        <a href="{% url 'api_payload' %}?payloadID={{ record.id }}&type={{ record.type }}" target="_blank" class="text-primary">
+                                            <span class="payload-action">View in New Tab <i class="icofont-exit ms-1"></i></span>
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Popup Modal - API Request Payload -->
     <div class="modal fade" id="payloadModal" tabindex="-1" aria-labelledby="payloadModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
@@ -145,6 +161,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <script src="https://cdn.jsdelivr.net/npm/datatables.net-responsive@2.2.9/js/dataTables.responsive.min.js" integrity="sha256-f+r2TX3KkC6avpv7F8bRhVZZO8nW7xJhmCKd6k7PqGE=" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function(){
+            // Toggle functionality for Yes/No re-generation option.
             $('input[type=radio][name="confirmation"]').change(function() {
                 if (this.value == "true") {
                     $('.update-button').show()
@@ -155,6 +172,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 }
             });
 
+            // Initialise datatable on API request log.
             $('#api-logs').dataTable( {
                 "lengthChange": false,
                 "searching": false,
@@ -170,6 +188,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         });
 
         function viewPayload(payloadID, type, datetime) {
+            // On "View Request Payload" action, make request to retrieve raw payload.
             $.ajax({
                 type: "POST",
                 url: "{% url 'api_payload' %}",
@@ -179,9 +198,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     type
                 },
                 success: function(data) {
-                    $('.generated-content').text(JSON.stringify(data, null, '    ')) // To double check .text adds html escape.
+                    // Format output.
+                    $('.generated-content').text(JSON.stringify(data, null, '    ')) 
+
+                    // Populate title date/time.
                     $('#payload-datetime').text(datetime);
+
+                    // Execute code highlight action on new generated payload.
                     hljs.highlightElement(document.getElementById("code"));
+
+                    // Show modal once highlight completed.
                     $('#payloadModal').modal('show');
                 }
             });

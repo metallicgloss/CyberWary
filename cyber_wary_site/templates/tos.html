@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "structure/layout.html" %}
 
 {% load static %}
 
@@ -23,16 +23,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 {% block page_content %}
     <!-- Page Header -->
-    <section class="page-header text-white">
-        <div class="container"> 
-            <div class="row text-center my-5">
-                <div class="col">
-                    <h1>Industry Leading Features</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div>     
-            </div>  
-        </div>
-    </section>
+    {% include "structure/header.html" with title="Industry Leading Features" subtitle="Lorem ipsum dolor sit amet, consectetur adipiscing elit." %}
     <!-- Text Content -->
     <section class="legal-section">
         <div class="container">

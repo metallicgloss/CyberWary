@@ -17,6 +17,9 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+from tokenize import Name
+from unicodedata import name
+from MySQLdb import Date
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -516,4 +519,64 @@ class CredentialRecord(DefaultFields):
 
     occurrence = models.IntegerField(
         default=0
+    )
+
+
+class UserRecord(DefaultFields):
+    scan_record = models.ForeignKey(
+        ScanRecord,
+        on_delete=models.CASCADE
+    )
+    
+    name = models.CharField(
+        max_length=32,
+        null=True
+    )
+    
+    full_name = models.CharField(
+        max_length=32,
+        null=True
+    )
+    
+    description = models.CharField(
+        max_length=128,
+        null=True
+    )
+    
+    sid = models.CharField(
+        max_length=48,
+        null=True
+    )
+    
+    type = models.CharField(
+        max_length=32,
+        null=True
+    )
+
+    enabled = models.BooleanField(
+        default=False
+    )
+
+    last_logon = models.DateTimeField(
+        null=True
+    )
+
+    password_changeable = models.DateTimeField(
+        null=True
+    )
+    
+    password_expiry = models.DateTimeField(
+        null=True
+    )
+    
+    password_permission = models.BooleanField(
+        default=False
+    )
+    
+    password_required = models.BooleanField(
+        default=False
+    )
+    
+    password_last_set = models.DateTimeField(
+        null=True
     )

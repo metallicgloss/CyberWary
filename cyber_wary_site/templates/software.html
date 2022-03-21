@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "structure/layout.html" %}
 
 {% load static %}
 
@@ -25,15 +25,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <!-- Software Header -->
     <section class="feature-header text-white">
         <div class="container">
-            <svg width="1317" height="471" viewBox="0 0 1317 471" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto d-block position-absolute blur-effect d-none d-lg-block">
-                <ellipse cx="658.5" cy="235.295" rx="658.5" ry="235.295" fill="url(#gradient_header)" />
-                <defs>
-                    <linearGradient id="gradient_header" x1="53" y1="-403.713" x2="562.379" y2="814.446" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#1BF0A3" />
-                        <stop offset="1" stop-color="#1B3DF0" stop-opacity="0" />
-                    </linearGradient>
-                </defs>
-            </svg>
+            <img src="{% static 'imgs/blur-header.svg' %}" alt="Background Blur" class="mx-auto d-block position-absolute blur-effect d-none d-lg-block" />
             <div class="row text-center my-5">
                 <div class="col">
                     <h1>Industry Leading Features</h1>
@@ -43,6 +35,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <img src="{% static 'imgs/interface.png' %}" class="w-100 mt-5 d-none d-lg-block" alt="Graphical user interface of software." />
         </div>
     </section>
+    
     <!-- Statistics Panel -->
     <section class="statistics">
         <div class="container">
@@ -90,40 +83,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                         </div>
                     </div>
                     <div class="col-lg-12 col-xl-7">
-                        <svg width="874" height="772" viewBox="0 0 874 772" fill="none" xmlns="http://www.w3.org/2000/svg" class="position-absolute interface d-none d-lg-block">
-                            <g filter="url(#interface)">
-                                <path d="M162 182C162 168.745 172.745 158 186 158H552C565.255 158 576 168.745 576 182V606H186C172.745 606 162 595.255 162 582V182Z" fill="url(#paint0_linear_25_212)" />
-                                <path d="M319 158H688C701.255 158 712 168.745 712 182V582C712 595.255 701.255 606 688 606H319V158Z" fill="#FCFCFC" />
-                                <rect x="183" y="175" width="13.7328" height="13.7328" fill="white" />
-                                <path d="M212.246 175L220.638 188.733H203.854L212.246 175Z" fill="white" />
-                                <circle cx="234.625" cy="181.866" r="6.86638" fill="white" />
-                                <rect x="183" y="179.578" width="59" height="1.52586" fill="#1D1C28" />
-                                <rect x="183" y="182.121" width="59" height="1.52586" fill="#1D1C28" />
-                                <path d="M188.121 269H187.457V266.312H184.449V269H183.785V263.289H184.449V265.719H187.457V263.289H188.121V269ZM193.289 266.855C193.289 267.553 193.113 268.099 192.762 268.492C192.41 268.883 191.924 269.078 191.305 269.078C190.922 269.078 190.582 268.988 190.285 268.809C189.988 268.629 189.759 268.371 189.598 268.035C189.436 267.699 189.355 267.306 189.355 266.855C189.355 266.158 189.53 265.615 189.879 265.227C190.228 264.836 190.712 264.641 191.332 264.641C191.931 264.641 192.406 264.84 192.758 265.238C193.112 265.637 193.289 266.176 193.289 266.855ZM190.027 266.855C190.027 267.402 190.137 267.819 190.355 268.105C190.574 268.392 190.896 268.535 191.32 268.535C191.745 268.535 192.066 268.393 192.285 268.109C192.507 267.823 192.617 267.405 192.617 266.855C192.617 266.311 192.507 265.898 192.285 265.617C192.066 265.333 191.742 265.191 191.312 265.191C190.888 265.191 190.568 265.331 190.352 265.609C190.135 265.888 190.027 266.303 190.027 266.855ZM199.887 269V266.215C199.887 265.874 199.814 265.618 199.668 265.449C199.522 265.277 199.296 265.191 198.988 265.191C198.585 265.191 198.286 265.307 198.094 265.539C197.901 265.771 197.805 266.128 197.805 266.609V269H197.156V266.215C197.156 265.874 197.083 265.618 196.938 265.449C196.792 265.277 196.564 265.191 196.254 265.191C195.848 265.191 195.549 265.314 195.359 265.559C195.172 265.801 195.078 266.199 195.078 266.754V269H194.43V264.719H194.957L195.062 265.305H195.094C195.216 265.096 195.388 264.934 195.609 264.816C195.833 264.699 196.083 264.641 196.359 264.641C197.029 264.641 197.466 264.883 197.672 265.367H197.703C197.831 265.143 198.016 264.966 198.258 264.836C198.5 264.706 198.776 264.641 199.086 264.641C199.57 264.641 199.932 264.766 200.172 265.016C200.414 265.263 200.535 265.66 200.535 266.207V269H199.887ZM203.684 269.078C203.051 269.078 202.551 268.885 202.184 268.5C201.819 268.115 201.637 267.579 201.637 266.895C201.637 266.204 201.806 265.656 202.145 265.25C202.486 264.844 202.943 264.641 203.516 264.641C204.052 264.641 204.477 264.818 204.789 265.172C205.102 265.523 205.258 265.988 205.258 266.566V266.977H202.309C202.322 267.479 202.448 267.861 202.688 268.121C202.93 268.382 203.27 268.512 203.707 268.512C204.168 268.512 204.624 268.415 205.074 268.223V268.801C204.845 268.9 204.628 268.97 204.422 269.012C204.219 269.056 203.973 269.078 203.684 269.078ZM203.508 265.184C203.164 265.184 202.889 265.296 202.684 265.52C202.48 265.743 202.361 266.053 202.324 266.449H204.562C204.562 266.04 204.471 265.728 204.289 265.512C204.107 265.293 203.846 265.184 203.508 265.184Z" fill="white" />
-                                <path d="M187.008 284.48C187.008 284.983 186.826 285.375 186.461 285.656C186.096 285.938 185.602 286.078 184.977 286.078C184.299 286.078 183.779 285.991 183.414 285.816V285.176C183.648 285.275 183.904 285.353 184.18 285.41C184.456 285.467 184.729 285.496 185 285.496C185.443 285.496 185.776 285.413 186 285.246C186.224 285.077 186.336 284.842 186.336 284.543C186.336 284.345 186.296 284.184 186.215 284.059C186.137 283.931 186.004 283.814 185.816 283.707C185.632 283.6 185.349 283.479 184.969 283.344C184.438 283.154 184.057 282.928 183.828 282.668C183.602 282.408 183.488 282.068 183.488 281.648C183.488 281.208 183.654 280.858 183.984 280.598C184.315 280.337 184.753 280.207 185.297 280.207C185.865 280.207 186.387 280.311 186.863 280.52L186.656 281.098C186.185 280.9 185.727 280.801 185.281 280.801C184.93 280.801 184.655 280.876 184.457 281.027C184.259 281.178 184.16 281.388 184.16 281.656C184.16 281.854 184.197 282.017 184.27 282.145C184.342 282.27 184.465 282.385 184.637 282.492C184.811 282.596 185.077 282.712 185.434 282.84C186.033 283.053 186.444 283.283 186.668 283.527C186.895 283.772 187.008 284.09 187.008 284.48ZM189.789 286.078C189.169 286.078 188.689 285.888 188.348 285.508C188.009 285.125 187.84 284.585 187.84 283.887C187.84 283.171 188.012 282.617 188.355 282.227C188.702 281.836 189.194 281.641 189.832 281.641C190.038 281.641 190.243 281.663 190.449 281.707C190.655 281.751 190.816 281.803 190.934 281.863L190.734 282.414C190.591 282.357 190.435 282.31 190.266 282.273C190.096 282.234 189.947 282.215 189.816 282.215C188.947 282.215 188.512 282.77 188.512 283.879C188.512 284.405 188.617 284.809 188.828 285.09C189.042 285.371 189.357 285.512 189.773 285.512C190.13 285.512 190.496 285.435 190.871 285.281V285.855C190.585 286.004 190.224 286.078 189.789 286.078ZM194.523 286L194.395 285.391H194.363C194.15 285.659 193.936 285.841 193.723 285.938C193.512 286.031 193.247 286.078 192.93 286.078C192.505 286.078 192.172 285.969 191.93 285.75C191.69 285.531 191.57 285.22 191.57 284.816C191.57 283.952 192.262 283.499 193.645 283.457L194.371 283.434V283.168C194.371 282.832 194.298 282.585 194.152 282.426C194.009 282.264 193.779 282.184 193.461 282.184C193.104 282.184 192.701 282.293 192.25 282.512L192.051 282.016C192.262 281.901 192.492 281.811 192.742 281.746C192.995 281.681 193.247 281.648 193.5 281.648C194.01 281.648 194.388 281.762 194.633 281.988C194.88 282.215 195.004 282.578 195.004 283.078V286H194.523ZM193.059 285.543C193.462 285.543 193.779 285.432 194.008 285.211C194.24 284.99 194.355 284.68 194.355 284.281V283.895L193.707 283.922C193.191 283.94 192.819 284.021 192.59 284.164C192.363 284.305 192.25 284.525 192.25 284.824C192.25 285.059 192.32 285.237 192.461 285.359C192.604 285.482 192.803 285.543 193.059 285.543ZM199.273 286V283.23C199.273 282.882 199.194 282.621 199.035 282.449C198.876 282.277 198.628 282.191 198.289 282.191C197.841 282.191 197.513 282.312 197.305 282.555C197.096 282.797 196.992 283.197 196.992 283.754V286H196.344V281.719H196.871L196.977 282.305H197.008C197.141 282.094 197.327 281.931 197.566 281.816C197.806 281.699 198.073 281.641 198.367 281.641C198.883 281.641 199.271 281.766 199.531 282.016C199.792 282.263 199.922 282.66 199.922 283.207V286H199.273Z" fill="white" />
-                            </g>
-                            <defs>
-                                <filter id="interface" x="0" y="0" width="874" height="772" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-                                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
-                                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-                                    <feOffset dy="4" />
-                                    <feGaussianBlur stdDeviation="81" />
-                                    <feComposite in2="hardAlpha" operator="out" />
-                                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0" />
-                                    <feBlend mode="normal" in2="BackgroundImageFix" result="drop_shadow" />
-                                    <feBlend mode="normal" in="SourceGraphic" in2="drop_shadow" result="shape" />
-                                </filter>
-                                <linearGradient id="paint0_linear_25_212" x1="369" y1="394" x2="369" y2="606" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#1E1D29" />
-                                    <stop offset="1" stop-color="#34CC96" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
+                        <img src="{% static 'imgs/interface-mockup.svg' %}" alt="Interface Mockup" class="position-absolute interface d-none d-lg-block" />
                     </div>
                 </div> <!-- End of Row -->
             </div> <!-- End of Code Generation Section -->
         </div> <!-- End of Container -->
     </section>
+
     <!-- Feature List -->
     <section class="feature-breakdown text-white">
         <div class="container d-none d-lg-block">
@@ -172,15 +138,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </div>
             </div>
         </div>
-        <svg width="880" height="689" viewBox="0 0 880 689" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto d-none d-lg-block position-absolute blur-effect float-end d-none d-lg-block" style="right: 20%;">
-            <ellipse opacity="0.5" cx="658.5" cy="344.5" rx="658.5" ry="344.5" fill="url(#oval_blur)" />
-            <defs>
-                <linearGradient id="oval_blur" x1="53" y1="-591.084" x2="986.107" y2="933.03" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#1BF0A3" />
-                    <stop offset="1" stop-color="#1B3DF0" stop-opacity="0" />
-                </linearGradient>
-            </defs>
-        </svg>
+        <img src="{% static 'imgs/blur-body.svg' %}" alt="Background Blur" class="mx-auto d-none d-lg-block position-absolute blur-effect float-end d-none d-lg-block" style="right: 20%;" />
         <div class="container">
             <div class="feature-comment">
                 <div class="row">
@@ -195,6 +153,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             </div>
         </div>
     </section>
+
     <!-- Call To Action -->
     <section class="feature-run">
         <div class="container">
@@ -202,12 +161,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <h2>Run a scan in 3 minutes</h2>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Massa mollis non sit dolor sit nullam eget.</p>
                 <div class="feature-buttons mt-5">
-                    <a href="" class="primary text-white py-1 px-5 me-4">
-                        Get Started
-                    </a>
-                    <a href="" class="scan text-white py-1 px-5">
-                        Scan Now
-                    </a>
+                    <a href="" class="primary text-white py-1 px-5 me-4">Get Started</a>
+                    <a href="" class="scan text-white py-1 px-5">Scan Now</a>
                 </div>
             </div>
         </div>

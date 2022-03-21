@@ -290,16 +290,37 @@ def antivirus_detections(request):
 
 @api_view(['POST', ])
 def system_users(request):
-    ApiRequest(
-        user = request.user,
-        type = 'system_users',
-        payload = json.dumps(
-            json.loads(
-                request.POST['users']
-            )
-        ),
-        method = ApiRequest.RequestMethod.POST
-    ).save()
+    api_request, device, scan, scan_record, payload = setup_request(
+        request,
+        'system_users',
+        'users'
+    )
+
+    existing_import = UserRecord.objects.filter(
+        scan_record = scan_record,
+    ).exists()
+
+    if(False in [scan, scan_record, not existing_import]):
+        return bad_request(api_request)
+
+    
+    for user in payload:
+        UserRecord.objects.create(
+            scan_record = scan_record,
+            name = user['Name'],
+            full_name = user['FullName'],
+            description = user['Description'],
+            sid = user['SID'],
+            type = user['ObjectClass'],
+            enabled = user['Enabled'],
+            password_changeable = convert_date(user['PasswordChangeableDate']),
+            password_expiry = convert_date(user['PasswordExpires']),
+            password_permission = user['UserMayChangePassword'],
+            password_required = user['PasswordRequired'],
+            password_last_set = convert_date(user['PasswordLastSet'])
+        )
+
+    return HttpResponse('')
 
 
 @api_view(['POST', ])
@@ -354,11 +375,11 @@ def browser_passwords(request):
     api_request.payload = "Pending Processing"
     api_request.save()
 
-    existing_scan = CredentialScan.objects.filter(
+    existing_import = CredentialScan.objects.filter(
         scan_record = scan_record,
     ).exists()
 
-    if(False in [scan, scan_record, not existing_scan]):
+    if(False in [scan, scan_record, not existing_import]):
         return bad_request(api_request)
 
     credential_scan = CredentialScan.objects.create(
