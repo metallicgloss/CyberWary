@@ -288,8 +288,8 @@ class ScanFormStep2(forms.ModelForm):
     )
 
     installed_antivirus = forms.BooleanField(
-        label='Anti-Virus & Exploit Settings',
-        help_text='Analyses the anti-virus applications installed and Windows Exploit settings.',
+        label='Windows Defender Settings',
+        help_text='Analyses the Windows Defender status and settings.',
         required=False,
         initial=False
     )

@@ -23,7 +23,7 @@ from django.utils.timezone import make_aware
 import requests
 from cyber_wary_portal.models import ApiRequest, Scan, ScanRecord
 
-from django.http.response import HttpResponse, JsonResponse, HttpResponseNotFound, HttpResponseBadRequest
+from django.http.response import HttpResponseBadRequest
 import json
 
 def bad_request(api_object):

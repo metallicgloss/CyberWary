@@ -20,7 +20,6 @@
 from cyber_wary_portal.forms import AccountModificationForm, ApiKeyForm, ScanFormStep2, AccountDeletionForm
 from cyber_wary_portal.models import *
 from cyber_wary_portal.utils.script_generation import generate_script
-from cyber_wary_portal.utils.data_import import check_credential
 from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -111,7 +110,7 @@ def activity(request, scan_key):
             'id': record.id,
             'name': record.name,
             'country': record.country,
-            'os': record.os_install.operating_system.name,
+            'os': record.os_install.os.name,
             'owner': record.os_install.owner
         }
 
@@ -169,19 +168,19 @@ def report(request, scan_key, report):
 
     if(scan_record.scan.system_users):
         try:
-            scan_data['system_users'] = UserRecord.objects.filter(
+            scan_data['system_users'] = User.objects.filter(
                 scan_record=scan_record
             )
             scan_data['enabled_defaults'] = scan_data['system_users'].filter(
                 name__in = ['Administrator', 'DefaultAccount', 'Guest', 'WDAGUtilityAccount'],
                 enabled = True
             ).count()
-        except (UserRecord.DoesNotExist):
+        except (User.DoesNotExist):
             scan_data['system_users'] = None
 
     if(scan_record.scan.browser_passwords):
         try:
-            scan_data['browser_passwords'] = CredentialRecord.objects.filter(
+            scan_data['browser_passwords'] = Credential.objects.filter(
                 credential_scan=CredentialScan.objects.get(
                     scan_record=scan_record
                 )
@@ -198,10 +197,10 @@ def report(request, scan_key, report):
                 compromised=True
             ).count()
             scan_data['weak'] = scan_data['browser_passwords'].exclude(
-                password_strength=CredentialRecord.SecurityRating.VERY_STRONG
+                password_strength=Credential.SecurityRating.VERY_STRONG
             ).count()
 
-        except (CredentialRecord.DoesNotExist, CredentialScan.DoesNotExist):
+        except (Credential.DoesNotExist, CredentialScan.DoesNotExist):
             scan_data['browser_passwords'] = None
 
             

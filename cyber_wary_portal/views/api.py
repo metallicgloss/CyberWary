@@ -17,7 +17,6 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from http.client import HTTPResponse
 from cyber_wary_portal.models import *
 from cyber_wary_portal.utils.data_import import *
 from django.contrib.auth.decorators import login_required
@@ -54,29 +53,29 @@ def api_payload(request):
 def credential(request):
     if request.method == 'POST':
         try:
-            credential_record = CredentialRecord.objects.filter(
+            credential = Credential.objects.filter(
                 credential_scan__scan_record__scan__user = request.user,
                 pk = request.POST['credentialID']
             )[0]
 
-            credential = {}
-            credential['username'] = credential_record.username
-            credential['password_strength'] = credential_record.get_password_strength_display()
-            credential['storage'] = credential_record.storage
-            credential['browser'] = credential_record.browser.browser_name
-            credential['compromised'] = credential_record.compromised
-            credential['occurrence'] = credential_record.occurrence
-            credential['filename'] = credential_record.filename
+            formatted_credential = {}
+            formatted_credential['username'] = credential.username
+            formatted_credential['password_strength'] = credential.get_password_strength_display()
+            formatted_credential['storage'] = credential.storage
+            formatted_credential['browser'] = credential.browser.name
+            formatted_credential['compromised'] = credential.compromised
+            formatted_credential['occurrence'] = credential.occurrence
+            formatted_credential['filename'] = credential.filename
 
-            if "android" in credential_record.url:
-                credential['url'] = re.sub(r'/.+?@', '', credential_record.url)
+            if "android" in credential.url:
+                formatted_credential['url'] = re.sub(r'/.+?@', '', credential.url)
             else:
-                credential['url'] = credential_record.url
+                formatted_credential['url'] = credential.url
 
             return JsonResponse(
-                credential
+                formatted_credential
             )
-        except CredentialRecord.DoesNotExist:
+        except Credential.DoesNotExist:
             return HttpResponseNotFound()
     
     else:
@@ -97,7 +96,7 @@ def start_scan(request):
     geo_ip = GeoIP2()
 
     os_install = OperatingSystemInstall.objects.create(
-        operating_system = OperatingSystem.objects.get_or_create(
+        os = OperatingSystem.objects.get_or_create(
             name = payload['OsName'],
             version = payload['OsVersion']
         )[0],
@@ -118,8 +117,8 @@ def start_scan(request):
 
     for language in payload['OsMuiLanguages']:
         OperatingSystemInstalledLanguages.objects.create(
-            operating_system_installation = os_install,
-            installed_language = Language.objects.get_or_create(
+            os_install = os_install,
+            language = Language.objects.get_or_create(
                 locale = language
             )[0],
         )
@@ -248,16 +247,47 @@ def patches_installed(request):
 
 @api_view(['POST', ])
 def antivirus_status(request):
-    ApiRequest(
-        user = request.user,
-        type = 'antivirus_status',
-        payload = json.dumps(
-            json.loads(
-                request.POST['status']
-            )
-        ),
-        method = ApiRequest.RequestMethod.POST
-    ).save()
+    api_request, device, scan, scan_record, payload = setup_request(
+        request,
+        'antivirus/status',
+        'status '
+    )
+
+    existing_import = SecurityRecord.objects.filter(
+        scan_record = scan_record,
+    ).exists()
+
+    if(False in [scan, scan_record, not existing_import]):
+        return bad_request(api_request)
+
+    SecurityRecord.objects.create(
+        scan_record = scan_record,
+        behavior_monitoring = payload['BehaviorMonitorEnabled'],
+        tamper_protection = payload['IsTamperProtected'],
+        realtime_protection = payload['RealTimeProtectionEnabled'],
+        reboot_required = payload['RebootRequired'],
+        access_protection = payload['OnAccessProtectionEnabled'],
+        download_protection = payload['IoavProtectionEnabled'],
+        virtual_machine = payload['IsVirtualMachine'],
+        full_scan_required = payload['FullScanRequired'],
+        full_scan_overdue = payload['FullScanOverdue'],
+        full_scan_last = convert_date(payload['FullScanEndTime']),
+        quick_scan_overdue =payload['QuickScanOverdue'],
+        quick_scan_last = convert_date(payload['QuickScanEndTime']),
+        as_enabled = payload['AntispywareEnabled'],
+        as_signature_update = convert_date(payload['AntispywareSignatureLastUpdated']),
+        as_signature_version = payload['AntispywareSignatureVersion'],
+        av_enabled = payload['AntivirusEnabled'],
+        av_signature_update = convert_date(payload['AntivirusSignatureLastUpdated']),
+        av_signature_version = payload['AntivirusSignatureVersion'],
+        nri_enabled = payload['NISEnabled'],
+        nri_signature_update = convert_date(payload['NISSignatureLastUpdated']),
+        nri_signature_version = payload['NISSignatureVersion']
+    )
+
+    return HttpResponse('')
+
+    
 
 
 @api_view(['POST', ])
@@ -296,12 +326,11 @@ def system_users(request):
         'users'
     )
 
-    existing_import = UserRecord.objects.filter(
+    existing_import = User.objects.filter(
         scan_record = scan_record,
     ).exists()
 
     if(False in [scan, scan_record, not existing_import]):
-        print("here")
         return bad_request(api_request)
 
     
@@ -309,7 +338,7 @@ def system_users(request):
         if(user['PrincipalSource'] == 4):
             user['PrincipalSource'] = 2
 
-        UserRecord.objects.create(
+        User.objects.create(
             scan_record = scan_record,
             name = user['Name'],
             full_name = user['FullName'],
@@ -367,21 +396,21 @@ def browser_passwords(request):
             created = None
         
         if(credential['Password Strength'] == "Very Strong"):
-            password_strength = CredentialRecord.SecurityRating.VERY_STRONG
+            password_strength = Credential.SecurityRating.VERY_STRONG
         elif (credential['Password Strength'] == "Strong"):
-            password_strength = CredentialRecord.SecurityRating.STRONG
+            password_strength = Credential.SecurityRating.STRONG
         elif (credential['Password Strength'] == "Medium"):
-            password_strength = CredentialRecord.SecurityRating.MEDIUM
+            password_strength = Credential.SecurityRating.MEDIUM
         elif (credential['Password Strength'] == "Weak"):
-            password_strength = CredentialRecord.SecurityRating.WEAK
+            password_strength = Credential.SecurityRating.WEAK
         else:
-            password_strength = CredentialRecord.SecurityRating.VERY_WEAK
+            password_strength = Credential.SecurityRating.VERY_WEAK
         
-        CredentialRecord.objects.create(
+        Credential.objects.create(
             credential_scan = credential_scan,
             url = credential['URL'],
             browser = Browser.objects.get_or_create(
-                browser_name = credential['Web Browser']
+                name = credential['Web Browser']
             )[0],
             storage = created,
             username = credential['User Name'],

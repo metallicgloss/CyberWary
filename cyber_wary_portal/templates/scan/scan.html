@@ -86,7 +86,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             {% for record in records %}
                                 <tr>
                                     <td><span class="fi fi-{{ record.country }} me-3"></span>{{ record.name }}</td>
-                                    <td>{{ record.os_install.operating_system.name }}</td>
+                                    <td>{{ record.os_install.os.name }}</td>
                                     <td>{{ record.os_install.owner }}</td>
                                     <td><a href="{% url 'report' scan_key=scan.scan_key report=record.id  %}">View Report <i class="icofont-double-right"></i></a></td>
                                 </tr>
