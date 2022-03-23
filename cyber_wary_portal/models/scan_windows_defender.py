@@ -18,6 +18,8 @@
 #
 
 # Module/Library Import
+from sqlite3 import enable_shared_cache
+from winreg import DisableReflectionKey
 from cyber_wary_portal.models.core import *
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -40,6 +42,8 @@ from django.db import models
 #                            1.2 Defender Settings                            #
 #                            1.3 Defender Exclusions                          #
 #                            1.4 Defender Detections                          #
+#                        2. Windows Firewall                                  #
+#                            2.1 Firewall Rules                               #
 #                                                                             #
 # --------------------------------------------------------------------------- #
 
@@ -472,3 +476,135 @@ class DefenderDetection(DefaultFields):
         null=True,
         help_text="The associated files, extensions or resources that are deemed to be a threat (Resources)."
     )
+
+
+# --------------------------------------------------------------------------- #
+#                             2. Windows Firewall                             #
+# --------------------------------------------------------------------------- #
+#                              2.1 Firewall Rules                             #
+# --------------------------------------------------------------------------- #
+
+class FirewallRules(DefaultFields):
+    # Model to record all firewall rules configured on a scanned system.
+
+    # The protocol that the rule applies to.
+    class Protocol(models.IntegerChoices):
+        UDP = 1
+        TCP = 2
+
+    scan_record = models.ForeignKey(
+        ScanRecord,
+        on_delete=models.CASCADE,
+        help_text="The scan record that the firewall rule is associated with."
+    )
+
+    rule_id = models.CharField(
+        max_length=48,
+        null=True,
+        help_text="The instance ID associated with the firewall rule (ID/InstanceID)."
+    )
+
+    name = models.CharField(
+        max_length=128,
+        null=True,
+        help_text="The display name of the firewall rule (DisplayName)."
+    )
+
+    description = models.CharField(
+        max_length=256,
+        null=True,
+        help_text="The description given to the rule (Description)."
+    )
+
+    group = models.CharField(
+        max_length=64,
+        null=True,
+        help_text="The group that the firewall rule is associated with (Group)."
+    )
+
+    enabled = models.BooleanField(
+        default=False,
+        help_text="The flag to identify if the firewall rule is active and enabled (Enabled)."
+    )
+
+    lsm = models.BooleanField(
+        default=False,
+        help_text="The flag to identify if the firewall rule is managed by the Local Session Manager (LSM)."
+    )
+
+    direction = models.IntegerField(
+        default=False,
+        help_text="The direction that the rule is targetting (inbound/outbound) (Direction)."
+    )
+
+    action = models.IntegerField(
+        default=False,
+        help_text="The configured action to apply to the rule (Action)."
+    )
+
+    file_path = models.CharField(
+        max_length=256,
+        null=True,
+        help_text="The file path/program that is applied to the rule (Program)."
+    )
+
+    local_address = models.CharField(
+        max_length=64,
+        null=True,
+        help_text="The local address that the rule applies to (LocalAddress)."
+    )
+
+    local_ip = models.CharField(
+        max_length=128,
+        null=True,
+        help_text="The local numerical IP address that the rule applies to (LocalIP)."
+    )
+
+    local_port = models.IntegerField(
+        default=1,
+        null=True,
+        validators=[
+            MaxValueValidator(65535),
+            MinValueValidator(1)
+        ],
+        help_text="The local port number that the rule targets (LocalPort)."
+    )
+
+    remote_address = models.CharField(
+        max_length=64,
+        null=True,
+        help_text="The remote address that the rule applies to (RemoteAddress)."
+    )
+
+    remote_ip = models.CharField(
+        max_length=128,
+        null=True,
+        help_text="The remote numerical IP address that the rule applies to (RemoteIP)."
+    )
+
+    remote_port = models.IntegerField(
+        default=1,
+        null=True,
+        validators=[
+            MaxValueValidator(65535),
+            MinValueValidator(1)
+        ],
+        help_text="The remote port number that the rule targets (RemotePort)."
+    )
+
+    protocol = models.IntegerField(
+        choices=Protocol.choices,
+        default=Protocol.UDP,
+        validators=[
+            MaxValueValidator(2),
+            MinValueValidator(1)
+        ],
+        help_text="The protocol that the rule targets (Protocol)."
+    )
+
+
+
+
+
+
+

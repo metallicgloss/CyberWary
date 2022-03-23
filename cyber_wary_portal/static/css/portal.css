@@ -335,6 +335,12 @@ table.dataTable>tbody>tr.child span.dtr-title {
     color: var(--dark-primary);
 }
 
+.nav .user-details:focus,
+.nav .user-details #user-name:focus,
+.nav .user-details #user-plan:focus {
+    outline: none;
+}
+
 .nav .user-details #user-name {
     font-family: 'Space Mono', monospace;
     font-size: 16px;

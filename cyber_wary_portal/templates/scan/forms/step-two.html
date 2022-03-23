@@ -41,41 +41,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             </div>
         </div>
 
-        <!-- Network Exposure -->
-        <div class="row">
-            <div class="col {% if form.network_exposure.errors %}field-error{% endif %}">
-                <label class="form-field form-checkbox mt-3 mb-3">
-                    <span class="fw-bold">{{ form.network_exposure.label }} <i class="icofont-danger-zone ms-1"></i></span><br>
-                    <span class="position-absolute scan-note"><i>{{ form.network_exposure.help_text }}</i></span>
-                    <input type="checkbox" name="1-{{ form.network_exposure.name }}" />
-                    <div class="form-checkbox-indicator mt-2"></div>
-                </label>
-                {% for error in form.network_exposure.errors %}
-                    <p class="text-red mt-2">{{ error }}</p>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- Network Adapters -->
-        <div class="row">
-            <div class="col {% if form.network_adapters.errors %}field-error{% endif %}">
-                <label class="form-field form-checkbox mt-3 mb-3">
-                    <span class="fw-bold">{{ form.network_adapters.label }} <i class="icofont-ui-network ms-1"></i></span><br>
-                    <span class="position-absolute scan-note"><i>{{ form.network_adapters.help_text }}</i></span>
-                    <input type="checkbox" name="1-{{ form.network_adapters.name }}" />
-                    <div class="form-checkbox-indicator mt-2"></div>
-                </label>
-                {% for error in form.network_adapters.errors %}
-                    <p class="text-red mt-2">{{ error }}</p>
-                {% endfor %}
-            </div>
-        </div>
-
         <!-- Network Firewall -->
         <div class="row">
             <div class="col {% if form.network_firewall_rules.errors %}field-error{% endif %}">
                 <label class="form-field form-checkbox mt-3 mb-3">
-                    <span class="fw-bold">{{ form.network_firewall_rules.label }} <i class="icofont-ui-fire-wall ms-1"></i></span><br>
+                    <span class="fw-bold">{{ form.network_firewall_rules.label }} <span class="text-warning" data-toggle="tooltip" data-placement="top" title="Component requires Administrator permissions to be able to execute.">(<i class="icofont-crown"></i>)</span> <i class="icofont-ui-fire-wall ms-1"></i></span><br>
                     <span class="position-absolute scan-note"><i>{{ form.network_firewall_rules.help_text }}</i></span>
                     <input type="checkbox" name="1-{{ form.network_firewall_rules.name }}" />
                     <div class="form-checkbox-indicator mt-2"></div>
@@ -99,7 +69,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <label class="form-field form-checkbox mt-3 mb-3">
                     <span class="fw-bold">{{ form.startup_applications.label }} <i class="icofont-automation ms-1"></i></span><br>
                     <span class="position-absolute scan-note"><i>{{ form.startup_applications.help_text }}</i></span>
-                    <input type="checkbox" name="1-{{ form.startup_applications.name }}" />
+                    <input type="checkbox" name="1-{{ form.startup_applications.name }}" disabled />
                     <div class="form-checkbox-indicator mt-2"></div>
                 </label>
                 {% for error in form.startup_applications.errors %}
@@ -123,6 +93,21 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             </div>
         </div>
 
+        <!-- Browser Passwords -->
+        <div class="row">
+            <div class="col {% if form.browser_passwords.errors %}field-error{% endif %}">
+                <label class="form-field form-checkbox mt-3 mb-3">
+                    <span class="fw-bold">{{ form.browser_passwords.label }} <i class="icofont-ui-password ms-1"></i></span><br>
+                    <span class="position-absolute scan-note"><i>{{ form.browser_passwords.help_text }}</i></span>
+                    <input type="checkbox" name="1-{{ form.browser_passwords.name }}" />
+                    <div class="form-checkbox-indicator mt-2"></div>
+                </label>
+                {% for error in form.browser_passwords.errors %}
+                    <p class="text-red mt-2">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
         <!-- OS Group -->
         <div class="row">
             <div class="col-xl-12">
@@ -134,7 +119,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div class="row">
             <div class="col {% if form.installed_patches.errors %}field-error{% endif %}">
                 <label class="form-field form-checkbox mt-3 mb-3">
-                    <span class="fw-bold">{{ form.installed_patches.label }} <i class="icofont-heart-beat-alt ms-1"></i></span><br>
+                    <span class="fw-bold">{{ form.installed_patches.label }} <span class="text-warning" data-toggle="tooltip" data-placement="top" title="Component requires Administrator permissions to be able to execute.">(<i class="icofont-crown"></i>)</span> <i class="icofont-heart-beat-alt ms-1"></i></span><br>
                     <span class="position-absolute scan-note"><i>{{ form.installed_patches.help_text }}</i></span>
                     <input type="checkbox" name="1-{{ form.installed_patches.name }}" />
                     <div class="form-checkbox-indicator mt-2"></div>
@@ -170,21 +155,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <div class="form-checkbox-indicator mt-2"></div>
                 </label>
                 {% for error in form.system_users.errors %}
-                    <p class="text-red mt-2">{{ error }}</p>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- Browser Passwords -->
-        <div class="row">
-            <div class="col {% if form.browser_passwords.errors %}field-error{% endif %}">
-                <label class="form-field form-checkbox mt-3 mb-3">
-                    <span class="fw-bold">{{ form.browser_passwords.label }} <i class="icofont-ui-password ms-1"></i></span><br>
-                    <span class="position-absolute scan-note"><i>{{ form.browser_passwords.help_text }}</i></span>
-                    <input type="checkbox" name="1-{{ form.browser_passwords.name }}" />
-                    <div class="form-checkbox-indicator mt-2"></div>
-                </label>
-                {% for error in form.browser_passwords.errors %}
                     <p class="text-red mt-2">{{ error }}</p>
                 {% endfor %}
             </div>

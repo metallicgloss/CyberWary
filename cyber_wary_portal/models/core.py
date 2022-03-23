@@ -413,16 +413,6 @@ class Scan(DefaultFields):
         help_text="The flag for the scan to include browser passwords stored on the system."
     )
 
-    network_adapters = models.BooleanField(
-        default=False,
-        help_text="The flag for the scan to include network adapter settings."
-    )
-
-    network_exposure = models.BooleanField(
-        default=False,
-        help_text="The flag for the scan to include network exposure (log4j)."
-    )
-
     network_firewall_rules = models.BooleanField(
         default=False,
         help_text="The flag for the scan to include firewall rules."

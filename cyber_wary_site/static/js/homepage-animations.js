@@ -48,9 +48,9 @@ if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
 
     // Define new animejs animation - timeline (bouncing in notifications)
     var notifications = anime.timeline({
-        duration: 400,
+        duration: 600,
         autoplay: false,
-        easing: 'easeInOutSine',
+        easing: 'linear',
         loop: false,
     });
 
@@ -58,16 +58,14 @@ if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
     notifications.add({
         targets: document.querySelectorAll('.notification-box .notification')[3],
         keyframes: [{
-                translateY: -258,
-                opacity: [
-                    0,
-                    1
-                ]
+                translateY: -258
             },
             {
-                translateY: [-258,
-                    0
-                ]
+                opacity: [0, 1]
+            },
+            {
+                translateY: [-258, 0],
+                delay: 200
             }
         ],
     })
@@ -76,16 +74,13 @@ if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
     notifications.add({
         targets: document.querySelectorAll('.notification-box .notification')[2],
         keyframes: [{
-                translateY: -172,
-                opacity: [
-                    0,
-                    1
-                ]
+                translateY: -172
+            }, {
+                opacity: [0, 1]
             },
             {
-                translateY: [-172,
-                    0
-                ]
+                translateY: [-172, 0],
+                delay: 200
             }
         ],
     })
@@ -94,16 +89,14 @@ if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
     notifications.add({
         targets: document.querySelectorAll('.notification-box .notification')[1],
         keyframes: [{
-                translateY: -86,
-                opacity: [
-                    0,
-                    1
-                ]
+                translateY: -86
             },
             {
-                translateY: [-86,
-                    0
-                ]
+                opacity: [0, 1]
+            },
+            {
+                translateY: [-86, 0],
+                delay: 200
             }
         ],
     })
@@ -112,12 +105,9 @@ if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
     notifications.add({
         targets: document.querySelectorAll('.notification-box .notification')[0],
         keyframes: [{
-            opacity: [
-                0,
-                1
-            ]
+            opacity: [0, 1]
         }],
-        duration: 300 // Define shorter animation as no movement required.
+        duration: 200 // Define shorter animation as no movement required.
     })
 }
 

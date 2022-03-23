@@ -239,22 +239,8 @@ class ScanFormStep2(forms.ModelForm):
     )
 
     browser_passwords = forms.BooleanField(
-        label='System/Browser Passwords',
-        help_text='Analyses the system and browser passwords accessible/stored on the device.',
-        required=False,
-        initial=False
-    )
-
-    network_adapters = forms.BooleanField(
-        label='Network Adapters',
-        help_text='Analyses the network adapters and active connections of the device.',
-        required=False,
-        initial=False
-    )
-
-    network_exposure = forms.BooleanField(
-        label='Network Exposure (Network Vulnerability Scan)',
-        help_text='Analyses the external exposure of the device; includes Log4j and Metasploit.',
+        label='Browser Passwords',
+        help_text='Analyses the browser passwords accessible/stored on the device.',
         required=False,
         initial=False
     )
@@ -299,8 +285,6 @@ class ScanFormStep2(forms.ModelForm):
         fields = (
             'system_users',
             'browser_passwords',
-            'network_adapters',
-            'network_exposure',
             'network_firewall_rules',
             'startup_applications',
             'installed_applications',

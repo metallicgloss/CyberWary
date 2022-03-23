@@ -556,6 +556,9 @@ def browser_passwords(request):
         )
         payload[id]['Password'] = "--- HASH REMOVED - NOT STORED ---"
 
+    credential_scan.progress = CredentialScan.ScanStatus.COMPLETED
+    credential_scan.save()
+
     api_request.payload = json.dumps(payload)
     api_request.save()
 

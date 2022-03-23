@@ -38,6 +38,12 @@ def generate_script(generation_type, payload, api_key):
     script_contents = '$apiKey = "Token ' + api_key + '"\r\n'
     script_contents += '$scanKey = "' + scan_key + '"\r\n'
     script_contents += '$deviceID = Get-ItemProperty HKLM:SOFTWARE\Microsoft\SQMClient | Select -ExpandProperty MachineID\r\n\r\n'
+
+    if(payload['network_firewall_rules'] or payload['installed_patches']):
+        script_contents += '# Script requires administrator permissions; verify correct access.\r\n'
+        script_contents += '$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())\r\n'
+        script_contents += 'if ( $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator) -eq $false ) { Add-Type -AssemblyName System.Windows.Forms;[System.Windows.Forms.MessageBox]::Show("Please re-launch powershell as Administrator.", "CyberWary", "Ok", "Error");stop-process -Id $PID }\r\n\r\n'    
+
     script_contents += get_data(
         'Capture Basic System Information',
         'start_scan',
@@ -45,20 +51,30 @@ def generate_script(generation_type, payload, api_key):
         'Get-ComputerInfo'
     )
 
-    if(payload['network_adapters']):
-        script_contents += get_data(
-            'Capture List of Network Adapters',
-            'network_adapters',
-            'system_information',
-            'Get-NetAdapter -Name * -IncludeHidden'
-        )
-
     if(payload['network_firewall_rules']):
         script_contents += get_data(
             'Capture List of Firewall Rules',
             'firewall_rules',
             'rules',
             'Get-NetFirewallRule'
+        )
+        script_contents += get_data(
+            'Capture List of Applications Associated With Rules',
+            'firewall_applications',
+            'applications',
+            'Get-NetFirewallApplicationFilter'
+        )
+        script_contents += get_data(
+            'Capture List of IP Addresses With Rules',
+            'firewall_ips',
+            'ips',
+            'Get-NetFirewallAddressFilter'
+        )
+        script_contents += get_data(
+            'Capture List of Ports Associated With Rules',
+            'firewall_ports',
+            'ports',
+            'Get-NetFirewallPortFilter'
         )
 
     if(payload['startup_applications']):
