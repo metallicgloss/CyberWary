@@ -96,15 +96,15 @@ urlpatterns = [
             ),
 
             path(
-                'settings',
-                api.antivirus_settings,
-                name='settings'
+                'preferences',
+                api.antivirus_preferences,
+                name='preferences'
             ),
 
             path(
                 'detections',
                 api.antivirus_detections,
-                name='settings'
+                name='detections'
             ),
         ])),
 

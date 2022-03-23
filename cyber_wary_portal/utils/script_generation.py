@@ -83,13 +83,13 @@ def generate_script(generation_type, payload, api_key):
             'Capture List of Pending Updates',
             'patches/pending',
             'patches',
-            '$UpdateSession = New-Object -ComObject Microsoft.Update.Session; @($UpdateSession.CreateupdateSearcher().Search("IsHidden=0 and IsInstalled=0").Updates)' # Review
+            '$UpdateSession = New-Object -ComObject Microsoft.Update.Session; @($UpdateSession.CreateupdateSearcher().Search("IsHidden=0 and IsInstalled=0").Updates | ConvertTo-Json)'
         )
         script_contents += get_data(
             'Capture List of Installed Updates',
             'patches/installed',
             'patches',
-            'Install-Module -Name PSWindowsUpdate -Force; Get-WUHistory -MaxDate (Get-Date).AddDays(-180) -Last 500'
+            'Install-Module -Name PSWindowsUpdate -Force; Get-WUHistory -MaxDate (Get-Date).AddDays(-180) -Last 500; Uninstall-Module -Name PSWindowsUpdate;'
         )
 
     if(payload['installed_antivirus']):
@@ -101,8 +101,8 @@ def generate_script(generation_type, payload, api_key):
         )
         script_contents += get_data(
             'Capture the System Antivirus Settings',
-            'antivirus/settings',
-            'settings',
+            'antivirus/preferences',
+            'preferences',
             'Get-MpPreference'
         )
         script_contents += get_data(

@@ -288,12 +288,27 @@ class Migration(migrations.Migration):
         ),
         migrations.RenameField(
             model_name='operatingsysteminstalledlanguages',
-            old_name='installed_language',
-            new_name='language',
+            old_name='operating_system_installation',
+            new_name='os_install',
+        ),
+        migrations.AlterField(
+            model_name='operatingsysteminstalledlanguages',
+            name='os_install',
+            field=models.ForeignKey(help_text='The operating system install that the installed language is associated with.', on_delete=django.db.models.deletion.CASCADE, to='cyber_wary_portal.operatingsysteminstall'),
         ),
         migrations.RenameField(
             model_name='operatingsysteminstalledlanguages',
-            old_name='operating_system_installation',
-            new_name='os_install',
+            old_name='installed_language',
+            new_name='language',
+        ),
+        migrations.AlterField(
+            model_name='operatingsysteminstalledlanguages',
+            name='language',
+            field=models.ForeignKey(help_text='The language that is installed.', on_delete=django.db.models.deletion.CASCADE, to='cyber_wary_portal.language'),
+        ),
+        migrations.RenameField(
+            model_name='operatingsysteminstall',
+            old_name='operating_system',
+            new_name='os',
         ),
     ]

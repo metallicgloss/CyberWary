@@ -17,14 +17,13 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+from cyber_wary_portal.models import ApiRequest, Scan, ScanRecord, DefenderExclusion
 from datetime import datetime
 from django.conf import settings
-from django.utils.timezone import make_aware
-import requests
-from cyber_wary_portal.models import ApiRequest, Scan, ScanRecord
-
 from django.http.response import HttpResponseBadRequest
+from django.utils.timezone import make_aware
 import json
+import requests
 
 def bad_request(api_object):
     api_object.response = 400
@@ -32,8 +31,11 @@ def bad_request(api_object):
     return HttpResponseBadRequest()
 
 
-def setup_request(request, type, field):
-    payload = request.data[field]
+def setup_request(request, type, field, convert = False):
+    if(convert):
+        payload = json.loads(request.data[field])
+    else:
+        payload = request.data[field]
     device = request.data['device_id'].replace('{', '').replace('}', '')
 
     api_request = ApiRequest.objects.create(
@@ -107,3 +109,15 @@ def check_credential(credential_sha1):
         return [True, formatted_data[credential_sha1[5:]]]
     else:
         return [False, 0]
+
+
+def import_exclusions(exclusion_list, exclusion_type, exclusion_method, preference):
+    if exclusion_list is not None:
+        if "N/A" not in exclusion_list[0]:
+            for exclusion in exclusion_list:
+                DefenderExclusion.objects.create(
+                    preference = preference,
+                    type = exclusion_type,
+                    method = exclusion_method,
+                    value = exclusion
+                )

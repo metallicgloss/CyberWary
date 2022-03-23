@@ -228,7 +228,7 @@ class OperatingSystem(DefaultFields):
 
 
 class OperatingSystemInstall(DefaultFields):
-    operating_system = models.ForeignKey(
+    os = models.ForeignKey(
         OperatingSystem,
         on_delete=models.CASCADE,
         help_text="The operating system version that the installation is associated with."
@@ -299,12 +299,14 @@ class OperatingSystemInstall(DefaultFields):
 class OperatingSystemInstalledLanguages(DefaultFields):
     os_install = models.ForeignKey(
         OperatingSystemInstall,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        help_text="The operating system install that the installed language is associated with."
     )
 
     language = models.ForeignKey(
         Language,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        help_text="The language that is installed."
     )
 
 
@@ -736,7 +738,7 @@ class DefenderPreference(DefaultFields):
 
     check_for_signatures_before_running_scan = models.BooleanField(
         default=False,
-        help_text="The flag associated with the automated check for signature updates before a scan is performed ()."
+        help_text="The flag associated with the automated check for signature updates before a scan is performed (CheckForSignaturesBeforeRunningScan)."
     )
 
     disable_archive_scanning = models.BooleanField(
@@ -876,7 +878,7 @@ class DefenderPreference(DefaultFields):
     
     full_scan_on_battery_power = models.BooleanField(
         default=False,
-        help_text="The flag to identify if full CPU performance while on battery power has been enabled ()."
+        help_text="The flag to identify if full CPU performance while on battery power has been enabled (EnableFullScanOnBatteryPower)."
     )
 
     randomize_schedule_task_times = models.BooleanField(
@@ -887,7 +889,7 @@ class DefenderPreference(DefaultFields):
     avg_load = models.IntegerField(
         default=0,
         help_text="The target average CPU load during a scan (ScanAvgCPULoadFactor)."
-    ),
+    )
 
     only_if_idle = models.BooleanField(
         default=False,
@@ -1010,3 +1012,143 @@ class DefenderDetection(DefaultFields):
         null=True,
         help_text="The associated files, extensions or resources that are deemed to be a threat (Resources)."
     )
+
+
+class UpdatePending(DefaultFields):
+    scan_record = models.ForeignKey(
+        ScanRecord,
+        on_delete=models.CASCADE,
+        help_text="The scan record that the Windows Defender detection is associated with."
+    )
+
+    title = models.CharField(
+        max_length=256,
+        null=True,
+        help_text="The title of an update (Title)."
+    )
+
+    description = models.CharField(
+        max_length=1024,
+        null=True,
+        help_text="The description that accompanies the update (Description)."
+    )
+
+    install_deadline = models.DateTimeField(
+        null=True,
+        help_text="The date/time that the install is required to be installed by (Deadline)."
+    )
+
+    eula_accepted = models.BooleanField(
+        default=False,
+        help_text="The flag to confirm that the EULA has been accepted by the user (EulaAccepted)."
+    )
+
+    beta = models.BooleanField(
+        default=False,
+        help_text="The flag to indicate that the update is in BETA (IsBeta)."
+    )
+
+    downloaded = models.BooleanField(
+        default=False,
+        help_text="The flag to indicate that the update has been already downloaded (IsDownloaded)."
+    )
+
+    hidden = models.BooleanField(
+        default=False,
+        help_text="The flag to indicate that the update is hidden from the end user (IsHidden)."
+    )
+
+    mandatory = models.BooleanField(
+        default=False,
+        help_text="The flag to indicate that the update is mandatory to be installed (IsMandatory)."
+    )
+
+    uninstallable = models.BooleanField(
+        default=False,
+        help_text="The flag to indicate that the update is able to be individually uninstalled (IsMandatory)."
+    )
+
+    reboot_required = models.BooleanField(
+        default=False,
+        help_text="The flag to indicate that the update will require a restart to install (RebootRequired)."
+    )
+
+    date_check = models.DateTimeField(
+        null=True,
+        help_text="The date/time that the update was last checked (LastDeploymentChangeTime)."
+    )
+
+    download_size = models.IntegerField(
+        default=0,
+        null=True,
+        help_text="The maximum download/install size for the update (MaxDownloadSize)."
+    )
+
+    security_rating = models.CharField(
+        max_length=32,
+        null=True,
+        help_text="The security severity rating for the update (MsrcSeverity)."
+    )
+
+    cves = models.CharField(
+        max_length=128,
+        null=True,
+        help_text="The list of CVEs associated with the update (CveIDs)."
+    )
+
+    driver_date = models.CharField(
+        max_length=128,
+        null=True,
+        help_text="The date that the driver/update was released (DriverVerDate)."
+    )
+
+    driver_manufacturer = models.CharField(
+        max_length=128,
+        null=True,
+        help_text="The software developer of the driver/update (DriverProvider)."
+    )
+
+    driver_model = models.CharField(
+        max_length=128,
+        null=True,
+        help_text="The device that the update/firmware/driver is for (DriverModel)."
+    )
+
+
+class UpdateInstalled(DefaultFields):
+    scan_record = models.ForeignKey(
+        ScanRecord,
+        on_delete=models.CASCADE,
+        help_text="The scan record that the Windows Defender detection is associated with."
+    )
+
+    date = models.DateTimeField(
+        null=True,
+        help_text="The date/time that the update was installed (Date)."
+    )
+
+    title = models.CharField(
+        max_length=256,
+        null=True,
+        help_text="The title of an update (Title)."
+    )
+
+    description = models.CharField(
+        max_length=1024,
+        null=True,
+        help_text="The description that accompanies the update (Description)."
+    )
+
+    kb = models.CharField(
+        max_length=16,
+        null=True,
+        help_text="The microsoft KB identifier (KB)."
+    )
+
+    result = models.CharField(
+        max_length=16,
+        null=True,
+        help_text="The status of the installation (Result)."
+    )
+
+    
