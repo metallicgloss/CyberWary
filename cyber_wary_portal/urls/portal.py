@@ -94,13 +94,6 @@ urlpatterns = [
         ),
 
 
-        path(
-            'api/',
-            portal.api,
-            name='api'
-        ),
-
-
         # Void two unneeded URLs included within allauth
         path(
             'password/change/',

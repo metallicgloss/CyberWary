@@ -18,11 +18,11 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from email.policy import default
 from .models import SystemUser, Scan
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.validators import MaxValueValidator, MinValueValidator
+from email.policy import default
 
 
 class AccountDetailsForm(UserCreationForm):
@@ -252,13 +252,6 @@ class ScanFormStep2(forms.ModelForm):
         initial=False
     )
 
-    startup_applications = forms.BooleanField(
-        label='System Start-Up Applications',
-        help_text='Analyses the start-up apps configured on the device.',
-        required=False,
-        initial=False
-    )
-
     installed_applications = forms.BooleanField(
         label='Installed Applications',
         help_text='Analyses the third-party applications installed on the device.',
@@ -286,7 +279,6 @@ class ScanFormStep2(forms.ModelForm):
             'system_users',
             'browser_passwords',
             'network_firewall_rules',
-            'startup_applications',
             'installed_applications',
             'installed_patches',
             'installed_antivirus'

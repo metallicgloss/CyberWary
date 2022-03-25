@@ -42,7 +42,7 @@ def generate_script(generation_type, payload, api_key):
     if(payload['network_firewall_rules'] or payload['installed_patches']):
         script_contents += '# Script requires administrator permissions; verify correct access.\r\n'
         script_contents += '$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())\r\n'
-        script_contents += 'if ( $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator) -eq $false ) { Add-Type -AssemblyName System.Windows.Forms;[System.Windows.Forms.MessageBox]::Show("Please re-launch powershell as Administrator.", "CyberWary", "Ok", "Error");stop-process -Id $PID }\r\n\r\n'    
+        script_contents += 'if ( $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator) -eq $false ) { Add-Type -AssemblyName System.Windows.Forms;[System.Windows.Forms.MessageBox]::Show("Please re-launch powershell as Administrator.", "CyberWary", "Ok", "Error");stop-process -Id $PID }\r\n\r\n'
 
     script_contents += get_data(
         'Capture Basic System Information',
@@ -54,44 +54,38 @@ def generate_script(generation_type, payload, api_key):
     if(payload['network_firewall_rules']):
         script_contents += get_data(
             'Capture List of Firewall Rules',
-            'firewall_rules',
+            'firewall/rules',
             'rules',
             'Get-NetFirewallRule'
         )
         script_contents += get_data(
             'Capture List of Applications Associated With Rules',
-            'firewall_applications',
+            'firewall/applications',
             'applications',
             'Get-NetFirewallApplicationFilter'
         )
         script_contents += get_data(
             'Capture List of IP Addresses With Rules',
-            'firewall_ips',
+            'firewall/ips',
             'ips',
             'Get-NetFirewallAddressFilter'
         )
         script_contents += get_data(
             'Capture List of Ports Associated With Rules',
-            'firewall_ports',
+            'firewall/ports',
             'ports',
             'Get-NetFirewallPortFilter'
         )
 
-    if(payload['startup_applications']):
-        script_contents += get_data(
-            'Capture List of Applications Configured on Startup',
-            'applications/startup',
-            'applications',
-            'Get-CimInstance Win32_StartupCommand'
-        )
-
     if(payload['installed_applications']):
+        script_contents += '# Generate List of Installed Applications on the Device \r\n'
+        script_contents += '$software = Get-ItemProperty HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*\r\n'
+        script_contents += '$software += Get-ItemProperty HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*\r\n'
         script_contents += get_data(
-            'Capture List of Installed Applications',
+            'Capture List of Installed Applications Without Registered Symbol',
             'applications/installed',
             'applications',
-            'Get-ItemProperty HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*'
-            # Alt Command - TBC - Get-WmiObject -Class Win32_Product
+            '($software | ConvertTo-Json) -replace("$([char]0x00AE)", "")'
         )
 
     if(payload['installed_patches']):
@@ -143,7 +137,7 @@ def generate_script(generation_type, payload, api_key):
         script_contents += '# Temporarily download WebBrowserPassView - Developed & Copyright by Nir Sofer.\r\n'
         script_contents += '# Convert plain-text passwords discovered to SHA1 hashes.\r\n'
         script_contents += 'wget ' + url + \
-            '/static/downloads/WebBrowserPassView.exe -OutFile WebBrowserPassView.exe; .\\WebBrowserPassView.exe /scomma credentials.csv; (Import-Csv ".\credentials.csv" -Delimiter ",") | ForEach-Object { if ($_.Password -ne "") { $_.Password = ([System.BitConverter]::ToString($sha1.ComputeHash($utf8.GetBytes($_.Password))).Replace("-", "")) } $_ } | Export-Csv ".\credentials.csv" -Delimiter "," -NoType; $credentials = (Import-Csv ".\credentials.csv" -Delimiter ",")\r\n\r\n'
+            '/static/downloads/WebBrowserPassView.exe -OutFile WebBrowserPassView.exe; .\\WebBrowserPassView.exe /scomma credentials.csv; Start-Sleep 1; (Import-Csv ".\credentials.csv" -Delimiter ",") | ForEach-Object { if ($_.Password -ne "") { $_.Password = ([System.BitConverter]::ToString($sha1.ComputeHash($utf8.GetBytes($_.Password))).Replace("-", "")) } $_ } | Export-Csv ".\credentials.csv" -Delimiter "," -NoType; $credentials = (Import-Csv ".\credentials.csv" -Delimiter ",")\r\n\r\n'
         script_contents += get_data(
             'Capture list of hashed passwords; hashes will not be saved.',
             'browser_passwords',
@@ -152,12 +146,12 @@ def generate_script(generation_type, payload, api_key):
         )
         script_contents += 'Remove-Item .\WebBrowserPassView.exe; Remove-Item .\credentials.csv # Cleanup\r\n\r\n'
 
-    
     script_contents += get_data(
         'Mark Scan Completion',
         'end_scan',
         'completed',
         '"completed"'
     )
+    script_contents += "stop-process -Id $PID"
 
     return script_contents

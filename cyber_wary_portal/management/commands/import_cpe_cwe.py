@@ -20,7 +20,7 @@ class Command(BaseCommand):
 
 
         for cpe in cpe_database:
-            CPE.objects.get_or_create(
+            CPE.objects.create(
                 identifier = cpe.find('{http://scap.nist.gov/schema/cpe-extension/2.3}cpe23-item').get('name'),
                 title = cpe.find('{http://cpe.mitre.org/dictionary/2.0}title').text
             )

@@ -34,47 +34,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             </div>
         </div>
 
-        <!-- Network Group -->
-        <div class="row">
-            <div class="col-xl-12">
-                <h5 class="mt-4 mb-0 pb-1 scan-section">Network Analysis</h5>
-            </div>
-        </div>
-
-        <!-- Network Firewall -->
-        <div class="row">
-            <div class="col {% if form.network_firewall_rules.errors %}field-error{% endif %}">
-                <label class="form-field form-checkbox mt-3 mb-3">
-                    <span class="fw-bold">{{ form.network_firewall_rules.label }} <span class="text-warning" data-toggle="tooltip" data-placement="top" title="Component requires Administrator permissions to be able to execute.">(<i class="icofont-crown"></i>)</span> <i class="icofont-ui-fire-wall ms-1"></i></span><br>
-                    <span class="position-absolute scan-note"><i>{{ form.network_firewall_rules.help_text }}</i></span>
-                    <input type="checkbox" name="1-{{ form.network_firewall_rules.name }}" />
-                    <div class="form-checkbox-indicator mt-2"></div>
-                </label>
-                {% for error in form.network_firewall_rules.errors %}
-                    <p class="text-red mt-2">{{ error }}</p>
-                {% endfor %}
-            </div>
-        </div>
-
         <!-- Software Group -->
         <div class="row">
             <div class="col-xl-12">
-                <h5 class="mt-5 mb-0 pb-1 scan-section">Software Analysis</h5>
-            </div>
-        </div>
-
-        <!-- Startup Software -->
-        <div class="row">
-            <div class="col {% if form.startup_applications.errors %}field-error{% endif %}">
-                <label class="form-field form-checkbox mt-3 mb-3">
-                    <span class="fw-bold">{{ form.startup_applications.label }} <i class="icofont-automation ms-1"></i></span><br>
-                    <span class="position-absolute scan-note"><i>{{ form.startup_applications.help_text }}</i></span>
-                    <input type="checkbox" name="1-{{ form.startup_applications.name }}" disabled />
-                    <div class="form-checkbox-indicator mt-2"></div>
-                </label>
-                {% for error in form.startup_applications.errors %}
-                    <p class="text-red mt-2">{{ error }}</p>
-                {% endfor %}
+                <h5 class="mt-4 mb-0 pb-1 scan-section">Software Analysis</h5>
             </div>
         </div>
 
@@ -129,6 +92,22 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 {% endfor %}
             </div>
         </div>
+
+        <!-- Network Firewall -->
+        <div class="row">
+            <div class="col {% if form.network_firewall_rules.errors %}field-error{% endif %}">
+                <label class="form-field form-checkbox mt-3 mb-3">
+                    <span class="fw-bold">{{ form.network_firewall_rules.label }} <span class="text-warning" data-toggle="tooltip" data-placement="top" title="Component requires Administrator permissions to be able to execute.">(<i class="icofont-crown"></i>)</span> <i class="icofont-ui-fire-wall ms-1"></i></span><br>
+                    <span class="position-absolute scan-note"><i>{{ form.network_firewall_rules.help_text }}</i></span>
+                    <input type="checkbox" name="1-{{ form.network_firewall_rules.name }}" />
+                    <div class="form-checkbox-indicator mt-2"></div>
+                </label>
+                {% for error in form.network_firewall_rules.errors %}
+                    <p class="text-red mt-2">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+
 
         <!-- Antivirus Settings -->
         <div class="row">

@@ -17,219 +17,68 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from cyber_wary_portal.forms import AccountModificationForm, ApiKeyForm, ScanFormStep2, AccountDeletionForm
+# Module/Library Import
+from cyber_wary_portal.forms import AccountModificationForm, ScanFormStep2, AccountDeletionForm
 from cyber_wary_portal.models import *
 from cyber_wary_portal.utils.script_generation import generate_script
-from datetime import datetime
 from django.conf import settings
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.gis.geoip2 import GeoIP2
-from django.contrib.auth import logout
+from django.db.models import Count
 from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
-from django.utils.timezone import make_aware
 from formtools.wizard.views import SessionWizardView
-from pytz import timezone
 from rest_framework.authtoken.models import Token
-from django.db.models import Count
-import json
 
+
+# --------------------------------------------------------------------------- #
+#                                                                             #
+#                                 PORTAL VIEWS                                #
+#                                                                             #
+#                 Views associated with the portal interface.                 #
+#                                                                             #
+# --------------------------------------------------------------------------- #
+
+# --------------------------------------------------------------------------- #
+#                                   CONTENTS                                  #
+# --------------------------------------------------------------------------- #
+#                                                                             #
+#                        1. General Views                                     #
+#                            1.1 Dashboard                                    #
+#                        2. Account Views                                     #
+#                            2.1 Modify Account                               #
+#                            2.2 Delete Account Acction                       #
+#                        3. Scan Views                                        #
+#                            3.1 Create Scan Group                            #
+#                            3.2 Scan Script Generation Action                #
+#                            3.3 Scan Activity Action                         #
+#                            3.4 Scan Group History                           #
+#                            3.5 Scan Group                                   #
+#                            3.6 Scan Report                                  #
+#                                                                             #
+# --------------------------------------------------------------------------- #
+
+
+# --------------------------------------------------------------------------- #
+#                              1. General Views                               #
+# --------------------------------------------------------------------------- #
+#                             1.1 Dashboard View                              #
+# --------------------------------------------------------------------------- #
 
 @login_required
 def index(request):
     return render(request, 'dashboard.html')
 
 
-class ScanCreationWizard(LoginRequiredMixin, SessionWizardView):
-    instance = None
-    template_name = "scan/create.html"
-
-    def get_form_instance(self, step):
-        if self.instance is None:
-            self.instance = Scan()
-        return self.instance
-
-    def get_context_data(self, form, **kwargs):
-        context = super(ScanCreationWizard, self).get_context_data(
-            form=form, **kwargs)
-
-        if self.steps.current == '1':
-            step_1_data = self.get_cleaned_data_for_step('0')
-            context.update(step_1_data)
-        return context
-
-    def done(self, form_list, **kwargs):
-        self.instance.user = self.request.user
-        self.instance.scan_key = get_random_string(length=32)
-        self.instance.save()
-        return redirect('scan', self.instance.scan_key)
-
-
-@login_required
-def preview_script(request):
-    scan_form = ScanFormStep2(request.POST)
-
-    if scan_form.is_valid():
-        return HttpResponse(
-            generate_script(
-                'preview',
-                scan_form.cleaned_data,
-                Token.objects.get_or_create(
-                    user=request.user
-                )[0].key
-            )
-        )
-
-    else:
-        return HttpResponse(
-            "Unable to generate script."
-        )
-
-
-@login_required
-def activity(request, scan_key):
-    try:
-        scan = Scan.objects.get(
-            user=request.user,
-            scan_key=scan_key
-        )
-    except Scan.DoesNotExist:
-        return HttpResponseNotFound()
-
-    scan_records = ScanRecord.objects.filter(
-        scan=scan
-    )
-
-    devices = {}
-
-    for record in scan_records:
-        devices[record.device_id] = {
-            'id': record.id,
-            'name': record.name,
-            'country': record.country,
-            'os': record.os_install.os.name,
-            'owner': record.os_install.owner
-        }
-
-    return JsonResponse(devices)
-
-
-@login_required
-def scan(request, scan_key):
-    try:
-        scan = Scan.objects.get(
-            user=request.user,
-            scan_key=scan_key
-        )
-    except Scan.DoesNotExist:
-        return HttpResponseNotFound()
-
-    scan_form = ScanFormStep2(scan)
-
-    return render(
-        request,
-        'scan/scan.html',
-        {
-            'scan': scan,
-            'script': generate_script(
-                'live',
-                scan_form.data.__dict__,
-                Token.objects.get_or_create(
-                    user=request.user
-                )[0].key
-            ),
-            'records': ScanRecord.objects.filter(
-                scan=scan
-            ),
-            'scan_key': scan_key
-        }
-    )
-
-
-@login_required
-def report(request, scan_key, report):
-    scan_data = {}
-
-    try:
-        scan_record = ScanRecord.objects.get(
-            scan=Scan.objects.get(
-                user=request.user,
-                scan_key=scan_key
-            ),
-            id=report
-        )
-        scan_duration = scan_record.updated - scan_record.created
-
-    except (ScanRecord.DoesNotExist, Scan.DoesNotExist):
-        return HttpResponseNotFound()
-
-    if(scan_record.scan.system_users):
-        try:
-            scan_data['system_users'] = User.objects.filter(
-                scan_record=scan_record
-            )
-            scan_data['enabled_defaults'] = scan_data['system_users'].filter(
-                name__in = ['Administrator', 'DefaultAccount', 'Guest', 'WDAGUtilityAccount'],
-                enabled = True
-            ).count()
-        except (User.DoesNotExist):
-            scan_data['system_users'] = None
-
-    if(scan_record.scan.browser_passwords):
-        try:
-            scan_data['browser_passwords'] = Credential.objects.filter(
-                credential_scan=CredentialScan.objects.get(
-                    scan_record=scan_record
-                )
-            ).order_by('-occurrence')
-            scan_data['usernames'] = scan_data['browser_passwords'].all().values(
-                "username"
-            ).annotate(
-                Count(
-                    'username',
-                    distinct=True
-                )
-            )
-            scan_data['compromised'] = scan_data['browser_passwords'].filter(
-                compromised=True
-            ).count()
-            scan_data['weak'] = scan_data['browser_passwords'].exclude(
-                password_strength=Credential.SecurityRating.VERY_STRONG
-            ).count()
-
-        except (Credential.DoesNotExist, CredentialScan.DoesNotExist):
-            scan_data['browser_passwords'] = None
-
-            
-
-    return render(
-        request,
-        'scan/report.html',
-        {
-            'coords': GeoIP2().lat_lon(scan_record.public_ip),
-            'maps_key': settings.MAPS_KEY,
-            'scan_data': scan_data,
-            'scan_duration': divmod(scan_duration.days * 86400 + scan_duration.seconds, 60),
-            'scan_record': scan_record,
-        }
-    )
-
-
-@login_required
-def history(request):
-    return render(
-        request,
-        'scan/history.html',
-        {
-            'user_scans': Scan.objects.filter(
-                user=request.user
-            ).order_by('-created')
-        }
-    )
-
+# --------------------------------------------------------------------------- #
+#                              2. Account Views                               #
+# --------------------------------------------------------------------------- #
+#                           2.1 Modify Account View                           #
+# --------------------------------------------------------------------------- #
 
 @login_required
 def modify(request):
@@ -296,6 +145,7 @@ def modify(request):
         if(request.GET.get('update') is not None):
             profile_updated = True
 
+    # Render Page
     return render(
         request,
         'account/modify.html',
@@ -307,6 +157,10 @@ def modify(request):
         }
     )
 
+
+# --------------------------------------------------------------------------- #
+#                          2.2 Delete Account Acction                         #
+# --------------------------------------------------------------------------- #
 
 @login_required
 def delete(request):
@@ -320,69 +174,247 @@ def delete(request):
                 pk=request.user.pk
             )
 
+            # Log user out before account deletion.
             logout(request)
-
             user.delete()
 
-            return redirect(reverse('account_delete'))
+            # Redirect to dashboard (will return to login)
+            return redirect(reverse('dashboard'))
 
     else:
+        # Request not made via POST. Return to account modify.
         return redirect(reverse('account_modify'))
 
 
-@login_required
-def api(request):
-    key_updated = False
+# --------------------------------------------------------------------------- #
+#                                3. Scan Views                                #
+# --------------------------------------------------------------------------- #
+#                         3.1 Create Scan Group View                          #
+# --------------------------------------------------------------------------- #
 
-    if request.method == 'POST':
-        form = ApiKeyForm(request.POST)
+class ScanCreationWizard(LoginRequiredMixin, SessionWizardView):
+    # Class to handle the two page form for the scan creation (details and components)
+    instance = None
+    template_name = "scan/create.html"
 
-        if form.is_valid():
+    def get_form_instance(self, step):
+        # Define the instance of the object self to be a Scan
+        if self.instance is None:
+            self.instance = Scan()
+        return self.instance
 
-            if(form.data.get('confirmation') == "true"):
-                api_key = Token.objects.filter(user=request.user)
-                new_key = api_key[0].generate_key()
-                api_key.update(
-                    key=new_key,
-                    created=make_aware(
-                        datetime.now(),
-                        timezone=timezone("Europe/London")
-                    )
-                )
-
-                ApiRequest(
-                    user=request.user,
-                    type='regenerate_api_key',
-                    payload=json.dumps(
-                        json.loads(
-                            '{ "request": "Re-generate API Key Request" }'
-                        )
-                    ),
-                    method=ApiRequest.RequestMethod.POST
-                ).save()
-
-                return HttpResponseRedirect(
-                    "%s?update=true" % reverse('api')
-                )
-
-    else:
-        form = ApiKeyForm()
-        api_key = Token.objects.get_or_create(
-            user=request.user
+    def get_context_data(self, form, **kwargs):
+        context = super(ScanCreationWizard, self).get_context_data(
+            form=form,
+            **kwargs
         )
 
-        if(request.GET.get('update') is not None):
-            key_updated = True
+        if self.steps.current == '1':
+            # If page has progressed onto the second page, store the cleaned data in the object.
+            step_1_data = self.get_cleaned_data_for_step('0')
+            context.update(step_1_data)
+        return context
 
-    api_log = ApiRequest.objects.filter(user=request.user).order_by('-created')
+    def done(self, form_list, **kwargs):
+        # Form completed, define the new random key and the user before creating the object.
+        self.instance.user = self.request.user
+        self.instance.scan_key = get_random_string(length=32)
+        self.instance.save()
+
+        # Redirect to the scan view page.
+        return redirect('scan', self.instance.scan_key)
+
+
+# --------------------------------------------------------------------------- #
+#                      3.2 Scan Script Generation Action                      #
+# --------------------------------------------------------------------------- #
+
+@login_required
+def preview_script(request):
+    # Call typically made by AJAX request to generate a script based on the current form settings.
+    scan_form = ScanFormStep2(request.POST)
+
+    if scan_form.is_valid():
+        return HttpResponse(
+            generate_script(
+                'preview',
+                scan_form.cleaned_data,
+                Token.objects.get_or_create( # If the user hasn't visited the API page before, create API token.
+                    user=request.user
+                )[0].key
+            )
+        )
+
+    else:
+        return HttpResponse(
+            "Unable to generate script."
+        )
+
+
+# --------------------------------------------------------------------------- #
+#                          3.3 Scan Activity Action                           #
+# --------------------------------------------------------------------------- #
+
+@login_required
+def activity(request, scan_key):
+    # Call to detect any new scan records that have been created - typically called by Ajax.
+
+    try:
+        # Attempt to get a valid scan object.
+        scan = Scan.objects.get(
+            user=request.user,
+            scan_key=scan_key
+        )
+
+    except Scan.DoesNotExist:
+        return HttpResponseNotFound()
+
+    # Query all existing scan records associated with the scan group.
+    scan_records = ScanRecord.objects.filter(
+        scan=scan
+    )
+
+    devices = {}
+
+    for record in scan_records:
+        # Format output for each device that has an associated scan record.
+        devices[record.device_id] = {
+            'id': record.id,
+            'name': record.name,
+            'country': record.country,
+            'os': record.os_install.os.name,
+            'owner': record.os_install.owner
+        }
+
+    return JsonResponse(devices)
+
+
+# --------------------------------------------------------------------------- #
+#                         3.4 Scan Group History View                         #
+# --------------------------------------------------------------------------- #
+
+@login_required
+def history(request):
+    # List scan history / scan groups.
+    return render(
+        request,
+        'scan/history.html',
+        {
+            'user_scans': Scan.objects.filter(
+                user=request.user
+            ).order_by('-created')
+        }
+    )
+
+
+# --------------------------------------------------------------------------- #
+#                             3.5 Scan Group View                             #
+# --------------------------------------------------------------------------- #
+
+@login_required
+def scan(request, scan_key):
+    try:
+        scan = Scan.objects.get(
+            user=request.user,
+            scan_key=scan_key
+        )
+    except Scan.DoesNotExist:
+        return HttpResponseNotFound()
+
+    scan_form = ScanFormStep2(scan)
 
     return render(
         request,
-        'account/api.html',
+        'scan/scan.html',
         {
-            'form': form,
-            'api_key': api_key[0],
-            'update': key_updated,
-            'api_log': api_log
+            'scan': scan,
+            'script': generate_script(
+                'live',
+                scan_form.data.__dict__,
+                Token.objects.get_or_create(
+                    user=request.user
+                )[0].key
+            ),
+            'records': ScanRecord.objects.filter(
+                scan=scan
+            ),
+            'scan_key': scan_key
+        }
+    )
+
+
+# --------------------------------------------------------------------------- #
+#                               3.6 Scan Report                               #
+# --------------------------------------------------------------------------- #
+
+
+@login_required
+def report(request, scan_key, report):
+    scan_data = {}
+
+    try:
+        scan_record = ScanRecord.objects.get(
+            scan=Scan.objects.get(
+                user=request.user,
+                scan_key=scan_key
+            ),
+            id=report
+        )
+        scan_duration = scan_record.updated - scan_record.created
+
+    except (ScanRecord.DoesNotExist, Scan.DoesNotExist):
+        return HttpResponseNotFound()
+
+    if(scan_record.scan.system_users):
+        try:
+            scan_data['system_users'] = User.objects.filter(
+                scan_record=scan_record
+            )
+            scan_data['enabled_defaults'] = scan_data['system_users'].filter(
+                name__in=[
+                    'Administrator',
+                    'DefaultAccount',
+                    'Guest',
+                    'WDAGUtilityAccount'
+                ],
+                enabled=True
+            ).count()
+        except (User.DoesNotExist):
+            scan_data['system_users'] = None
+
+    if(scan_record.scan.browser_passwords):
+        try:
+            scan_data['browser_passwords'] = Credential.objects.filter(
+                credential_scan=CredentialScan.objects.get(
+                    scan_record=scan_record
+                )
+            ).order_by('-occurrence')
+            scan_data['usernames'] = scan_data['browser_passwords'].all().values(
+                "username"
+            ).annotate(
+                Count(
+                    'username',
+                    distinct=True
+                )
+            )
+            scan_data['compromised'] = scan_data['browser_passwords'].filter(
+                compromised=True
+            ).count()
+            scan_data['weak'] = scan_data['browser_passwords'].exclude(
+                password_strength=Credential.SecurityRating.VERY_STRONG
+            ).count()
+
+        except (Credential.DoesNotExist, CredentialScan.DoesNotExist):
+            scan_data['browser_passwords'] = None
+
+    return render(
+        request,
+        'scan/report.html',
+        {
+            'coords': GeoIP2().lat_lon(scan_record.public_ip),
+            'maps_key': settings.MAPS_KEY,
+            'scan_data': scan_data,
+            'scan_duration': divmod(scan_duration.days * 86400 + scan_duration.seconds, 60),
+            'scan_record': scan_record,
         }
     )

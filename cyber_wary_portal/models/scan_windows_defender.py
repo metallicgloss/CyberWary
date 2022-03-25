@@ -18,8 +18,6 @@
 #
 
 # Module/Library Import
-from sqlite3 import enable_shared_cache
-from winreg import DisableReflectionKey
 from cyber_wary_portal.models.core import *
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -351,7 +349,6 @@ class DefenderPreference(DefaultFields):
     )
 
 
-
 # --------------------------------------------------------------------------- #
 #                        1.3 Defender Exclusions Class                        #
 # --------------------------------------------------------------------------- #
@@ -368,8 +365,9 @@ class DefenderExclusion(DefaultFields):
 
     # The type of exclusion set.
     class ExclusionMethod(models.IntegerChoices):
-        SCAN = 1 # Excluded from malware scanning.
-        CONTROLLED_ACCESS = 2 # Excluded from controlled folder access (ransomware) protection.
+        SCAN = 1  # Excluded from malware scanning.
+        # Excluded from controlled folder access (ransomware) protection.
+        CONTROLLED_ACCESS = 2
 
     preference = models.ForeignKey(
         DefenderPreference,
@@ -601,10 +599,3 @@ class FirewallRules(DefaultFields):
         ],
         help_text="The protocol that the rule targets (Protocol)."
     )
-
-
-
-
-
-
-

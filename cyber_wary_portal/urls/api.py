@@ -17,20 +17,26 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from cyber_wary_portal.views import api
+from cyber_wary_portal.views.api import *
 from django.conf.urls import include
 from django.urls import path
 
 urlpatterns = [
     path(
+        'api/',
+        api_core.api,
+        name='api'
+    ),
+
+    path(
         'payload',
-        api.api_payload,
+        api_core.api_payload,
         name='api_payload'
     ),
 
     path(
         'credential',
-        api.credential,
+        api_core.credential,
         name='credential'
     ),
 
@@ -38,87 +44,93 @@ urlpatterns = [
     path('v1/', include([
         path(
             'start_scan',
-            api.start_scan,
+            api_core.start_scan,
             name='start_scan'
         ),
 
         path(
             'end_scan',
-            api.end_scan,
+            api_core.end_scan,
             name='end_scan'
         ),
 
         path(
-            'firewall_rules',
-            api.firewall_rules,
-            name='firewall_rules'
+            'browser_passwords',
+            credential.browser_passwords,
+            name='browser_passwords'
         ),
 
         path(
-            'network_adapters',
-            api.network_adapters,
-            name='network_adapters'
+            'applications_installed',
+            software.applications_installed,
+            name='applications_installed'
         ),
 
-        path('applications/', include([
+        path(
+            'system_users',
+            users.system_users,
+            name='system_users'
+        ),
+
+        path('firewall/', include([
             path(
-                'startup',
-                api.applications_startup,
-                name='startup'
+                'rules',
+                windows_defender.firewall_rules,
+                name='firewall_rules'
             ),
 
             path(
-                'installed',
-                api.applications_installed,
-                name='installed'
-            ),
-        ])),
-
-        path('patches/', include([
-            path(
-                'pending',
-                api.patches_pending,
-                name='pending'
+                'applications',
+                windows_defender.firewall_applications,
+                name='firewall_applications'
             ),
 
             path(
-                'installed',
-                api.patches_installed,
-                name='installed'
+                'ips',
+                windows_defender.firewall_ips,
+                name='firewall_ips'
+            ),
+
+            path(
+                'ports',
+                windows_defender.firewall_ports,
+                name='firewall_ports'
             ),
         ])),
 
         path('antivirus/', include([
             path(
                 'status',
-                api.antivirus_status,
-                name='status'
+                windows_defender.antivirus_status,
+                name='antivirus_status'
             ),
 
             path(
                 'preferences',
-                api.antivirus_preferences,
-                name='preferences'
+                windows_defender.antivirus_preferences,
+                name='antivirus_preferences'
             ),
 
             path(
                 'detections',
-                api.antivirus_detections,
-                name='detections'
+                windows_defender.antivirus_detections,
+                name='antivirus_detections'
             ),
         ])),
 
-        path(
-            'system_users',
-            api.system_users,
-            name='system_users'
-        ),
+        path('patches/', include([
+            path(
+                'pending',
+                windows_update.patches_pending,
+                name='patches_pending'
+            ),
 
-        path(
-            'browser_passwords',
-            api.browser_passwords,
-            name='browser_passwords'
-        ),
+            path(
+                'installed',
+                windows_update.patches_installed,
+                name='patches_installed'
+            ),
+        ])),
 
     ])),
 ]

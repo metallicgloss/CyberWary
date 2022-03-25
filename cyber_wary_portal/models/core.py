@@ -348,8 +348,8 @@ class Scan(DefaultFields):
 
     # Types of scan that can be performed by the platform.
     class ScanTypes(models.TextChoices):
-        BLUE = 'B' # Defensive Scan
-        RED = 'R' # Offensive Scan
+        BLUE = 'B'  # Defensive Scan
+        RED = 'R'  # Offensive Scan
 
     # Foreign key to the user that owns the scan.
     user = models.ForeignKey(
@@ -416,11 +416,6 @@ class Scan(DefaultFields):
     network_firewall_rules = models.BooleanField(
         default=False,
         help_text="The flag for the scan to include firewall rules."
-    )
-
-    startup_applications = models.BooleanField(
-        default=False,
-        help_text="The flag for the scan to include startup applications."
     )
 
     installed_applications = models.BooleanField(

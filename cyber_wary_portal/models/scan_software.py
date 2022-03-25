@@ -242,6 +242,7 @@ class Publisher(DefaultFields):
 #                         2.2 Installed Software Class                        #
 # --------------------------------------------------------------------------- #
 
+
 class Software(DefaultFields):
     # Model to store details surrounding software installed on a device being scanned.
 
@@ -254,13 +255,7 @@ class Software(DefaultFields):
     name = models.CharField(
         max_length=128,
         null=True,
-        help_text="The name given to the software (Comments)."
-    )
-
-    comments = models.CharField(
-        max_length=128,
-        null=True,
-        help_text="The comments supplied by the software for its install (DisplayName)."
+        help_text="The name given to the software (Name)."
     )
 
     version = models.CharField(
@@ -292,17 +287,8 @@ class Software(DefaultFields):
         null=True,
         help_text="The path for the software installation (InstallSource/InstallLocation)."
     )
-    
+
     install_date = models.DateField(
         null=True,
         help_text="The date that the software was originally installed (InstallDate)."
     )
-    
-    system_component = models.BooleanField(
-        default=False,
-        help_text="The flag to identify if the software is a default system component (SystemComponent)."
-    )
-
-
-
-

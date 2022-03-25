@@ -156,7 +156,7 @@ class UpdatePending(DefaultFields):
 
 class UpdateInstalled(DefaultFields):
     # Model to store the recently installed updates by Windows Defender (~6 months)
-    
+
     scan_record = models.ForeignKey(
         ScanRecord,
         on_delete=models.CASCADE,
