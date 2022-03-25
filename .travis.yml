@@ -1,17 +1,17 @@
 language: python
 
-dist: xenial
+dist: focal
 
 os: linux
 
 python:
-  - "3.9"
+  - "3.10.2"
 
 services:
   - mysql
 
 env:
-  - DJANGO_VERSION=3.2.9 CYBERWARY_SECRET="SECRET_FOR_TESTING" CYBERWARY_MYSQL_DB="cyberwary_test" CYBERWARY_MYSQL_USER="root" CYBERWARY_MYSQL_PASSWORD="" CYBERWARY_MYSQL_HOST="127.0.0.1" CYBERWARY_MYSQL_PORT="3306"
+  - DJANGO_VERSION=4.0.2 CYBERWARY_SECRET="SECRET_FOR_TESTING" CYBERWARY_MYSQL_DB="cyberwary_test" CYBERWARY_MYSQL_USER="root" CYBERWARY_MYSQL_PASSWORD="" CYBERWARY_MYSQL_HOST="127.0.0.1" CYBERWARY_MYSQL_PORT="3306"
   
 before_install:
   - python -m pip install --upgrade pip
