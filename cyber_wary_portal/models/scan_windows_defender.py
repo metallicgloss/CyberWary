@@ -497,13 +497,13 @@ class FirewallRules(DefaultFields):
     )
 
     rule_id = models.CharField(
-        max_length=48,
+        max_length=128,
         null=True,
         help_text="The instance ID associated with the firewall rule (ID/InstanceID)."
     )
 
     name = models.CharField(
-        max_length=128,
+        max_length=256,
         null=True,
         help_text="The display name of the firewall rule (DisplayName)."
     )
@@ -515,14 +515,14 @@ class FirewallRules(DefaultFields):
     )
 
     group = models.CharField(
-        max_length=64,
+        max_length=256,
         null=True,
         help_text="The group that the firewall rule is associated with (Group)."
     )
 
-    enabled = models.BooleanField(
-        default=False,
-        help_text="The flag to identify if the firewall rule is active and enabled (Enabled)."
+    enabled = models.IntegerField(
+        default=0,
+        help_text="The enabled status of the rule (Enabled)."
     )
 
     lsm = models.BooleanField(
@@ -531,12 +531,12 @@ class FirewallRules(DefaultFields):
     )
 
     direction = models.IntegerField(
-        default=False,
+        default=0,
         help_text="The direction that the rule is targetting (inbound/outbound) (Direction)."
     )
 
     action = models.IntegerField(
-        default=False,
+        default=0,
         help_text="The configured action to apply to the rule (Action)."
     )
 
@@ -558,13 +558,9 @@ class FirewallRules(DefaultFields):
         help_text="The local numerical IP address that the rule applies to (LocalIP)."
     )
 
-    local_port = models.IntegerField(
-        default=1,
+    local_port = models.CharField(
+        max_length=8,
         null=True,
-        validators=[
-            MaxValueValidator(65535),
-            MinValueValidator(1)
-        ],
         help_text="The local port number that the rule targets (LocalPort)."
     )
 
@@ -580,13 +576,9 @@ class FirewallRules(DefaultFields):
         help_text="The remote numerical IP address that the rule applies to (RemoteIP)."
     )
 
-    remote_port = models.IntegerField(
-        default=1,
+    remote_port = models.CharField(
+        max_length=8,
         null=True,
-        validators=[
-            MaxValueValidator(65535),
-            MinValueValidator(1)
-        ],
         help_text="The remote port number that the rule targets (RemotePort)."
     )
 

@@ -219,8 +219,6 @@ SOCIALACCOUNT_PROVIDERS = {
     'github': {
         'SCOPE': [
             'user',
-            'repo',
-            'read:org',
         ],
         'APP': {
             'client_id': os.environ.get('CYBERWARY_GITHUB_CLIENT_ID'),

@@ -63,7 +63,8 @@ def firewall_rules(request):
     api_request, device, scan, scan_record, data = setup_request(
         request,
         'firewall/rules',
-        'rules'
+        'rules',
+        True
     )
 
     if(check_existing(scan, scan_record, FirewallRules)):
@@ -219,21 +220,25 @@ def firewall_ports(request):
     for port in data:
         # For each port defined in the payload.
         try:
-            # Get the associated Firewall Rule.
-            firewall_rule = FirewallRules.objects.get(
-                scan_record=scan_record,
-                rule_id=port['InstanceID']
-            )
+            if(isinstance(port['LocalPort'], str) and isinstance(port['RemotePort'], str)):
+                if((port['LocalPort'].isnumeric() or port['LocalPort'] == "Any") and (port['LocalPort'].isnumeric() or port['RemotePort'] == "Any")):
+                    # If ports in payload is contains digits, or "Any", continue. Output can include other text, ranges, maps - strip out.
 
-            # Update the firewall rule to include any associated IP address configurations.
-            firewall_rule.local_port = port['LocalPort']
-            firewall_rule.remote_port = port['RemotePort']
+                    # Get the associated Firewall Rule.
+                    firewall_rule = FirewallRules.objects.get(
+                        scan_record=scan_record,
+                        rule_id=port['InstanceID']
+                    )
 
-            if(port['Protocol'] == "TCP"):
-                # Default UDP - update to TCP if protocol matches.
-                firewall_rule.protocol = FirewallRules.Protocol.TCP
+                    # Update the firewall rule to include any associated IP address configurations.
+                    firewall_rule.local_port = port['LocalPort']
+                    firewall_rule.remote_port = port['RemotePort']
 
-            firewall_rule.save()
+                    if(port['Protocol'] == "TCP"):
+                        # Default UDP - update to TCP if protocol matches.
+                        firewall_rule.protocol = FirewallRules.Protocol.TCP
+
+                    firewall_rule.save()
 
         except (FirewallRules.DoesNotExist, KeyError):
             # Missing / Malformed data that differs to the default Windows output; skip record.
@@ -419,6 +424,13 @@ def antivirus_detections(request):
     # Define empty list for new objects to be appended to for mass creation.
     detections = []
 
+    if("CimClass" in data):
+        # Single item - reformat data variable to include it as a list item.
+        detection = data
+        del data
+        data = []
+        data.append(detection)
+
     for detection in data:
         # For each detection in the payload.
         try:
@@ -439,11 +451,12 @@ def antivirus_detections(request):
                     last_threat_status_change_time=convert_unix_to_dt(
                         detection['LastThreatStatusChangeTime']),
                     detection_process=detection['ProcessName'],
-                    detected_resources=detection['Resources'].replace(
-                        "file:_",
-                        "",
-                        1
-                    ).split(" file:_")
+                    detected_resources=detection['Resources']
+                    # .replace(
+                    #    "file:_",
+                    #    "",
+                    #    1
+                    #).split(" file:_")
                 )
             )
 

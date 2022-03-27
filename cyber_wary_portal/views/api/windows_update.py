@@ -72,7 +72,7 @@ def patches_pending(request):
         # For each pending update currently queued.
         try:
             # Create object and append to list for mass creation.
-            pending_updates.pending(
+            pending_updates.append(
                 UpdatePending(
                     scan_record=scan_record,
                     title=patch['Title'],

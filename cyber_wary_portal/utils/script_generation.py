@@ -56,7 +56,7 @@ def generate_script(generation_type, payload, api_key):
             'Capture List of Firewall Rules',
             'firewall/rules',
             'rules',
-            'Get-NetFirewallRule'
+            '(Get-NetFirewallRule | ConvertTo-Json) -replace("$([char]0x00AE)", "")'
         )
         script_contents += get_data(
             'Capture List of Applications Associated With Rules',
@@ -83,7 +83,7 @@ def generate_script(generation_type, payload, api_key):
         script_contents += '$software += Get-ItemProperty HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*\r\n'
         script_contents += get_data(
             'Capture List of Installed Applications Without Registered Symbol',
-            'applications/installed',
+            'applications_installed',
             'applications',
             '($software | ConvertTo-Json) -replace("$([char]0x00AE)", "")'
         )

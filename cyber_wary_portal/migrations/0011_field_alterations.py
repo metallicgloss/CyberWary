@@ -27,4 +27,29 @@ class Migration(migrations.Migration):
             name='name',
             field=models.CharField(help_text='The name given to the software (Name).', max_length=128, null=True),
         ),
+        migrations.AlterField(
+            model_name='firewallrules',
+            name='group',
+            field=models.CharField(help_text='The group that the firewall rule is associated with (Group).', max_length=256, null=True),
+        ),
+        migrations.AlterField(
+            model_name='firewallrules',
+            name='local_port',
+            field=models.CharField(help_text='The local port number that the rule targets (LocalPort).', max_length=8, null=True),
+        ),
+        migrations.AlterField(
+            model_name='firewallrules',
+            name='name',
+            field=models.CharField(help_text='The display name of the firewall rule (DisplayName).', max_length=256, null=True),
+        ),
+        migrations.AlterField(
+            model_name='firewallrules',
+            name='remote_port',
+            field=models.CharField(help_text='The remote port number that the rule targets (RemotePort).', max_length=8, null=True),
+        ),
+        migrations.AlterField(
+            model_name='firewallrules',
+            name='rule_id',
+            field=models.CharField(help_text='The instance ID associated with the firewall rule (ID/InstanceID).', max_length=128, null=True),
+        ),
     ]
