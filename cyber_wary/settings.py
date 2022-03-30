@@ -218,7 +218,7 @@ ACCOUNT_FORMS = {
 SOCIALACCOUNT_PROVIDERS = {
     'github': {
         'SCOPE': [
-            'user',
+            'read:user'
         ],
         'APP': {
             'client_id': os.environ.get('CYBERWARY_GITHUB_CLIENT_ID'),

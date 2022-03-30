@@ -100,7 +100,7 @@ class UpdatePending(DefaultFields):
 
     uninstallable = models.BooleanField(
         default=False,
-        help_text="The flag to indicate that the update is able to be individually uninstalled (IsMandatory)."
+        help_text="The flag to indicate that the update is able to be individually uninstalled (IsUninstallable)."
     )
 
     reboot_required = models.BooleanField(
@@ -113,7 +113,7 @@ class UpdatePending(DefaultFields):
         help_text="The date/time that the update was last checked (LastDeploymentChangeTime)."
     )
 
-    download_size = models.IntegerField(
+    download_size = models.BigIntegerField(
         default=0,
         null=True,
         help_text="The maximum download/install size for the update (MaxDownloadSize)."

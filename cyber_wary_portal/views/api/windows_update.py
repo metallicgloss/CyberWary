@@ -65,35 +65,49 @@ def patches_pending(request):
         # If scan or scan_record aren't valid, or an existing import exists.
         return bad_request(api_request)
 
+    if("Title" in data):
+        # Single item - reformat data variable to include it as a list item.
+        patch = data
+        del data
+        data = []
+        data.append(patch)
+
     # Define empty list for new objects to be appended to for mass creation.
     pending_updates = []
 
     for patch in data:
         # For each pending update currently queued.
         try:
-            # Create object and append to list for mass creation.
-            pending_updates.append(
-                UpdatePending(
-                    scan_record=scan_record,
-                    title=patch['Title'],
-                    description=patch['Description'],
-                    install_deadline=patch['Deadline'],
-                    eula_accepted=patch['EulaAccepted'],
-                    beta=patch['IsBeta'],
-                    downloaded=patch['IsDownloaded'],
-                    hidden=patch['IsHidden'],
-                    mandatory=patch['IsMandatory'],
-                    uninstallable=patch['IsMandatory'],
-                    reboot_required=patch['RebootRequired'],
-                    date_check=convert_unix_to_dt(patch['LastDeploymentChangeTime']),
-                    download_size=patch['MaxDownloadSize'],
-                    security_rating=patch['MsrcSeverity'],
-                    cves=patch['CveIDs'],
-                    driver_date=convert_unix_to_dt(patch['DriverVerDate']),
-                    driver_manufacturer=patch['DriverProvider'],
-                    driver_model=patch['DriverModel']
-                )
+            new_update = UpdatePending(
+                scan_record=scan_record,
+                title=patch['Title'],
+                description=patch['Description'],
+                install_deadline=patch['Deadline'],
+                eula_accepted=patch['EulaAccepted'],
+                beta=patch['IsBeta'],
+                downloaded=patch['IsDownloaded'],
+                hidden=patch['IsHidden'],
+                mandatory=patch['IsMandatory'],
+                uninstallable=patch['IsUninstallable'],
+                reboot_required=patch['RebootRequired'],
+                date_check=convert_unix_to_dt(
+                    patch['LastDeploymentChangeTime']
+                ),
+                download_size=patch['MaxDownloadSize'],
+                security_rating=patch['MsrcSeverity'],
+                cves=patch['CveIDs']
             )
+
+            if ('DriverVerDate' in patch):
+                # If update is for driver, add driver fields.
+                new_update.driver_date = convert_unix_to_dt(
+                    patch['DriverVerDate']
+                )
+                new_update.driver_manufacturer = patch['DriverProvider']
+                new_update.driver_model = patch['DriverModel']
+
+            # Create object and append to list for mass creation.
+            pending_updates.append(new_update)
 
         except KeyError:
             # Missing / Malformed data that differs to the default Windows output. Skip record.

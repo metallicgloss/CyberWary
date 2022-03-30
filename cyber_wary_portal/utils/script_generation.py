@@ -95,12 +95,16 @@ def generate_script(generation_type, payload, api_key):
             'patches',
             '$UpdateSession = New-Object -ComObject Microsoft.Update.Session; @($UpdateSession.CreateupdateSearcher().Search("IsHidden=0 and IsInstalled=0").Updates | ConvertTo-Json)'
         )
+        script_contents += '# Temporarily enable PowerShell modules that are signed\r\n'
+        script_contents += 'Set-ExecutionPolicy AllSigned -force\r\n\r\n'
         script_contents += get_data(
             'Capture List of Installed Updates',
             'patches/installed',
             'patches',
-            'Install-Module -Name PSWindowsUpdate -Force; Get-WUHistory -MaxDate (Get-Date).AddDays(-180) -Last 500; Uninstall-Module -Name PSWindowsUpdate;'
+            'Install-Module -Name PSWindowsUpdate -Force; Import-Module PSWindowsUpdate; Get-WUHistory -MaxDate (Get-Date).AddDays(-180) -Last 500'
         )
+        script_contents += '# Set the execution of scripts to restricted\r\n'
+        script_contents += 'Set-ExecutionPolicy Restricted -force\r\n\r\n'
 
     if(payload['installed_antivirus']):
         script_contents += get_data(
