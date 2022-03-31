@@ -282,6 +282,14 @@ class Software(DefaultFields):
         help_text="The publisher that the software is associated with (Publisher)."
     )
 
+    cpe = models.ForeignKey(
+        CPE,
+        on_delete=models.CASCADE,
+        default=None,
+        null=True,
+        help_text="The CPE associated with the application."
+    )
+
     install_path = models.CharField(
         max_length=256,
         null=True,

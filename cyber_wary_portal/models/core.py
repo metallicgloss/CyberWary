@@ -143,7 +143,7 @@ class ApiRequest(DefaultFields):
 class Language(DefaultFields):
     # Model to store languages installed throughout a computer system.
 
-    string = models.CharField(
+    name = models.CharField(
         max_length=32,
         null=True,
         help_text="The readable name of the language"
@@ -325,15 +325,16 @@ class BiosInstall(DefaultFields):
         help_text="The date of the BIOS installed on the device."
     )
 
-    status = models.CharField(
+    install_status = models.CharField(
         max_length=16,
         null=True,
         help_text="The status of the BIOS."
     )
 
-    primary = models.BooleanField(
-        default=True,
-        help_text="The flag for the OS being the primary installed."
+    primary = models.CharField(
+        max_length=16,
+        null=True,
+        help_text="The status for the OS being the primary installed."
     )
 
 

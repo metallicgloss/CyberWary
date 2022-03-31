@@ -23,7 +23,7 @@ from django.urls import path
 
 urlpatterns = [
     path(
-        'api/',
+        'settings/',
         api_core.api,
         name='api'
     ),
