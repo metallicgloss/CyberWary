@@ -274,7 +274,7 @@ def start_scan(request):
                     release_date=convert_unix_to_dt(data['BiosReleaseDate'])
                 )[0],
                 install_date=convert_unix_to_dt(data['BiosInstallDate']),
-                status=data['BiosStatus'],
+                install_status=data['BiosStatus'],
                 primary=data['BiosPrimaryBIOS']
             ),
             boot_time=convert_unix_to_dt(data['OsLastBootUpTime']),

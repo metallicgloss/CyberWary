@@ -23,6 +23,7 @@ from cyber_wary_portal.utils.data_import import *
 from django.http.response import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view
 import json
+import threading
 
 
 # --------------------------------------------------------------------------- #
@@ -79,7 +80,7 @@ def applications_installed(request):
                 install_path = application['InstallSource']
 
             # Define an object for each application for use in CPE/CWE/CVE check - no mass creation at end.
-            software = Software.objects.create(
+            software = Software(
                 scan_record = scan_record,
                 name = application['DisplayName'],
                 version = application['DisplayVersion'],
@@ -92,7 +93,13 @@ def applications_installed(request):
                 install_date = convert_date(application['InstallDate'])
             )
 
-            check_cpe(software.name, software.version, software.version_major, software.version_minor)
+            import_thread = threading.Thread(
+                target=import_cpe,
+                args=[software]
+            )
+
+            # Start the import
+            import_thread.start()
 
         except KeyError:
             # Missing / Malformed data that differs to the default Windows output. Skip record.

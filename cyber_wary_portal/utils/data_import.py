@@ -24,6 +24,7 @@ from django.http.response import HttpResponseBadRequest
 from django.utils.timezone import make_aware
 import json
 import requests
+from django.db.models import Q
 
 
 def bad_request(api_request):
@@ -145,76 +146,68 @@ def check_credential(credential_sha1):
         return [False, 0]
 
 
-def check_cpe(name, version, version_major, version_minor):
-    cpe_filter = CPE.objects
+def import_cpe(software):
+    software.save()
+    
+    title_filter = CPE.objects
 
-    if(version_major is not None):
-        version_filter = cpe_filter.filter(identifier__icontains=":"+str(version_major)+"."+str(version_minor))
+    for word in software.name.split(" "):
+        # Name Lookup
+        title_filter = title_filter.filter(Q(identifier__icontains=word) | Q(title__icontains=word))
 
-        if(len(version_filter) != 0):
-            check_cpe_name(version_filter, name, version)
+        if(title_filter.count() > 1):
+            version_lookup = check_cpe_version(title_filter, software.version)
             
+            if(version_lookup == None):
+                # Online Check
+                print("Online Check here")
+            elif(version_lookup.count() > 1):
+                continue
+            elif(version_lookup.count() == 1):
+                print(version_lookup[0].identifier)
+                return version_lookup[0]
+
+        elif(title_filter.count() == 1):
+            print(title_filter[0].identifier)
+            return title_filter[0]
+
         else:
-            return None
+            # Online Check
+            print("Online Check here")
+            break
+			
 
 
+
+def check_cpe_version(version_filter, version):
+    full_filter = version_filter.filter(identifier__icontains=":" + str(version))
+
+    if(full_filter.count() == 1):
+        return full_filter
     else:
-        print("NO MAJOR VERSION")
-        version_filter = cpe_filter.filter(identifier__icontains=version)
-
-        if(len(cpe_filter) == 0):
-            version_filter = cpe_filter.filter(title__icontains=version)
-
-        check_cpe_name(version_filter, name, version)
-
-
-def check_cpe_name(filter, name, version):
-    old_filter = filter
-    for name_fragment in name.split(" "):
-        print(name_fragment)
-        name_filter = old_filter.filter(identifier__icontains=name_fragment)
-        print(len(name_filter))
-
-        if(len(name_filter) == 1):
-            print(name_filter[0].identifier)
-            return name_filter[0].identifier
-        elif(len(name_filter) > 1):
-            print("More than 1")
-            pass
-        else:
-            print("Final attempt, adding new fragment turns to 0")
-            final = old_filter.filter(identifier__icontains=version)
-
-            if(len(final) == 1):
-                print(final[0].identifier)
-                return final[0].identifier
-            
+        count = 0
+        for fragment in version.split("."):
+            if(count != 0):
+                build_version = fragment + "." + fragment
             else:
-                version_check = check_cpe_version(old_filter, version)
+                build_version = fragment
 
-                if(len(version_check) == 0):
-                    return remote_cpe_check(name, version)
-
-                else:
-                    return version_check
-
-        old_filter = name_filter
-
-
-def check_cpe_version(filter, version):
-    count = 0
-    for version_fragment in version.split("."):
-        if(count != 0):
-            version_fragment = "." + version_fragment
-
-        version_filter = filter.filter(identifier__icontains=version_fragment)
+            fragment_filter = version_filter.filter(identifier__icontains=str(build_version))
         
-        if(len(version_filter) == 1):
-            return version_filter[0].identifier
-        elif(len(version_filter) > 1):
-            pass
-        else:
-            return None
+            if(fragment_filter.count() > 1 and count > 0):
+                final_filter = fragment_filter.filter(identifier__icontains=str(build_version)+":")
+                
+                if(final_filter.count() == 1):
+                    return final_filter
+
+            elif(fragment_filter.count() == 1):
+                return version_filter
+
+            elif(fragment_filter.count() == 0):
+                return None
+
+            count += 1
+    
 
 def remote_cpe_check(name, version):
     remote_cpe = requests.get(
@@ -231,4 +224,4 @@ def remote_cpe_check(name, version):
         return remote_cpe.json()['cpes'][0]['cpe23Uri']
     
     else:
-        return None
+        return []
