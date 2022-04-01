@@ -80,31 +80,31 @@ def patches_pending(request):
         try:
             new_update = UpdatePending(
                 scan_record=scan_record,
-                title=patch['Title'],
-                description=patch['Description'],
-                install_deadline=patch['Deadline'],
-                eula_accepted=patch['EulaAccepted'],
-                beta=patch['IsBeta'],
-                downloaded=patch['IsDownloaded'],
-                hidden=patch['IsHidden'],
-                mandatory=patch['IsMandatory'],
-                uninstallable=patch['IsUninstallable'],
-                reboot_required=patch['RebootRequired'],
+                title=patch.get('Title'),
+                description=patch.get('Description'),
+                install_deadline=patch.get('Deadline'),
+                eula_accepted=patch.get('EulaAccepted'),
+                beta=patch.get('IsBeta'),
+                downloaded=patch.get('IsDownloaded'),
+                hidden=patch.get('IsHidden'),
+                mandatory=patch.get('IsMandatory'),
+                uninstallable=patch.get('IsUninstallable'),
+                reboot_required=patch.get('RebootRequired'),
                 date_check=convert_unix_to_dt(
-                    patch['LastDeploymentChangeTime']
+                    patch.get('LastDeploymentChangeTime')
                 ),
-                download_size=patch['MaxDownloadSize'],
-                security_rating=patch['MsrcSeverity'],
-                cves=patch['CveIDs']
+                download_size=patch.get('MaxDownloadSize'),
+                security_rating=patch.get('MsrcSeverity'),
+                cves=patch.get('CveIDs')
             )
 
             if ('DriverVerDate' in patch):
                 # If update is for driver, add driver fields.
                 new_update.driver_date = convert_unix_to_dt(
-                    patch['DriverVerDate']
+                    patch.get('DriverVerDate')
                 )
-                new_update.driver_manufacturer = patch['DriverProvider']
-                new_update.driver_model = patch['DriverModel']
+                new_update.driver_manufacturer = patch.get('DriverProvider')
+                new_update.driver_model = patch.get('DriverModel')
 
             # Create object and append to list for mass creation.
             pending_updates.append(new_update)
@@ -148,11 +148,11 @@ def patches_installed(request):
             installed_updates.append(
                 UpdateInstalled(
                     scan_record=scan_record,
-                    date=convert_unix_to_dt(patch['Date']),
-                    title=patch['Title'],
-                    description=patch['Description'],
-                    kb=patch['KB'],
-                    result=patch['Result'],
+                    date=convert_unix_to_dt(patch.get('Date')),
+                    title=patch.get('Title'),
+                    description=patch.get('Description'),
+                    kb=patch.get('KB'),
+                    result=patch.get('Result'),
                 )
             )
 

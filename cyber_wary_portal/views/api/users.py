@@ -58,7 +58,7 @@ def system_users(request):
     for user in data:
         # For each user in the payload
 
-        if(user['PrincipalSource'] == 4):
+        if(user.get('PrincipalSource') == 4):
             # If account source is 4, update to Microsoft.
             user['PrincipalSource'] = User.AccountType.MICROSOFT
 
@@ -67,19 +67,20 @@ def system_users(request):
             system_users.append(
                 User(
                     scan_record=scan_record,
-                    name=user['Name'],
-                    full_name=user['FullName'],
-                    description=user['Description'],
-                    sid=user['SID'],
-                    source=user['PrincipalSource'],
-                    last_logon=convert_unix_to_dt(user['LastLogon']),
-                    enabled=user['Enabled'],
+                    name=user.get('Name'),
+                    full_name=user.get('FullName'),
+                    description=user.get('Description'),
+                    sid=user.get('SID'),
+                    source=user.get('PrincipalSource'),
+                    last_logon=convert_unix_to_dt(user.get('LastLogon')),
+                    enabled=user.get('Enabled'),
                     password_changeable=convert_unix_to_dt(
-                        user['PasswordChangeableDate']),
-                    password_expiry=convert_unix_to_dt(user['PasswordExpires']),
-                    password_permission=user['UserMayChangePassword'],
-                    password_required=user['PasswordRequired'],
-                    password_last_set=convert_unix_to_dt(user['PasswordLastSet'])
+                        user.get('PasswordChangeableDate')
+                        ),
+                    password_expiry=convert_unix_to_dt(user.get('PasswordExpires')),
+                    password_permission=user.get('UserMayChangePassword'),
+                    password_required=user.get('PasswordRequired'),
+                    password_last_set=convert_unix_to_dt(user.get('PasswordLastSet'))
                 )
             )
 

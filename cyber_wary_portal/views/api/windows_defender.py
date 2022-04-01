@@ -81,14 +81,14 @@ def firewall_rules(request):
             rules.append(
                 FirewallRules(
                     scan_record=scan_record,
-                    rule_id=rule['InstanceID'],
-                    name=rule['DisplayName'],
-                    description=rule['Description'],
-                    group=rule['Group'],
-                    enabled=rule['Enabled'],
-                    lsm=rule['LSM'],
-                    direction=rule['Direction'],
-                    action=rule['Action']
+                    rule_id=rule.get('InstanceID'),
+                    name=rule.get('DisplayName'),
+                    description=rule.get('Description'),
+                    group=rule.get('Group'),
+                    enabled=rule.get('Enabled'),
+                    lsm=rule.get('LSM'),
+                    direction=rule.get('Direction'),
+                    action=rule.get('Action')
                 )
             )
 
@@ -132,11 +132,11 @@ def firewall_applications(request):
             # Get the associated Firewall Rule.
             firewall_rule = FirewallRules.objects.get(
                 scan_record=scan_record,
-                rule_id=application['InstanceID']
+                rule_id=application.get('InstanceID')
             )
 
             # Update the firewall rule to include a path/program target.
-            firewall_rule.file_path = application['Program']
+            firewall_rule.file_path = application.get('Program')
             firewall_rule.save()
 
         except (FirewallRules.DoesNotExist, KeyError):
@@ -176,14 +176,14 @@ def firewall_ips(request):
             # Get the associated Firewall Rule.
             firewall_rule = FirewallRules.objects.get(
                 scan_record=scan_record,
-                rule_id=ip_address['InstanceID']
+                rule_id=ip_address.get('InstanceID')
             )
 
             # Update the firewall rule to include any associated IP address configurations.
-            firewall_rule.local_address = ip_address['LocalAddress']
-            firewall_rule.local_ip = ip_address['LocalIP']
-            firewall_rule.remote_address = ip_address['RemoteAddress']
-            firewall_rule.remote_ip = ip_address['RemoteIP']
+            firewall_rule.local_address = ip_address.get('LocalAddress')
+            firewall_rule.local_ip = ip_address.get('LocalIP')
+            firewall_rule.remote_address = ip_address.get('RemoteAddress')
+            firewall_rule.remote_ip = ip_address.get('RemoteIP')
             firewall_rule.save()
 
         except (FirewallRules.DoesNotExist, KeyError):
@@ -220,21 +220,21 @@ def firewall_ports(request):
     for port in data:
         # For each port defined in the payload.
         try:
-            if(isinstance(port['LocalPort'], str) and isinstance(port['RemotePort'], str)):
-                if((port['LocalPort'].isnumeric() or port['LocalPort'] == "Any") and (port['LocalPort'].isnumeric() or port['RemotePort'] == "Any")):
+            if(isinstance(port.get('LocalPort'), str) and isinstance(port.get('RemotePort'), str)):
+                if((port.get('LocalPort').isnumeric() or port.get('LocalPort') == "Any") and (port.get('LocalPort').isnumeric() or port.get('RemotePort') == "Any")):
                     # If ports in payload is contains digits, or "Any", continue. Output can include other text, ranges, maps - strip out.
 
                     # Get the associated Firewall Rule.
                     firewall_rule = FirewallRules.objects.get(
                         scan_record=scan_record,
-                        rule_id=port['InstanceID']
+                        rule_id=port.get('InstanceID')
                     )
 
                     # Update the firewall rule to include any associated IP address configurations.
-                    firewall_rule.local_port = port['LocalPort']
-                    firewall_rule.remote_port = port['RemotePort']
+                    firewall_rule.local_port = port.get('LocalPort')
+                    firewall_rule.remote_port = port.get('RemotePort')
 
-                    if(port['Protocol'] == "TCP"):
+                    if(port.get('Protocol') == "TCP"):
                         # Default UDP - update to TCP if protocol matches.
                         firewall_rule.protocol = FirewallRules.Protocol.TCP
 
@@ -272,29 +272,37 @@ def antivirus_status(request):
         # Create an object to store the current status of the Windows Defender on the device.
         DefenderStatus.objects.create(
             scan_record=scan_record,
-            behavior_monitoring=data['BehaviorMonitorEnabled'],
-            tamper_protection=data['IsTamperProtected'],
-            realtime_protection=data['RealTimeProtectionEnabled'],
-            reboot_required=data['RebootRequired'],
-            access_protection=data['OnAccessProtectionEnabled'],
-            download_protection=data['IoavProtectionEnabled'],
-            virtual_machine=data['IsVirtualMachine'],
-            full_scan_required=data['FullScanRequired'],
-            full_scan_overdue=data['FullScanOverdue'],
-            full_scan_last=convert_unix_to_dt(data['FullScanEndTime']),
-            quick_scan_overdue=data['QuickScanOverdue'],
-            quick_scan_last=convert_unix_to_dt(data['QuickScanEndTime']),
-            as_enabled=data['AntispywareEnabled'],
+            behavior_monitoring=data.get('BehaviorMonitorEnabled'),
+            tamper_protection=data.get('IsTamperProtected'),
+            realtime_protection=data.get('RealTimeProtectionEnabled'),
+            reboot_required=data.get('RebootRequired'),
+            access_protection=data.get('OnAccessProtectionEnabled'),
+            download_protection=data.get('IoavProtectionEnabled'),
+            virtual_machine=data.get('IsVirtualMachine'),
+            full_scan_required=data.get('FullScanRequired'),
+            full_scan_overdue=data.get('FullScanOverdue'),
+            full_scan_last=convert_unix_to_dt(
+                data.get('FullScanEndTime')
+            ),
+            quick_scan_overdue=data.get('QuickScanOverdue'),
+            quick_scan_last=convert_unix_to_dt(
+                data.get('QuickScanEndTime')
+            ),
+            as_enabled=data.get('AntispywareEnabled'),
             as_signature_update=convert_unix_to_dt(
-                data['AntispywareSignatureLastUpdated']),
-            as_signature_version=data['AntispywareSignatureVersion'],
-            av_enabled=data['AntivirusEnabled'],
+                data.get('AntispywareSignatureLastUpdated')
+            ),
+            as_signature_version=data.get('AntispywareSignatureVersion'),
+            av_enabled=data.get('AntivirusEnabled'),
             av_signature_update=convert_unix_to_dt(
-                data['AntivirusSignatureLastUpdated']),
-            av_signature_version=data['AntivirusSignatureVersion'],
-            nri_enabled=data['NISEnabled'],
-            nri_signature_update=convert_unix_to_dt(data['NISSignatureLastUpdated']),
-            nri_signature_version=data['NISSignatureVersion']
+                data.get('AntivirusSignatureLastUpdated')
+            ),
+            av_signature_version=data.get('AntivirusSignatureVersion'),
+            nri_enabled=data.get('NISEnabled'),
+            nri_signature_update=convert_unix_to_dt(
+                data.get('NISSignatureLastUpdated')
+            ),
+            nri_signature_version=data.get('NISSignatureVersion')
         )
 
     except KeyError:
@@ -327,40 +335,48 @@ def antivirus_preferences(request):
         # Store an object containing the list of the settings configured on the device.
         preferences = DefenderPreference.objects.create(
             scan_record=scan_record,
-            check_for_signatures_before_running_scan=data['CheckForSignaturesBeforeRunningScan'],
-            disable_archive_scanning=data['DisableArchiveScanning'],
-            disable_auto_exclusions=data['DisableAutoExclusions'],
-            disable_behavior_monitoring=data['DisableBehaviorMonitoring'],
-            disable_block_at_first_seen=data['DisableBlockAtFirstSeen'],
-            disable_cpu_throttle_on_idle_scans=data['DisableCpuThrottleOnIdleScans'],
-            disable_datagram_processing=data['DisableDatagramProcessing'],
-            disable_dns_over_tcp_parsing=data['DisableDnsOverTcpParsing'],
-            disable_dns_parsing=data['DisableDnsParsing'],
-            disable_email_scanning=data['DisableEmailScanning'],
-            disable_ftp_parsing=data['DisableFtpParsing'],
-            disable_gradual_release=data['DisableGradualRelease'],
-            disable_http_parsing=data['DisableHttpParsing'],
-            disable_inbound_connection_filtering=data['DisableInboundConnectionFiltering'],
-            disable_ioav_protection=data['DisableIOAVProtection'],
-            disable_privacy_mode=data['DisablePrivacyMode'],
-            disable_rdp_parsing=data['DisableRdpParsing'],
-            disable_realtime_monitoring=data['DisableRealtimeMonitoring'],
-            disable_removable_drive_scanning=data['DisableRemovableDriveScanning'],
-            disable_restore_point=data['DisableRestorePoint'],
-            disable_scanning_mapped_network_drives_for_full_scan=data[
-                'DisableScanningMappedNetworkDrivesForFullScan'],
-            disable_scanning_network_files=data['DisableScanningNetworkFiles'],
-            disable_script_scanning=data['DisableScriptScanning'],
-            disable_ssh_parsing=data['DisableSshParsing'],
-            disable_tls_parsing=data['DisableTlsParsing'],
-            controlled_folder_access=data['EnableControlledFolderAccess'],
-            dns_sinkhole=data['EnableDnsSinkhole'],
-            file_hash_computation=data['EnableFileHashComputation'],
-            full_scan_on_battery_power=data['EnableFullScanOnBatteryPower'],
-            randomize_schedule_task_times=data['RandomizeScheduleTaskTimes'],
-            avg_load=data['ScanAvgCPULoadFactor'],
-            only_if_idle=data['ScanOnlyIfIdleEnabled'],
-            ui_lockdown=data['UILockdown']
+            check_for_signatures_before_running_scan=data.get(
+                'CheckForSignaturesBeforeRunningScan'),
+            disable_archive_scanning=data.get('DisableArchiveScanning'),
+            disable_auto_exclusions=data.get('DisableAutoExclusions'),
+            disable_behavior_monitoring=data.get('DisableBehaviorMonitoring'),
+            disable_block_at_first_seen=data.get('DisableBlockAtFirstSeen'),
+            disable_cpu_throttle_on_idle_scans=data.get(
+                'DisableCpuThrottleOnIdleScans'),
+            disable_datagram_processing=data.get('DisableDatagramProcessing'),
+            disable_dns_over_tcp_parsing=data.get('DisableDnsOverTcpParsing'),
+            disable_dns_parsing=data.get('DisableDnsParsing'),
+            disable_email_scanning=data.get('DisableEmailScanning'),
+            disable_ftp_parsing=data.get('DisableFtpParsing'),
+            disable_gradual_release=data.get('DisableGradualRelease'),
+            disable_http_parsing=data.get('DisableHttpParsing'),
+            disable_inbound_connection_filtering=data.get(
+                'DisableInboundConnectionFiltering'),
+            disable_ioav_protection=data.get('DisableIOAVProtection'),
+            disable_privacy_mode=data.get('DisablePrivacyMode'),
+            disable_rdp_parsing=data.get('DisableRdpParsing'),
+            disable_realtime_monitoring=data.get('DisableRealtimeMonitoring'),
+            disable_removable_drive_scanning=data.get(
+                'DisableRemovableDriveScanning'),
+            disable_restore_point=data.get('DisableRestorePoint'),
+            disable_scanning_mapped_network_drives_for_full_scan=data.get(
+                'DisableScanningMappedNetworkDrivesForFullScan'
+            ),
+            disable_scanning_network_files=data.get(
+                'DisableScanningNetworkFiles'),
+            disable_script_scanning=data.get('DisableScriptScanning'),
+            disable_ssh_parsing=data.get('DisableSshParsing'),
+            disable_tls_parsing=data.get('DisableTlsParsing'),
+            controlled_folder_access=data.get('EnableControlledFolderAccess'),
+            dns_sinkhole=data.get('EnableDnsSinkhole'),
+            file_hash_computation=data.get('EnableFileHashComputation'),
+            full_scan_on_battery_power=data.get(
+                'EnableFullScanOnBatteryPower'),
+            randomize_schedule_task_times=data.get(
+                'RandomizeScheduleTaskTimes'),
+            avg_load=data.get('ScanAvgCPULoadFactor'),
+            only_if_idle=data.get('ScanOnlyIfIdleEnabled'),
+            ui_lockdown=data.get('UILockdown')
         )
 
     except KeyError:
@@ -369,31 +385,31 @@ def antivirus_preferences(request):
 
     # For each type of exclusion, process the applicable exclusions currently configured.
     import_exclusions(
-        data['ExclusionIpAddress'],
+        data.get('ExclusionIpAddress'),
         DefenderExclusion.ExclusionType.IP_ADDRESS,
         DefenderExclusion.ExclusionMethod.SCAN,
         preferences
     )
     import_exclusions(
-        data['ExclusionExtension'],
+        data.get('ExclusionExtension'),
         DefenderExclusion.ExclusionType.EXTENSION,
         DefenderExclusion.ExclusionMethod.SCAN,
         preferences
     )
     import_exclusions(
-        data['ExclusionPath'],
+        data.get('ExclusionPath'),
         DefenderExclusion.ExclusionType.PATH,
         DefenderExclusion.ExclusionMethod.SCAN,
         preferences
     )
     import_exclusions(
-        data['ExclusionProcess'],
+        data.get('ExclusionProcess'),
         DefenderExclusion.ExclusionType.PROCESS,
         DefenderExclusion.ExclusionMethod.SCAN,
         preferences
     )
     import_exclusions(
-        data['ControlledFolderAccessAllowedApplications'],
+        data.get('ControlledFolderAccessAllowedApplications'),
         DefenderExclusion.ExclusionType.PATH,
         DefenderExclusion.ExclusionMethod.CONTROLLED_ACCESS,
         preferences
@@ -438,25 +454,28 @@ def antivirus_detections(request):
             detections.append(
                 DefenderDetection(
                     scan_record=scan_record,
-                    action_success=detection['ActionSuccess'],
-                    av_version=detection['AMProductVersion'],
-                    reseponse_type=detection['CleaningActionID'],
-                    threat_execution_status=detection['CurrentThreatExecutionStatusID'],
-                    detection_identifier=detection['DetectionID'],
-                    active_user=detection['DomainUser'],
+                    action_success=detection.get('ActionSuccess'),
+                    av_version=detection.get('AMProductVersion'),
+                    reseponse_type=detection.get('CleaningActionID'),
+                    threat_execution_status=detection.get(
+                        'CurrentThreatExecutionStatusID'),
+                    detection_identifier=detection.get('DetectionID'),
+                    active_user=detection.get('DomainUser'),
                     detection_time=convert_unix_to_dt(
-                        detection['InitialDetectionTime']),
+                        detection.get('InitialDetectionTime')
+                    ),
                     remediation_time=convert_unix_to_dt(
-                        detection['RemediationTime']),
+                        detection.get('RemediationTime')),
                     last_threat_status_change_time=convert_unix_to_dt(
-                        detection['LastThreatStatusChangeTime']),
-                    detection_process=detection['ProcessName'],
-                    detected_resources=detection['Resources']
+                        detection.get('LastThreatStatusChangeTime')
+                    ),
+                    detection_process=detection.get('ProcessName'),
+                    detected_resources=detection.get('Resources')
                     # .replace(
                     #    "file:_",
                     #    "",
                     #    1
-                    #).split(" file:_")
+                    # ).split(" file:_")
                 )
             )
 

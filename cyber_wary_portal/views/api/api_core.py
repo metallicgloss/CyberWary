@@ -156,8 +156,8 @@ def api_payload(request):
             json.loads(
                 ApiRequest.objects.get(
                     user=request.user,
-                    pk=data['payloadID'],
-                    type=data['type'],
+                    pk=data.get('payloadID'),
+                    type=data.get('type'),
                 ).payload
             ), safe=False
         )
@@ -180,7 +180,7 @@ def credential(request):
             # Attempt to retrieve the Credential object that matches the submitted request.
             credential = Credential.objects.filter(
                 credential_scan__scan_record__scan__user=request.user,
-                pk=request.POST['credentialID']
+                pk=request.POST.get('credentialID')
             )[0]
 
         except Credential.DoesNotExist:
@@ -246,41 +246,41 @@ def start_scan(request):
         scan_record = ScanRecord.objects.create(
             scan=scan,
             device_id=device,
-            name=data['CsDNSHostName'],
+            name=data.get('CsDNSHostName'),
             os_install=OperatingSystemInstall.objects.create(  # Create object for the OS installation.
                 os=OperatingSystem.objects.get_or_create(  # If Operating System Version/Name not seen before, create object.
-                    name=data['OsName'],
-                    version=data['OsVersion']
+                    name=data.get('OsName'),
+                    version=data.get('OsVersion')
                 )[0],
-                serial=data['OsSerialNumber'],
-                timezone=data['TimeZone'],
-                install_date=convert_unix_to_dt(data['OsInstallDate']),
+                serial=data.get('OsSerialNumber'),
+                timezone=data.get('TimeZone'),
+                install_date=convert_unix_to_dt(data.get('OsInstallDate')),
                 keyboard=Language.objects.get_or_create(  # If Language not seen before, create object.
-                    locale=data['KeyboardLayout']
+                    locale=data.get('KeyboardLayout')
                 )[0],
-                owner=data['CsPrimaryOwnerName'],
-                logon_server=data['LogonServer'],
-                installed_memory=data['CsPhyicallyInstalledMemory'],
-                domain=data['CsPartOfDomain'],
-                portable=data['OsPortableOperatingSystem'],
-                virtual_machine=data['HyperVisorPresent'],
-                debug_mode=data['OsDebug'],
+                owner=data.get('CsPrimaryOwnerName'),
+                logon_server=data.get('LogonServer'),
+                installed_memory=data.get('CsPhyicallyInstalledMemory'),
+                domain=data.get('CsPartOfDomain'),
+                portable=data.get('OsPortableOperatingSystem'),
+                virtual_machine=data.get('HyperVisorPresent'),
+                debug_mode=data.get('OsDebug'),
             ),
             bios_install=BiosInstall.objects.create(  # Create object for the BIOS installation.
                 bios=Bios.objects.get_or_create(  # If BIOS Version not seen before, create object.
-                    name=data['BiosName'],
-                    version=data['BiosVersion'],
-                    manufacturer=data['BiosManufacturer'],
-                    release_date=convert_unix_to_dt(data['BiosReleaseDate'])
+                    name=data.get('BiosName'),
+                    version=data.get('BiosVersion'),
+                    manufacturer=data.get('BiosManufacturer'),
+                    release_date=convert_unix_to_dt(data.get('BiosReleaseDate'))
                 )[0],
-                install_date=convert_unix_to_dt(data['BiosInstallDate']),
-                install_status=data['BiosStatus'],
-                primary=data['BiosPrimaryBIOS']
+                install_date=convert_unix_to_dt(data.get('BiosInstallDate')),
+                install_status=data.get('BiosStatus'),
+                primary=data.get('BiosPrimaryBIOS')
             ),
-            boot_time=convert_unix_to_dt(data['OsLastBootUpTime']),
-            current_user=data['CsUserName'],
+            boot_time=convert_unix_to_dt(data.get('OsLastBootUpTime')),
+            current_user=data.get('CsUserName'),
             public_ip=get_ip_address(request),
-            city=geo_ip.city(get_ip_address(request))['city'],
+            city=geo_ip.city(get_ip_address(request)).get('city'),
             country=geo_ip.country_code(get_ip_address(request)).lower(),
         )
 
@@ -288,7 +288,7 @@ def start_scan(request):
         # Missing / Malformed data that differs to the default Windows output. Fail request; return error.
         return bad_request(api_request)
 
-    for language in data['OsMuiLanguages']:
+    for language in data.get('OsMuiLanguages'):
         # For each language detected as being installed on the system, create install languages record.
         OperatingSystemInstalledLanguages.objects.create(
             os_install=scan_record.os_install,

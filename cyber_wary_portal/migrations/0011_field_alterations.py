@@ -88,4 +88,9 @@ class Migration(migrations.Migration):
             name='uninstallable',
             field=models.BooleanField(default=False, help_text='The flag to indicate that the update is able to be individually uninstalled (IsUninstallable).'),
         ),
+        migrations.AlterField(
+            model_name='cve',
+            name='identifier',
+            field=models.CharField(help_text='The identifier for the CVE.', max_length=32),
+        ),
     ]

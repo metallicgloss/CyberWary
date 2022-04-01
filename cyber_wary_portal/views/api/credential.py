@@ -69,9 +69,9 @@ def browser_passwords(request):
     for id, credential in enumerate(data):
         # For each password in the uploaded payload.
 
-        if(credential['Password'] != ""):
+        if(credential.get('Password') != ""):
             # If password isn't blank, check hashed credential against the HaveIBeenPwned dataset.
-            compromised, occurrence = check_credential(credential['Password'])
+            compromised, occurrence = check_credential(credential.get('Password'))
         else:
             compromised, occurrence = [False, 0]
 
@@ -79,7 +79,7 @@ def browser_passwords(request):
             # If created time isn't blank, import time.
             created = make_aware(
                 datetime.strptime(
-                    credential['Created Time'],
+                    credential.get('Created Time'),
                     "%d/%m/%Y %H:%M:%S"  # To Verify for other date formats
                 )
             )
@@ -87,7 +87,7 @@ def browser_passwords(request):
             created = None
 
         # Import security rating.
-        match credential['Password Strength']:
+        match credential.get('Password Strength'):
             case "Very Strong":
                 password_strength = Credential.SecurityRating.VERY_STRONG
             case "Strong":
@@ -103,14 +103,14 @@ def browser_passwords(request):
         credential_list.append(
             Credential(
                 credential_scan=credential_scan,
-                url=credential['URL'],
+                url=credential.get('URL'),
                 browser=Browser.objects.get_or_create(
-                    name=credential['Web Browser']
+                    name=credential.get('Web Browser')
                 )[0],
                 storage=created,
-                username=credential['User Name'],
+                username=credential.get('User Name'),
                 password_strength=password_strength,
-                filename=credential['Filename'],
+                filename=credential.get('Filename'),
                 compromised=compromised,
                 occurrence=occurrence
             )

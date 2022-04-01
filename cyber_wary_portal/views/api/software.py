@@ -68,41 +68,53 @@ def applications_installed(request):
         # If scan or scan_record aren't valid, or an existing import exists.
         return bad_request(api_request)
 
+    # Define empty list for new objects to be appended to for mass creation.
+    software = []
+
     for application in data:
         # For each firewall rule defined.
-        try:
-            install_path = ""
+        install_path = ""
 
-            # Set install_path based on included key - varies per software and is not standardised.
-            if("InstallLocation" in application):
-                install_path = application['InstallLocation']
-            elif("InstallSource" in application):
-                install_path = application['InstallSource']
+        # Set install_path based on included key - varies per software and is not standardised.
+        if("InstallLocation" in application):
+            install_path = application['InstallLocation']
+        elif("InstallSource" in application):
+            install_path = application['InstallSource']
 
+        if(application.get('DisplayName') is not None and application.get('DisplayVersion') is not None):
+            # If software has a valid name and version (filters our base firmware).
+            
             # Define an object for each application for use in CPE/CWE/CVE check - no mass creation at end.
-            software = Software(
-                scan_record = scan_record,
-                name = application['DisplayName'],
-                version = application['DisplayVersion'],
-                version_major = application['VersionMajor'],
-                version_minor = application['VersionMinor'],
-                publisher = Publisher.objects.get_or_create( 
-                    name=application['Publisher']
-                )[0],
-                install_path = install_path,
-                install_date = convert_date(application['InstallDate'])
+            software.append(
+                Software(
+                    scan_record = scan_record,
+                    name = application.get('DisplayName'),
+                    version = application.get('DisplayVersion'),
+                    version_major = application.get('VersionMajor'),
+                    version_minor = application.get('VersionMinor'),
+                    publisher = Publisher.objects.get_or_create( 
+                        name=application.get('Publisher')
+                    )[0],
+                    install_path = install_path,
+                    install_date = convert_date(
+                        application.get('InstallDate')
+                    )
+                )
             )
+        
+    # Bulk create software applications.
+    Software.objects.bulk_create(software)
 
-            import_thread = threading.Thread(
-                target=import_cpe,
-                args=[software]
-            )
+    for application in software:
+        # For each application detected in the system, scan for CPEs.
 
-            # Start the import
-            import_thread.start()
+        # Execute in thread to detact from main import process.
+        import_thread = threading.Thread(
+            target=search_cpe,
+            args=[application]
+        )
 
-        except KeyError:
-            # Missing / Malformed data that differs to the default Windows output. Skip record.
-            pass
+        # Start the import
+        import_thread.start()
 
     return HttpResponse('Success')

@@ -77,7 +77,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             </div>
 
                             <!-- System Users -->
-                            {% if scan_record.scan.system_users and scan_data.system_users != None %}
+                            {% if scan_record.scan.system_users and scan_data.system_users.count != 0 %}
                                 <div class="accordion-item">
                                     <!-- Accordion Tab Title -->
                                     <h2 class="accordion-header" id="heading-system-users">

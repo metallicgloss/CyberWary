@@ -17,6 +17,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+import ctypes
 from cyber_wary_portal.models import ApiRequest, Scan, ScanRecord, DefenderExclusion, CPE, CWE, CVE
 from datetime import datetime
 from django.conf import settings
@@ -25,6 +26,7 @@ from django.utils.timezone import make_aware
 import json
 import requests
 from django.db.models import Q
+import time
 
 
 def bad_request(api_request):
@@ -108,7 +110,10 @@ def convert_unix_to_dt(date):
 
 def convert_date(date):
     if date is not None:
-        date = datetime.strptime(date, '%Y%m%d').strftime('%Y-%m-%d')
+        try:
+            date = datetime.strptime(date, '%Y%m%d').strftime('%Y-%m-%d')
+        except ValueError:
+            date = None
     return date
 
 
@@ -146,40 +151,50 @@ def check_credential(credential_sha1):
         return [False, 0]
 
 
-def import_cpe(software):
-    software.save()
-    
+def search_cpe(software):
+    # Function called in thread.
+    time.sleep(3) # Needed to 
     title_filter = CPE.objects
 
-    for word in software.name.split(" "):
-        # Name Lookup
-        title_filter = title_filter.filter(Q(identifier__icontains=word) | Q(title__icontains=word))
+    keyword = ""
+    cpe = search_cpe_manual_override(software)
 
-        if(title_filter.count() > 1):
-            version_lookup = check_cpe_version(title_filter, software.version)
-            
-            if(version_lookup == None):
-                # Online Check
-                print("Online Check here")
-            elif(version_lookup.count() > 1):
-                continue
-            elif(version_lookup.count() == 1):
-                print(version_lookup[0].identifier)
-                return version_lookup[0]
+    if(cpe != ""):
 
-        elif(title_filter.count() == 1):
-            print(title_filter[0].identifier)
-            return title_filter[0]
+        for word in software.name.split(" "):
+            # Build keyword for each loop
+            keyword += word + " "
 
-        else:
-            # Online Check
-            print("Online Check here")
-            break
+            # Name Lookup
+            title_filter = title_filter.filter(title__icontains=word)
+
+            if(title_filter.count() > 1):
+                version_lookup = search_cpe_by_version(title_filter, software.version)
+                
+                if(version_lookup == None):
+                    # Software name returned a result, but not with version.
+
+                    # Check live dataset to see if new version released.
+                    #cpe = search_cpe_by_remote(keyword, software.version)
+                    pass
+
+                elif(version_lookup.count() > 1):
+                    continue
+
+                elif(version_lookup.count() == 1):
+                    cpe = version_lookup[0]
+
+            elif(title_filter.count() == 1):
+                cpe = title_filter[0]
+
+    if(cpe != "" and cpe is not None):
+        software.cpe = cpe
+        software.save()
 			
 
 
 
-def check_cpe_version(version_filter, version):
+def search_cpe_by_version(version_filter, version):
     full_filter = version_filter.filter(identifier__icontains=":" + str(version))
 
     if(full_filter.count() == 1):
@@ -209,19 +224,34 @@ def check_cpe_version(version_filter, version):
             count += 1
     
 
-def remote_cpe_check(name, version):
+def search_cpe_by_remote(name, version):
     remote_cpe = requests.get(
         "https://services.nvd.nist.gov/rest/json/cpes/1.0/",
         headers={
             'User-Agent': 'CyberWary Research Project'
         },
         params={
-            'keyword': name + " " + version
+            'keyword': name + version,
+            'includeDeprecated': True
         }
-    )
+    ).json()
 
-    if(len(remote_cpe.json()['cpes'])):
-        return remote_cpe.json()['cpes'][0]['cpe23Uri']
+    if(remote_cpe['totalResults'] > 0):
+        existing_cpe = CPE.objects.filter(identifier=remote_cpe['cpes'][0]['cpe23Uri'])
+        if(existing_cpe.exists()):
+            return existing_cpe[0]
+        else:
+            return CPE.objects.create(
+                title=remote_cpe.get('cpes')[0].get('titles')[0].get('title'),
+                identifier=remote_cpe.get('cpes')[0].get('cpe23Uri')
+            )
     
     else:
         return []
+
+def search_cpe_manual_override(software):
+
+    if("Microsoft 365 Apps for enterprise" in software.name):
+        return CPE.objects.get(identifier='cpe:2.3:a:microsoft:365_apps:-:*:*:*:enterprise:*:*:*')
+    if("Microsoft 365" in software.name):
+        return CPE.objects.get(identifier='cpe:2.3:a:microsoft:365_apps:-:*:*:*:*:*:*:*')

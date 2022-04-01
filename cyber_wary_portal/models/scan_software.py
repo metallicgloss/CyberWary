@@ -103,8 +103,8 @@ class CWE(DefaultFields):
 class CVE(DefaultFields):
     # Model to store the identifier information surrounding a CVE.
 
-    identifier = models.IntegerField(
-        default=0,
+    identifier = models.CharField(
+        max_length=32,
         null=False,
         help_text="The identifier for the CVE."
     )
