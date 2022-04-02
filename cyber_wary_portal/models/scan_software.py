@@ -58,8 +58,9 @@ class CPE(DefaultFields):
     # Model to store the identifier for a CPE.
 
     identifier = models.CharField(
-        max_length=256,
-        null=True,
+        max_length=192,
+        null=False,
+        unique=True,
         help_text="The identifier for the CPE."
     )
 
@@ -79,7 +80,8 @@ class CWE(DefaultFields):
 
     identifier = models.IntegerField(
         default=0,
-        null=False,
+        blank=False,
+        unique=True,
         help_text="The identifier for the CWE."
     )
 
@@ -105,7 +107,8 @@ class CVE(DefaultFields):
 
     identifier = models.CharField(
         max_length=32,
-        null=False,
+        blank=False,
+        unique=True,
         help_text="The identifier for the CVE."
     )
 
@@ -115,8 +118,7 @@ class CVE(DefaultFields):
         help_text="The assigner for the CVE."
     )
 
-    description = models.CharField(
-        max_length=512,
+    description = models.TextField(
         null=True,
         help_text="The description of the CVE."
     )
@@ -146,14 +148,12 @@ class CVEReference(DefaultFields):
         help_text="The CVE that the reference is associated with."
     )
 
-    url = models.CharField(
-        max_length=128,
+    url = models.TextField(
         null=True,
         help_text="The URL for the reference."
     )
 
-    name = models.CharField(
-        max_length=128,
+    name = models.TextField(
         null=True,
         help_text="The name for the reference."
     )
@@ -195,7 +195,7 @@ class CVEWeaknesses(DefaultFields):
 #                       1.6 CVE Linked Platforms Class                        #
 # --------------------------------------------------------------------------- #
 
-class CVEMatches(DefaultFields):
+class CVEMatches(models.Model):
     # Model to store the platforms/software associated with a specific CVE.
 
     cve = models.ForeignKey(

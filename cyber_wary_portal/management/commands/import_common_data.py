@@ -1,15 +1,16 @@
-import argparse
-from django.core.management.base import BaseCommand
 from cyber_wary_portal.models import CPE, CWE, CVE, CVEReference
-import urllib.request
-import io
-import gzip
-import xml.etree.ElementTree as ET
-from zipfile import ZipFile
-from datetime import datetime
-import json
-
 from cyber_wary_portal.models.scan_software import CVEMatches, CVEReference
+from datetime import datetime
+from django.core.management.base import BaseCommand
+from django.db.utils import IntegrityError
+from zipfile import ZipFile
+import argparse
+import gzip
+import io
+import json
+import urllib.request
+import xml.etree.ElementTree as ET
+
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
@@ -35,6 +36,7 @@ class Command(BaseCommand):
             help="Define specific year for CVE import/update."
         )
 
+
     def handle(self, *args, **options):
         if(options['cpe']):
             cpe_database = ET.parse(
@@ -47,14 +49,14 @@ class Command(BaseCommand):
                 )
             ).findall("{http://cpe.mitre.org/dictionary/2.0}cpe-item")
 
-
             for cpe in cpe_database:
-                CPE.objects.get_or_create(
-                    identifier = cpe.find('{http://scap.nist.gov/schema/cpe-extension/2.3}cpe23-item').get('name'),
-                    title = cpe.find('{http://cpe.mitre.org/dictionary/2.0}title').text
+                CPE.objects.create(
+                    identifier=cpe.find(
+                        '{http://scap.nist.gov/schema/cpe-extension/2.3}cpe23-item').get('name'),
+                    title=cpe.find(
+                        '{http://cpe.mitre.org/dictionary/2.0}title').text
                 )
 
-    
         if(options['cwe']):
             cwe_database = ET.parse(
                 ZipFile(
@@ -69,13 +71,13 @@ class Command(BaseCommand):
             ).findall("{http://cwe.mitre.org/cwe-6}Weaknesses")[0].findall("{http://cwe.mitre.org/cwe-6}Weakness")
 
             for cwe in cwe_database:
-                CWE.objects.get_or_create(
-                    identifier = cwe.get('ID'),
-                    name = cwe.get('Name'),
-                    description = " ".join(cwe.find('{http://cwe.mitre.org/cwe-6}Description').text.split())
+                CWE.objects.create(
+                    identifier=cwe.get('ID'),
+                    name=cwe.get('Name'),
+                    description=" ".join(
+                        cwe.find('{http://cwe.mitre.org/cwe-6}Description').text.split())
                 )
 
-        
         if(options['cve']):
             if(options['cve_year'] is not None):
                 self.import_cve(options['cve_year'][0])
@@ -88,7 +90,8 @@ class Command(BaseCommand):
             gzip.GzipFile(
                 fileobj=io.BytesIO(
                     urllib.request.urlopen(
-                        "https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-" + str(year) + ".json.gz"
+                        "https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-" +
+                        str(year) + ".json.gz"
                     ).read()
                 )
             )
@@ -96,36 +99,42 @@ class Command(BaseCommand):
 
         for cve in cve_database['CVE_Items']:
             if('baseMetricV3' in cve['impact']):
-                base = "baseMetricV3"
-                type = "cvssV3"
+                cvss = cve['impact']['baseMetricV3']['cvssV3']['vectorString']
+            elif('baseMetricV2' in cve['impact']):
+                cvss = cve['impact']['baseMetricV2']['cvssV2']['vectorString']
             else:
-                base = "baseMetricV2"
-                type = "cvssV2"
+                cvss = None
 
-            created_cve = CVE.objects.get_or_create(
-                identifier = cve['cve']['CVE_data_meta']['ID'],
-                assigner = cve['cve']['CVE_data_meta'].get('ASSIGNER'),
-                description = cve['cve']['description']['description_data'][0]['value'],
-                cvss = cve['impact'][base][type]['vectorString'],
-                published = cve['publishedDate']
-            )[0]
-
-            for reference in cve['cve']['references']['reference_data']:
-                CVEReference.objects.get_or_create(
-                    cve = created_cve,
-                    url = reference['url'],
-                    name = reference['name'],
-                    source = reference['refsource'],
-                    tags = ', '.join(reference['tags'])
+            try:
+                created_cve = CVE.objects.create(
+                    identifier=cve['cve']['CVE_data_meta']['ID'],
+                    assigner=cve['cve']['CVE_data_meta'].get('ASSIGNER'),
+                    description=cve['cve']['description']['description_data'][0]['value'],
+                    cvss=cvss,
+                    published=cve['publishedDate']
                 )
 
-            for match in cve['configurations']['nodes'][0]['cpe_match']:
-                try:
-                    CVEMatches.objects.get_or_create(
-                        cve = created_cve,
-                        cpe = CPE.objects.get(
-                            identifier=match['cpe23Uri']
+            except IntegrityError:
+                # Already imported / conflict on CVE ID.
+                continue
+
+            for reference in cve['cve']['references']['reference_data']:
+                CVEReference.objects.create(
+                    cve=created_cve,
+                    url=reference['url'],
+                    name=reference['name'],
+                    source=reference['refsource'],
+                    tags=', '.join(reference['tags'])
+                )
+
+            if(len(cve['configurations']['nodes']) > 0):
+                for match in cve['configurations']['nodes'][0]['cpe_match']:
+                    try:
+                        CVEMatches.objects.create(
+                            cve=created_cve,
+                            cpe=CPE.objects.get(
+                                identifier=match['cpe23Uri']
+                            )
                         )
-                    )
-                except CPE.DoesNotExist:
-                    pass
+                    except CPE.DoesNotExist:
+                        pass

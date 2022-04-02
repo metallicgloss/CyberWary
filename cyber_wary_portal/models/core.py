@@ -362,7 +362,7 @@ class Scan(DefaultFields):
         max_length=1,
         choices=ScanTypes.choices,
         default=ScanTypes.BLUE,
-        null=False,
+        blank=False,
         help_text="Type of scan being performed (red - offensive / blue - defensive)."
     )
 
@@ -390,7 +390,7 @@ class Scan(DefaultFields):
 
     scan_key = models.CharField(
         max_length=32,
-        null=False,
+        blank=False,
         help_text="A unique key associated with the scan."
     )
 
