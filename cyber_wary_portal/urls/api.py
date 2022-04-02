@@ -40,6 +40,12 @@ urlpatterns = [
         name='credential'
     ),
 
+    path(
+        'cve',
+        api_core.cve,
+        name='cve'
+    ),
+
 
     path('v1/', include([
         path(

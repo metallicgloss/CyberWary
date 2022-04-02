@@ -135,4 +135,19 @@ class Migration(migrations.Migration):
             model_name='cvematches',
             name='updated',
         ),
+        migrations.AlterField(
+            model_name='firewallrules',
+            name='description',
+            field=models.TextField(help_text='The description given to the rule (Description).', null=True),
+        ),
+        migrations.AlterField(
+            model_name='firewallrules',
+            name='name',
+            field=models.TextField(help_text='The display name of the firewall rule (DisplayName).', null=True),
+        ),
+        migrations.AlterField(
+            model_name='firewallrules',
+            name='rule_id',
+            field=models.TextField(help_text='The instance ID associated with the firewall rule (ID/InstanceID).', null=True),
+        ),
     ]

@@ -42,6 +42,218 @@ $(document).ready(function() {
     });
 });
 
+
+if (typeof cve !== 'undefined') {
+    $(document).ready(function() {
+        $('#applications').dataTable({
+            "lengthChange": false,
+            "searching": false,
+            "pageLength": 10,
+            "ordering": true,
+            "order": [
+                [4, "asc"],
+                [0, "asc"]
+            ],
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            },
+            "autoWidth": false,
+            columnDefs: [
+                { targets: 0, width: "40%" },
+                { targets: 1, width: "20%" },
+                { targets: 2, width: "10%", sortable: false },
+                { targets: 3, width: "10%", sortable: false },
+                { targets: 4, width: "20%" },
+            ]
+        });
+
+        echarts.init(document.getElementById('vulnerabilities')).setOption({
+            title: {
+                display: true,
+                text: 'Vulnerable Applications',
+                textStyle: {
+                    color: '#272727',
+                    fontWeight: 'normal',
+                    fontFamily: 'Space Mono',
+                    fontSize: 16
+                },
+                left: '48%',
+                textAlign: 'center'
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            series: [{
+                name: 'Applications',
+                type: 'pie',
+                radius: ['55%', '65%'],
+                center: ['50%', '50%'],
+                avoidLabelOverlap: false,
+                itemStyle: {
+                    shadowBlur: 30,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)'
+                },
+                data: [{
+                        value: vulnerableApplications,
+                        name: 'Detected as Vulnerable',
+                        itemStyle: {
+                            color: '#D06262'
+                        }
+                    },
+                    {
+                        value: totalApplications - vulnerableApplications,
+                        name: 'No Vulnerabilities Detected',
+                        itemStyle: {
+                            color: '#4adfab'
+                        }
+                    },
+                ]
+            }]
+        });
+
+        const datasetWithFilters = [];
+        const seriesList = [];
+
+        datasetWithFilters.push({
+            id: 'installed_applications',
+            fromDatasetId: 'applications',
+            transform: {
+                type: 'filter',
+                config: {
+                    and: [{
+                        dimension: 'Installed',
+                        '=': "Installed Applications"
+                    }]
+                }
+            }
+        });
+
+        seriesList.push({
+            type: 'line',
+            datasetId: 'installed_applications',
+            showSymbol: false,
+            color: "#34CC96",
+            name: "Installed Applications",
+            labelLayout: {
+                moveOverlap: 'shiftY'
+            },
+            emphasis: {
+                focus: 'series'
+            },
+            encode: {
+                x: 'Day',
+                y: 'Installed Applications'
+            }
+        });
+
+        echarts.init(document.getElementById("install-by-time")).setOption({
+            animationDuration: 10000,
+            dataset: [{
+                    id: 'applications',
+                    source: installTimeline
+                },
+                ...datasetWithFilters
+            ],
+            title: {
+                display: true,
+                text: 'Applications Installed',
+                textStyle: {
+                    color: '#272727',
+                    fontWeight: 'normal',
+                    fontFamily: 'Space Mono',
+                    fontSize: 16
+                },
+                top: '10px',
+                left: '48%',
+                textAlign: 'center'
+            },
+            tooltip: {
+                order: 'valueDesc',
+                trigger: 'axis'
+            },
+            xAxis: {
+                type: 'category',
+                nameLocation: 'middle'
+            },
+            yAxis: {
+                name: false
+            },
+            series: seriesList
+        });
+    });
+
+    function viewCVE(cpe) {
+        $.ajax({
+            type: "POST",
+            url: cveURL,
+            dataType: "json",
+            data: {
+                csrfmiddlewaretoken: csrfToken,
+                cpe
+            },
+            success: function(data) {
+                $('#cve-modal-table').DataTable().clear();
+                $('#cve-modal-table').DataTable().destroy();
+
+                $('#cve-modal-table tbody').empty();
+
+                $.each(data, function(index, element) {
+                    $('#cve-modal-table').find('tbody')
+                        .append($('<tr>')
+                            .append($('<td>')
+                                .append(index)
+                            )
+                            .append($('<td>')
+                                .append(element['severity_rating'])
+                            )
+                            .append($('<td>')
+                                .append(element['severity_score'])
+                            )
+                            .append($('<td>')
+                                .append(element['published'])
+                            )
+                            .append($('<td>'))
+                        );
+
+                    $.each(element['references'], function(index, reference) {
+                        $('#cve-modal-table tr:last td:last').append($('<a>')
+                            .text(reference['source'] + " (" + reference['tags'] + ")")
+                            .attr('href', reference['url'])
+                            .attr('target', "_blank")
+                        ).append('<br>')
+                    });
+
+                });
+
+                $('#cve-modal-table').DataTable({
+                    "lengthChange": false,
+                    "searching": false,
+                    "pageLength": 10,
+                    "ordering": false,
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: 'tr'
+                        }
+                    },
+                    "autoWidth": false,
+                    columnDefs: [
+                        { targets: 0, width: "20%" },
+                        { targets: 1, width: "15%" },
+                        { targets: 2, width: "15%" },
+                        { targets: 3, width: "15%" },
+                        { targets: 4, width: "35%" },
+                    ]
+                });
+                $('#cveModal').modal('show');
+            }
+        });
+    }
+}
+
 if (typeof credentials !== 'undefined') {
     $(document).ready(function() {
         echarts.init(document.getElementById('usernames')).setOption({
@@ -49,12 +261,11 @@ if (typeof credentials !== 'undefined') {
                 display: true,
                 text: 'Usernames & Email Addresses',
                 textStyle: {
-                    color: '#34cc96',
+                    color: '#272727',
                     fontWeight: 'normal',
                     fontFamily: 'Space Mono',
                     fontSize: 16
                 },
-                top: '10px',
                 left: '48%',
                 textAlign: 'center'
             },
@@ -100,7 +311,6 @@ if (typeof credentials !== 'undefined') {
                     fontFamily: 'Space Mono',
                     fontSize: 16
                 },
-                top: '10px',
                 left: '48%',
                 textAlign: 'center'
             },
@@ -110,7 +320,7 @@ if (typeof credentials !== 'undefined') {
             series: [{
                 name: 'Password',
                 type: 'pie',
-                radius: ['45%', '65%'],
+                radius: ['55%', '65%'],
                 center: ['50%', '50%'],
                 avoidLabelOverlap: false,
                 itemStyle: {

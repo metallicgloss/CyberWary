@@ -18,6 +18,7 @@
 #
 
 # Module/Library Import
+from cvss import CVSS2, CVSS3
 from cyber_wary_portal.forms import ApiKeyForm
 from cyber_wary_portal.models import *
 from cyber_wary_portal.utils.data_import import *
@@ -207,6 +208,74 @@ def credential(request):
         else:
             # No re-formatting needed.
             formatted['url'] = credential.url
+
+        return JsonResponse(
+            formatted
+        )
+
+    else:
+        # GET request was made - not permitted for this call; return error.
+        return HttpResponseBadRequest()
+
+
+# --------------------------------------------------------------------------- #
+#                             1.4 View CVE Details                            #
+# --------------------------------------------------------------------------- #
+
+@login_required
+def cve(request):
+    # Function to return the stored credential details for population into the popup.
+
+    if request.method == 'POST':
+        # Re-format object into stripped down JSON data structure.
+        formatted = {}
+
+        # Get all CVEs related to the submitted CPE.
+        cve_matches = CVEMatches.objects.filter(
+            cpe__identifier=request.POST.get('cpe')
+        )
+
+        if cve_matches.exists():
+            # If the CPE has at least one CVE.
+
+            for match in cve_matches:    
+                # For each detected CVE.
+
+                if('CVSS' in match.cve.cvss):
+                    # If CVSS is included in the vector, use Version 3.
+                    vector = CVSS3(match.cve.cvss)
+                else:
+                    # Use version 2.
+                    vector = CVSS2(match.cve.cvss)
+
+                # Add CVE to the formatted list for JSON reply.
+                formatted[match.cve.identifier] = {
+                    'assigner': match.cve.assigner,
+                    'description': match.cve.description,
+                    'published': match.cve.published.strftime("%d/%m/%Y"),
+                    'severity_rating': vector.severities()[0],
+                    'severity_score': vector.scores()[0],
+                    'references': []
+                }                    
+
+                # Lookup all references and support links associated with the CVE.
+                cve_references = CVEReference.objects.filter(
+                    cve=match.cve
+                )
+
+                if cve_references.exists():
+                    # If there are references associated with the CVE.
+
+                    for reference in cve_references:
+                        # For each reference, add to the list.
+
+                        formatted[match.cve.identifier]['references'].append(
+                            {
+                                'url': reference.url,
+                                'source': reference.source,
+                                'tags': reference.tags
+                            }                            
+                        )
 
         return JsonResponse(
             formatted

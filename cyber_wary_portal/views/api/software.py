@@ -20,9 +20,9 @@
 # Module/Library Import
 from cyber_wary_portal.models import *
 from cyber_wary_portal.utils.data_import import *
-from django.http.response import JsonResponse, HttpResponse
+from django.http.response import HttpResponse
 from rest_framework.decorators import api_view
-import json
+import re
 import threading
 
 
@@ -68,7 +68,7 @@ def applications_installed(request):
         # If scan or scan_record aren't valid, or an existing import exists.
         return bad_request(api_request)
 
-    # Define empty list for new objects to be appended to for mass creation.
+    # Define empty list for new objects to be appended to for passing to thread.
     software = []
 
     for application in data:
@@ -83,13 +83,11 @@ def applications_installed(request):
 
         if(application.get('DisplayName') is not None and application.get('DisplayVersion') is not None):
             # If software has a valid name and version (filters our base firmware).
-            
-            # Define an object for each application for use in CPE/CWE/CVE check - no mass creation at end.
             software.append(
-                Software(
+                Software.objects.create(
                     scan_record = scan_record,
                     name = application.get('DisplayName'),
-                    version = application.get('DisplayVersion'),
+                    version = re.sub("[^\d\.]", "", application.get('DisplayVersion')),
                     version_major = application.get('VersionMajor'),
                     version_minor = application.get('VersionMinor'),
                     publisher = Publisher.objects.get_or_create( 
@@ -101,20 +99,14 @@ def applications_installed(request):
                     )
                 )
             )
-        
-    # Bulk create software applications.
-    Software.objects.bulk_create(software)
 
-    for application in software:
-        # For each application detected in the system, scan for CPEs.
+    # Execute in thread to detact from main import process.
+    import_thread = threading.Thread(
+        target=search_cpe,
+        args=[software]
+    )
 
-        # Execute in thread to detact from main import process.
-        import_thread = threading.Thread(
-            target=search_cpe,
-            args=[application]
-        )
-
-        # Start the import
-        import_thread.start()
+    # Start the import
+    import_thread.start()
 
     return HttpResponse('Success')

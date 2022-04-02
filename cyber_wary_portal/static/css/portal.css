@@ -244,6 +244,15 @@ table.dataTable tbody td {
     box-shadow: none;
 }
 
+table.dataTable.display tbody tr:hover>.sorting_2,
+table.dataTable.order-column.hover tbody tr:hover>.sorting_2,
+table.dataTable.display tbody tr.even>.sorting_2,
+table.dataTable.order-column.stripe tbody tr.even>.sorting_2,
+table.dataTable.display tbody tr.odd>.sorting_2,
+table.dataTable.order-column.stripe tbody tr.odd>.sorting_2 {
+    background: var(--light-primary)
+}
+
 table.dataTable.no-footer {
     border-bottom: 0;
 }
@@ -469,6 +478,11 @@ table.dataTable>tbody>tr.child span.dtr-title {
 .payload-action:hover {
     cursor: pointer;
     color: var(--success) !important;
+}
+
+.cve-action:hover {
+    cursor: pointer;
+    color: var(--warning) !important;
 }
 
 .fi {

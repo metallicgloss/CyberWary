@@ -76,60 +76,64 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 </div>
                             </div>
 
-                            <!-- System Users -->
-                            {% if scan_record.scan.system_users and scan_data.system_users.count != 0 %}
+                            <!-- Installed Applications -->
+                            {% if scan_record.scan.installed_applications and scan_data.installed_applications.count != 0 %}
                                 <div class="accordion-item">
                                     <!-- Accordion Tab Title -->
-                                    <h2 class="accordion-header" id="heading-system-users">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-system-users" aria-expanded="false" aria-controls="collapse-system-users">
-                                            {% if scan_data.enabled_defaults > 0 or scan_data.system_users.count > 5 %}
+                                    <h2 class="accordion-header" id="heading-applications">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-applications" aria-expanded="false" aria-controls="collapse-applications">
+                                            {% if scan_data.cves > 0 %}
                                                 <i class="icofont-exclamation-tringle me-2 text-warning"></i>
                                             {% else %}
                                                 <i class="icofont-check-circled me-2 pt-1 text-success"></i>
                                             {% endif %}
-                                            System Users
+                                            Installed Applications
                                         </button>
                                     </h2>
 
-                                    <div id="collapse-system-users" class="accordion-collapse collapse" aria-labelledby="heading-system-users" data-bs-parent="#faqAccordion">
+                                    <div id="collapse-applications" class="accordion-collapse collapse" aria-labelledby="heading-applications" data-bs-parent="#faqAccordion">
                                         <div class="accordion-body">
-                                            <!-- System User Explainer -->
-                                            <h5 class="mt-4">User Accounts</h5>
+                                            <!-- Installed Applications Explainer -->
+                                            <h5 class="mt-4">Installed Applications</h5>
                                             <p class="mb-4">Quisque imperdiet lorem eget diam tristique, vel eleifend nulla malesuada. Cras dapibus eu odio ac pharetra. Fusce at tristique erat, nec fermentum sapien. Sed nec egestas nibh. In hac habitasse platea dictumst. Nunc malesuada molestie lacus vitae tristique. Vivamus a neque nunc. Quisque urna libero, pulvinar non gravida eget, suscipit ac leo. Cras eleifend purus et magna tristique, sed vehicula turpis malesuada. Integer consectetur dolor sed dui luctus iaculis. Vivamus at mollis magna. Sed at elementum neque.</p>
 
-                                            <!-- System User List -->
-                                            <h5 class="mt-5">System Users</h5>
-                                            <table id="system-users" class="display pb-3 w-100">
+                                            <!-- Installed Applications Metrics / Charts -->
+                                            <div class="row">
+                                                <div class="col-xl-6">
+                                                    <div id="vulnerabilities" style="margin:auto; width: 40em; height:350px;"></div>
+                                                </div>
+                                                <div class="col-xl-6">
+                                                    <div id="install-by-time" style="margin:auto; width: 40em; height:350px;"></div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Installed Applications List -->
+                                            <h5 class="mt-5">Applications</h5>
+                                            <table id="applications" class="display pb-3 w-100">
                                                 <thead>
                                                     <tr>
-                                                        <th class="py-2 desktop">Name</th>
-                                                        <th class="py-2 desktop">Type</th>
-                                                        <th class="py-2 desktop">Last Login</th>
-                                                        <th class="py-2 desktop">Status</th>
+                                                        <th class="py-2 desktop">Application</th>
+                                                        <th class="py-2 desktop">Publisher</th>
+                                                        <th class="py-2 desktop">Version</th>
+                                                        <th class="py-2 desktop">Install Date</th>
+                                                        <th class="py-2 desktop">Vulnerabilities</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {% for user in scan_data.system_users %}
+                                                    {% for application in scan_data.installed_applications %}
                                                         <tr>
-                                                            <td>{{ user.name }} {% if user.full_name %}({{ user.full_name }}){% endif %}</td>
+                                                            <td>{{ application.name }}</td>
+                                                            <td>{{ application.publisher.name }}</td>
+                                                            <td>{{ application.version }}</td>
+                                                            <td>{% if application.install_date %}{{ application.install_date }}{% else %}Not Set{% endif %}</td>
                                                             <td>
-                                                                {% if user.name not in 'Administrator,DefaultAccount,Guest,WDAGUtilityAccount' and user.source != 2 %}
-                                                                    <span class="text-warning" data-toggle="tooltip" data-placement="top" title="Account should be converted to a Microsoft login to improve security."><i class="icofont-info-circle me-1"></i>
-                                                                {% else %}
-                                                                    <span class="text-success">
-                                                                {% endif %}
-                                                                    {{ user.get_source_display }}
-                                                                </span>
-                                                            </td>
-                                                            <td>{% if user.last_logon %}{{ user.last_logon|date:"l jS F Y - H:i e" }}{% else %}Never Logged In{% endif %}</td>
-                                                            <td>
-                                                                {% if user.name in 'Administrator,DefaultAccount,Guest,WDAGUtilityAccount' and user.enabled %}
-                                                                    <span class="text-danger" data-toggle="tooltip" data-placement="top" title="Default system accounts should not be enabled."><i class="icofont-info-circle me-1"></i>
-                                                                {% else %}
-                                                                    <span class="text-success">
-                                                                {% endif %}
-                                                                        {% if user.enabled %}Enabled</span>{% else %}Disabled{% endif %}
+                                                                {% if application.cve_match %}
+                                                                    <span class="cve-action text-danger" onclick="viewCVE('{{ application.cpe.identifier }}')" data-toggle="tooltip" data-placement="top" title="Click for full record.">
+                                                                        <i class="icofont-exclamation-tringle me-1"></i> Known Vulnerabilities
                                                                     </span>
+                                                                {% else %}
+                                                                    <span class="text-success">Not Detected in Dataset</span>
+                                                                {% endif %}
                                                             </td>
                                                         </tr>
                                                     {% endfor %}
@@ -228,6 +232,76 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                     </div>
                                 </div>
                             {% endif %}
+
+                            <!-- System Users -->
+                            {% if scan_record.scan.system_users and scan_data.system_users.count != 0 %}
+                                <div class="accordion-item">
+                                    <!-- Accordion Tab Title -->
+                                    <h2 class="accordion-header" id="heading-system-users">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-system-users" aria-expanded="false" aria-controls="collapse-system-users">
+                                            {% if scan_data.enabled_defaults > 0 or scan_data.system_users.count > 5 %}
+                                                <i class="icofont-exclamation-tringle me-2 text-warning"></i>
+                                            {% else %}
+                                                <i class="icofont-check-circled me-2 pt-1 text-success"></i>
+                                            {% endif %}
+                                            System Users
+                                        </button>
+                                    </h2>
+
+                                    <div id="collapse-system-users" class="accordion-collapse collapse" aria-labelledby="heading-system-users" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            <!-- System User Explainer -->
+                                            <h5 class="mt-4">User Accounts</h5>
+                                            <p class="mb-4">Quisque imperdiet lorem eget diam tristique, vel eleifend nulla malesuada. Cras dapibus eu odio ac pharetra. Fusce at tristique erat, nec fermentum sapien. Sed nec egestas nibh. In hac habitasse platea dictumst. Nunc malesuada molestie lacus vitae tristique. Vivamus a neque nunc. Quisque urna libero, pulvinar non gravida eget, suscipit ac leo. Cras eleifend purus et magna tristique, sed vehicula turpis malesuada. Integer consectetur dolor sed dui luctus iaculis. Vivamus at mollis magna. Sed at elementum neque.</p>
+
+                                            <!-- System User List -->
+                                            <h5 class="mt-5">System Users</h5>
+                                            <table id="system-users" class="display pb-3 w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="py-2 desktop">Name</th>
+                                                        <th class="py-2 desktop">Type</th>
+                                                        <th class="py-2 desktop">Last Login</th>
+                                                        <th class="py-2 desktop">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for user in scan_data.system_users %}
+                                                        <tr>
+                                                            <td>{{ user.name }} {% if user.full_name %}({{ user.full_name }}){% endif %}</td>
+                                                            <td>
+                                                                {% if user.name not in 'Administrator,DefaultAccount,Guest,WDAGUtilityAccount' and user.source != 2 %}
+                                                                    <span class="text-warning" data-toggle="tooltip" data-placement="top" title="Account should be converted to a Microsoft login to improve security."><i class="icofont-info-circle me-1"></i>
+                                                                {% else %}
+                                                                    <span class="text-success">
+                                                                {% endif %}
+                                                                    {{ user.get_source_display }}
+                                                                </span>
+                                                            </td>
+                                                            <td>{% if user.last_logon %}{{ user.last_logon|date:"l jS F Y - H:i e" }}{% else %}Never Logged In{% endif %}</td>
+                                                            <td>
+                                                                {% if user.name in 'Administrator,DefaultAccount,Guest,WDAGUtilityAccount' and user.enabled %}
+                                                                    <span class="text-danger" data-toggle="tooltip" data-placement="top" title="Default system accounts should not be enabled."><i class="icofont-info-circle me-1"></i>
+                                                                {% else %}
+                                                                    <span class="text-success">
+                                                                {% endif %}
+                                                                        {% if user.enabled %}Enabled</span>{% else %}Disabled{% endif %}
+                                                                    </span>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+
+                                            <!-- Accordion Controls -->
+                                            <div class="nav-buttons mt-4">
+                                                <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                                                <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
                         </div> <!-- End of Accordion -->
                     </div> <!-- End of Report -->
                 </div> <!-- End of Container -->
@@ -249,6 +323,45 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </div>
             </div> <!-- End of Column -->
         </div> <!-- End of Row -->
+        
+        <!-- CVE Popup Modal -->
+        <div class="modal fade" id="cveModal" tabindex="-1" aria-labelledby="cveModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title">Associated CVE Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Modal Body / Contents -->
+                    <div class="modal-body">
+                        <div class="scan-info">
+                            <!-- CVE Explainer Details -->
+                            <p class="mb-2"><i class="icofont-info-circle me-2"></i><span>Details:</span> ipsum lorem</p>
+                            <p class="mb-2"><i class="icofont-flag me-2"></i><span>Recommended Action:</span> Update or Remove Application</p>
+                        </div>
+                        <!-- Horizontal Divider -->
+                        <hr>
+
+                        <!-- CVE List -->
+                        <table id="cve-modal-table" class="display pb-3 w-100">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 desktop">CVE Identifier</th>
+                                    <th class="py-2 desktop">Severity Rating</th>
+                                    <th class="py-2 desktop">Severity Score</th>
+                                    <th class="py-2 desktop">Published</th>
+                                    <th class="py-2 desktop">References</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <!-- Credential Popup Modal -->
         <div class="modal fade" id="credentialModal" tabindex="-1" aria-labelledby="credentialModalLabel" aria-hidden="true">
@@ -295,12 +408,38 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         var longitude = {{ coords.1 }}
         var icon = "{% static 'imgs/map.png' %}"
         var title = "{{ scan_record.name }}"
+        var csrfToken = "{{ csrf_token }}"
+
+        {% if scan_record.scan.installed_applications and scan_data.cves > 0 %}
+            // Credential dynamic variables
+            var cve = true
+            var cveURL = "{% url 'cve' %}"
+
+            var totalApplications = {{ scan_data.installed_applications_count }}
+            var totalCVEs = {{ scan_data.cves }}
+            var vulnerableApplications = {{ scan_data.vulnerable_applications }}
+
+            // Chart Timeline Data
+            var installTimeline = [
+                [
+                    "Installed",
+                    "Installed Applications",
+                    "Day"
+                ],
+                {% for record in scan_data.install_timeline %}
+                    [
+                        "Installed Applications",
+                        {{ record.running_total }},
+                        "{{ record.install_date }}"
+                    ],
+                {% endfor %}
+            ]
+        {% endif %}
 
         {% if scan_record.scan.browser_passwords and scan_data.browser_passwords != None %}
             // Credential dynamic variables
             var credentials = true
             var credentialURL = "{% url 'credential' %}"
-            var csrfToken = "{{ csrf_token }}"
 
             // Chart Dataset
             var usernameData = [
@@ -312,7 +451,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 {% endfor %}
             ]
 
-            var compromisedColor = {% if scan_data.compromised > 0 %}'#e9a464'{% else %}'#34cc96'{% endif %}
+            var compromisedColor = {% if scan_data.compromised > 0 %}'#f54b4b'{% else %}'#272727'{% endif %}
             var compromisedValue = {{ scan_data.compromised }}
             var undetectedValue = {{ scan_data.browser_passwords.count|subtract:scan_data.compromised }}
         {% endif %}

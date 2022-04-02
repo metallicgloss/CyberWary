@@ -18,6 +18,7 @@
 #
 
 # Module/Library Import
+from distutils.command.install_data import install_data
 from cyber_wary_portal.forms import AccountModificationForm, ScanFormStep2, AccountDeletionForm
 from cyber_wary_portal.models import *
 from cyber_wary_portal.utils.script_generation import generate_script
@@ -239,7 +240,7 @@ def preview_script(request):
             generate_script(
                 'preview',
                 scan_form.cleaned_data,
-                Token.objects.get_or_create( # If the user hasn't visited the API page before, create API token.
+                Token.objects.get_or_create(  # If the user hasn't visited the API page before, create API token.
                     user=request.user
                 )[0].key
             )
@@ -365,22 +366,41 @@ def report(request, scan_key, report):
     except (ScanRecord.DoesNotExist, Scan.DoesNotExist):
         return HttpResponseNotFound()
 
-    if(scan_record.scan.system_users):
+    if(scan_record.scan.installed_applications):
         try:
-            scan_data['system_users'] = User.objects.filter(
+            applications = Software.objects.filter(
                 scan_record=scan_record
             )
-            scan_data['enabled_defaults'] = scan_data['system_users'].filter(
-                name__in=[
-                    'Administrator',
-                    'DefaultAccount',
-                    'Guest',
-                    'WDAGUtilityAccount'
-                ],
-                enabled=True
-            ).count()
-        except (User.DoesNotExist):
-            scan_data['system_users'] = None
+
+            running_total = 0
+
+            scan_data['install_timeline'] = applications.values("install_date").annotate(Count('install_date')).order_by('install_date').exclude(install_date=None)
+            for date in scan_data['install_timeline']:
+                running_total += date['install_date__count']
+                date['running_total'] = running_total
+
+
+            scan_data['installed_applications'] = []
+            scan_data['cves'] = 0
+            scan_data['vulnerable_applications']  = 0
+            scan_data['installed_applications_count']  = applications.count()
+
+            for application in applications.order_by('name'):
+                if application.cpe is not None:
+                    cve_matches = CVEMatches.objects.filter(
+                        cpe=application.cpe
+                    )
+
+                    if cve_matches.exists():
+                        application.cve_match = True
+
+                        scan_data['vulnerable_applications'] += 1
+                        scan_data['cves'] += cve_matches.count()
+
+                scan_data['installed_applications'].append(application)
+
+        except (Software.DoesNotExist):
+            scan_data['installed_applications'] = None
 
     if(scan_record.scan.browser_passwords):
         try:
@@ -406,6 +426,23 @@ def report(request, scan_key, report):
 
         except (Credential.DoesNotExist, CredentialScan.DoesNotExist):
             scan_data['browser_passwords'] = None
+
+    if(scan_record.scan.system_users):
+        try:
+            scan_data['system_users'] = User.objects.filter(
+                scan_record=scan_record
+            )
+            scan_data['enabled_defaults'] = scan_data['system_users'].filter(
+                name__in=[
+                    'Administrator',
+                    'DefaultAccount',
+                    'Guest',
+                    'WDAGUtilityAccount'
+                ],
+                enabled=True
+            ).count()
+        except (User.DoesNotExist):
+            scan_data['system_users'] = None
 
     return render(
         request,

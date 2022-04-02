@@ -496,20 +496,17 @@ class FirewallRules(DefaultFields):
         help_text="The scan record that the firewall rule is associated with."
     )
 
-    rule_id = models.CharField(
-        max_length=128,
+    rule_id = models.TextField(
         null=True,
         help_text="The instance ID associated with the firewall rule (ID/InstanceID)."
     )
 
-    name = models.CharField(
-        max_length=256,
+    name = models.TextField(
         null=True,
         help_text="The display name of the firewall rule (DisplayName)."
     )
 
-    description = models.CharField(
-        max_length=256,
+    description = models.TextField(
         null=True,
         help_text="The description given to the rule (Description)."
     )
