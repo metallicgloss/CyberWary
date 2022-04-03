@@ -1,7 +1,7 @@
 #
 # GNU General Public License v3.0
 # Cyber Wary - <https://github.com/metallicgloss/CyberWary>
-# Copyright (C) 2021 - William P - <hello@metallicgloss.com>
+# Copyright (C) 2022 - William P - <hello@metallicgloss.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+# Module/Library Import
 from django.apps import AppConfig
 
 

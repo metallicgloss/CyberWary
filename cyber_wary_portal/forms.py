@@ -2,7 +2,7 @@
 #
 # GNU General Public License v3.0
 # Cyber Wary - <https://github.com/metallicgloss/CyberWary>
-# Copyright (C) 2021 - William P - <hello@metallicgloss.com>
+# Copyright (C) 2022 - William P - <hello@metallicgloss.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,12 +18,42 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from .models import SystemUser, Scan
+# Module/Library Import
+from cyber_wary_portal.models import SystemUser, Scan
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.validators import MaxValueValidator, MinValueValidator
 from email.policy import default
 
+# --------------------------------------------------------------------------- #
+#                                                                             #
+#                                DJANGO FORMS                                 #
+#                                                                             #
+#   Forms used throughout the application for input validation and mapping.   #
+#                                                                             #
+# --------------------------------------------------------------------------- #
+
+# --------------------------------------------------------------------------- #
+#                                   CONTENTS                                  #
+# --------------------------------------------------------------------------- #
+#                                                                             #
+#                        1. Account Forms                                     #
+#                            1.1 Account Creation                             #
+#                            1.2 Account Modification                         #
+#                            1.3 Account Deletion                             #
+#                            1.4 Reset API Key                                #
+#                        2. Scan Forms                                        #
+#                            2.1 Scan Details                                 #
+#                            2.2 Scan Components                              #
+#                                                                             #
+# --------------------------------------------------------------------------- #
+
+
+# --------------------------------------------------------------------------- #
+#                              1. Account Forms                               #
+# --------------------------------------------------------------------------- #
+#                            1.1 Account Creation                             #
+# --------------------------------------------------------------------------- #
 
 class AccountDetailsForm(UserCreationForm):
     username = forms.CharField(
@@ -36,6 +66,7 @@ class AccountDetailsForm(UserCreationForm):
         min_length=4,
         max_length=16
     )
+
     first_name = forms.CharField(
         label='Forename',
         widget=forms.TextInput(
@@ -46,6 +77,7 @@ class AccountDetailsForm(UserCreationForm):
         min_length=2,
         max_length=64
     )
+
     last_name = forms.CharField(
         label='Surname',
         widget=forms.TextInput(
@@ -54,6 +86,7 @@ class AccountDetailsForm(UserCreationForm):
             }
         )
     )
+
     email = forms.EmailField(
         label='Email Address',
         widget=forms.TextInput(
@@ -62,6 +95,8 @@ class AccountDetailsForm(UserCreationForm):
             }
         )
     )
+
+    # Password
     password1 = forms.CharField(
         label='Password',
         widget=forms.PasswordInput(
@@ -70,6 +105,8 @@ class AccountDetailsForm(UserCreationForm):
             }
         )
     )
+
+    # Confirm Password
     password2 = forms.CharField(
         label='Confirm Password',
         widget=forms.PasswordInput(
@@ -80,7 +117,9 @@ class AccountDetailsForm(UserCreationForm):
     )
 
     class Meta:
+        # Associate with the SystemUser Model
         model = SystemUser
+        # Map Fields
         fields = (
             'username',
             'first_name',
@@ -91,9 +130,18 @@ class AccountDetailsForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(AccountDetailsForm, self).__init__(* args, ** kwargs)
         for field in self.fields.values():
+            # For each field.
+
+            # Mark as required
             field.required = True
+
+            # Disable autofocus.
             field.widget.attrs.pop("autofocus", None)
 
+
+# --------------------------------------------------------------------------- #
+#                           1.2 Account Modification                          #
+# --------------------------------------------------------------------------- #
 
 class AccountModificationForm(UserCreationForm):
     first_name = forms.CharField(
@@ -107,6 +155,7 @@ class AccountModificationForm(UserCreationForm):
         min_length=2,
         max_length=64
     )
+
     last_name = forms.CharField(
         label='Surname',
         widget=forms.TextInput(
@@ -116,6 +165,7 @@ class AccountModificationForm(UserCreationForm):
         ),
         required=True
     )
+
     email = forms.EmailField(
         label='Email Address',
         widget=forms.TextInput(
@@ -125,6 +175,8 @@ class AccountModificationForm(UserCreationForm):
         ),
         required=True
     )
+
+    # Password
     password1 = forms.CharField(
         label='Password',
         widget=forms.PasswordInput(
@@ -134,6 +186,8 @@ class AccountModificationForm(UserCreationForm):
         ),
         required=False
     )
+
+    # Confirm Password
     password2 = forms.CharField(
         label='Confirm Password',
         widget=forms.PasswordInput(
@@ -145,7 +199,9 @@ class AccountModificationForm(UserCreationForm):
     )
 
     class Meta:
+        # Associate with the SystemUser Model
         model = SystemUser
+        # Map Fields
         fields = (
             'first_name',
             'last_name',
@@ -155,11 +211,47 @@ class AccountModificationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(AccountModificationForm, self).__init__(* args, ** kwargs)
         for field in self.fields.values():
+            # For each field
+
+            # Add the animation class.
             field.widget.attrs['class'] = 'form-input-animation'
             field.widget.attrs.pop("autofocus", None)
 
 
+# --------------------------------------------------------------------------- #
+#                             1.3 Account Deletion                            #
+# --------------------------------------------------------------------------- #
+
+class AccountDeletionForm(forms.Form):
+    confirmation = forms.BooleanField(
+        label='Confirm Account Deletion?',
+        help_text='When your account is deleted, it is irrevocably removed from the system.',
+        required=True,
+        initial=False
+    )
+
+
+# --------------------------------------------------------------------------- #
+#                              1.4 Reset API Key                              #
+# --------------------------------------------------------------------------- #
+
+class ApiKeyForm(forms.Form):
+    confirmation = forms.BooleanField(
+        label='Confirm Key Regeneration?',
+        help_text='When you re-generate your key, any requests made with the existing key will be rejected.',
+        required=True,
+        initial=False
+    )
+
+
+# --------------------------------------------------------------------------- #
+#                                2. Scan Forms                                #
+# --------------------------------------------------------------------------- #
+#                              2.1 Scan Details                               #
+# --------------------------------------------------------------------------- #
+
 class ScanFormStep1(forms.ModelForm):
+    # Part 1 of 2
     TYPES = (
         ('B', 'Blue Team'),
         ('R', 'Red Team')
@@ -211,6 +303,7 @@ class ScanFormStep1(forms.ModelForm):
     )
 
     class Meta:
+        # Associate with the Scan model.
         model = Scan
         fields = (
             'type',
@@ -223,14 +316,24 @@ class ScanFormStep1(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ScanFormStep1, self).__init__(* args, ** kwargs)
         for field in self.fields.values():
+            # For each field
+
             if (field.label == 'Notes/Comments'):
+                # If notes field, add additional class.
                 field.widget.attrs['class'] = 'form-input-animation form-text-area'
+
             else:
+                # Add animation class to each field.
                 field.widget.attrs['class'] = 'form-input-animation'
             field.widget.attrs.pop("autofocus", None)
 
 
+# --------------------------------------------------------------------------- #
+#                             2.2 Scan Components                             #
+# --------------------------------------------------------------------------- #
+
 class ScanFormStep2(forms.ModelForm):
+    # Part 2 of 2
     system_users = forms.BooleanField(
         label='User Accounts',
         help_text='Analyses the user accounts setup on the device.',
@@ -274,6 +377,7 @@ class ScanFormStep2(forms.ModelForm):
     )
 
     class Meta:
+        # Associate with the Scan model.
         model = Scan
         fields = (
             'system_users',
@@ -287,23 +391,6 @@ class ScanFormStep2(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ScanFormStep2, self).__init__(* args, ** kwargs)
         for field in self.fields.values():
+            # Add animation class to each field.
             field.widget.attrs['class'] = 'form-input-animation'
             field.widget.attrs.pop("autofocus", None)
-
-
-class ApiKeyForm(forms.Form):
-    confirmation = forms.BooleanField(
-        label='Confirm Key Regeneration?',
-        help_text='When you re-generate your key, any requests made with the existing key will be rejected.',
-        required=True,
-        initial=False
-    )
-
-
-class AccountDeletionForm(forms.Form):
-    confirmation = forms.BooleanField(
-        label='Confirm Account Deletion?',
-        help_text='When your account is deleted, it is irrevocably removed from the system.',
-        required=True,
-        initial=False
-    )

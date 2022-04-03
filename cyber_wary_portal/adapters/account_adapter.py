@@ -17,12 +17,12 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-# Module/Library Import
-from .models import SystemUser
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 
-admin.site.register(
-    SystemUser,
-    UserAdmin
-)
+# # Module/Library Import
+from django.conf import settings
+from allauth.account.adapter import DefaultAccountAdapter
+
+class UserRegistrationControlAdapter(DefaultAccountAdapter):
+    def is_open_for_signup(self, request):
+        # Reference - https://ref.cyberwary.com/ubhy6
+        return settings.ACCOUNT_REGISTRATION_OPEN

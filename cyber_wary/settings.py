@@ -1,7 +1,7 @@
 #
 # GNU General Public License v3.0
 # Cyber Wary - <https://github.com/metallicgloss/CyberWary>
-# Copyright (C) 2021 - William P - <hello@metallicgloss.com>
+# Copyright (C) 2022 - William P - <hello@metallicgloss.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-
+# Module/Library Import
 from dotenv import load_dotenv
 from pathlib import Path
 import os
@@ -34,6 +34,10 @@ SECRET_KEY = os.environ.get('CYBERWARY_SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Registration Status
+REGISTRATION_OPEN = False
+
+# Authorised URLS.
 ALLOWED_HOSTS = ['*']
 
 
@@ -209,6 +213,9 @@ ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_MAX_EMAIL_ADDRESSES = 1
 ACCOUNT_USERNAME_REQUIRED = True
 SOCIALACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_REGISTRATION_OPEN = os.environ.get('CYBERWARY_ALLOW_REGISTRATION')
+
+ACCOUNT_ADAPTER = 'cyber_wary_portal.adapters.account_adapter.UserRegistrationControlAdapter'
 
 ACCOUNT_FORMS = {
     'signup': 'cyber_wary_portal.forms.AccountDetailsForm'
@@ -248,7 +255,6 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
-
 
 # Django Mail Configuration (SendGrid)
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"

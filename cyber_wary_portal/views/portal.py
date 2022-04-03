@@ -1,7 +1,7 @@
 #
 # GNU General Public License v3.0
 # Cyber Wary - <https://github.com/metallicgloss/CyberWary>
-# Copyright (C) 2021 - William P - <hello@metallicgloss.com>
+# Copyright (C) 2022 - William P - <hello@metallicgloss.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 #
 
 # Module/Library Import
-from distutils.command.install_data import install_data
 from cyber_wary_portal.forms import AccountModificationForm, ScanFormStep2, AccountDeletionForm
 from cyber_wary_portal.models import *
 from cyber_wary_portal.utils.script_generation import generate_script
