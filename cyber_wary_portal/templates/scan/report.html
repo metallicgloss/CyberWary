@@ -100,10 +100,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                             <!-- Installed Applications Metrics / Charts -->
                                             <div class="row">
                                                 <div class="col-xl-6">
-                                                    <div id="vulnerabilities" style="margin:auto; width: 40em; height:350px;"></div>
+                                                    <div id="vulnerabilities" style="margin:auto"></div>
                                                 </div>
                                                 <div class="col-xl-6">
-                                                    <div id="install-by-time" style="margin:auto; width: 40em; height:350px;"></div>
+                                                    <div id="install-by-time" style="margin:auto"></div>
                                                 </div>
                                             </div>
 
@@ -176,10 +176,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                             <!-- Credentials Metrics / Charts -->
                                             <div class="row">
                                                 <div class="col-xl-6">
-                                                    <div id="usernames" style="margin:auto; width: 40em; height:350px;"></div>
+                                                    <div id="usernames" style="margin:auto"></div>
                                                 </div>
                                                 <div class="col-xl-6">
-                                                    <div id="compromised" style="margin:auto; width: 40em; height:350px;"></div>
+                                                    <div id="compromised" style="margin:auto"></div>
                                                 </div>
                                             </div>
 
@@ -410,7 +410,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         var title = "{{ scan_record.name }}"
         var csrfToken = "{{ csrf_token }}"
 
-        {% if scan_record.scan.installed_applications and scan_data.cves > 0 %}
+        {% if scan_record.scan.installed_applications %}
             // Credential dynamic variables
             var cve = true
             var cveURL = "{% url 'cve' %}"

@@ -39,7 +39,9 @@ def generate_script(generation_type, payload, api_key):
     script_contents += '$scanKey = "' + scan_key + '"\r\n'
     script_contents += '$deviceID = Get-ItemProperty HKLM:SOFTWARE\Microsoft\SQMClient | Select -ExpandProperty MachineID\r\n\r\n'
 
+    admin = False
     if(payload['network_firewall_rules'] or payload['installed_patches']):
+        admin = True
         script_contents += '# Script requires administrator permissions; verify correct access.\r\n'
         script_contents += '$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())\r\n'
         script_contents += 'if ( $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator) -eq $false ) { Add-Type -AssemblyName System.Windows.Forms;[System.Windows.Forms.MessageBox]::Show("Please re-launch powershell as Administrator.", "CyberWary", "Ok", "Error");stop-process -Id $PID }\r\n\r\n'
@@ -95,13 +97,13 @@ def generate_script(generation_type, payload, api_key):
             'patches',
             '$UpdateSession = New-Object -ComObject Microsoft.Update.Session; @($UpdateSession.CreateupdateSearcher().Search("IsHidden=0 and IsInstalled=0").Updates | ConvertTo-Json)'
         )
-        script_contents += '# Temporarily enable PowerShell modules that are signed\r\n'
-        script_contents += 'Set-ExecutionPolicy AllSigned -force\r\n\r\n'
+        script_contents += '# Temporarily enable PowerShell modules\r\n'
+        script_contents += 'Set-ExecutionPolicy Unrestricted -force\r\n\r\n'
         script_contents += get_data(
             'Capture List of Installed Updates',
             'patches/installed',
             'patches',
-            'Install-Module -Name PSWindowsUpdate -Force; Import-Module PSWindowsUpdate; Get-WUHistory -MaxDate (Get-Date).AddDays(-180) -Last 500'
+            'Install-Module -Name PSWindowsUpdate -Force; Get-WUHistory -MaxDate (Get-Date).AddDays(-180) -Last 500'
         )
         script_contents += '# Set the execution of scripts to restricted\r\n'
         script_contents += 'Set-ExecutionPolicy Restricted -force\r\n\r\n'
@@ -140,7 +142,9 @@ def generate_script(generation_type, payload, api_key):
         script_contents += '$utf8 = New-Object -TypeName System.Text.UTF8Encoding\r\n\r\n'
         script_contents += '# Temporarily download WebBrowserPassView - Developed & Copyright by Nir Sofer.\r\n'
         script_contents += '# Convert plain-text passwords discovered to SHA1 hashes.\r\n'
-        script_contents += 'cd /; wget ' + url + \
+        if(admin):
+            script_contents += 'cd /;'
+        script_contents += 'wget ' + url + \
             '/static/downloads/WebBrowserPassView.exe -OutFile WebBrowserPassView.exe; .\\WebBrowserPassView.exe /scomma credentials.csv; Start-Sleep 1; (Import-Csv ".\credentials.csv" -Delimiter ",") | ForEach-Object { if ($_.Password -ne "") { $_.Password = ([System.BitConverter]::ToString($sha1.ComputeHash($utf8.GetBytes($_.Password))).Replace("-", "")) } $_ } | Export-Csv ".\credentials.csv" -Delimiter "," -NoType; $credentials = (Import-Csv ".\credentials.csv" -Delimiter ",")\r\n\r\n'
         script_contents += get_data(
             'Capture list of hashed passwords; hashes will not be saved.',

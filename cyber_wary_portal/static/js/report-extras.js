@@ -28,6 +28,8 @@ $(document).ready(function() {
         }
     });
 
+    maxChartDimensions = $('#faqAccordion').parent().width() / 2 - 25
+
     $('#credentials, #system-users').dataTable({
         "lengthChange": false,
         "searching": false,
@@ -45,6 +47,9 @@ $(document).ready(function() {
 
 if (typeof cve !== 'undefined') {
     $(document).ready(function() {
+        $('#vulnerabilities').css('width', maxChartDimensions).css('height', maxChartDimensions - 50)
+        $('#install-by-time').css('width', maxChartDimensions).css('height', maxChartDimensions - 50)
+
         $('#applications').dataTable({
             "lengthChange": false,
             "searching": false,
@@ -166,7 +171,6 @@ if (typeof cve !== 'undefined') {
                     fontFamily: 'Space Mono',
                     fontSize: 16
                 },
-                top: '10px',
                 left: '48%',
                 textAlign: 'center'
             },
@@ -181,7 +185,9 @@ if (typeof cve !== 'undefined') {
             yAxis: {
                 name: false
             },
-            series: seriesList
+            series: seriesList,
+            responsive: true,
+            maintainAspectRatio: false
         });
     });
 
@@ -256,6 +262,9 @@ if (typeof cve !== 'undefined') {
 
 if (typeof credentials !== 'undefined') {
     $(document).ready(function() {
+        $('#usernames').css('width', maxChartDimensions).css('height', maxChartDimensions - 50)
+        $('#compromised').css('width', maxChartDimensions).css('height', maxChartDimensions - 50)
+
         echarts.init(document.getElementById('usernames')).setOption({
             title: {
                 display: true,
