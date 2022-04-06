@@ -113,7 +113,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div class="row">
             <div class="col {% if form.installed_antivirus.errors %}field-error{% endif %}">
                 <label class="form-field form-checkbox mt-3 mb-3">
-                    <span class="fw-bold">{{ form.installed_antivirus.label }} <i class="icofont-bug ms-1"></i></span><br>
+                    <span class="fw-bold">{{ form.installed_antivirus.label }} <span class="text-warning" data-toggle="tooltip" data-placement="top" title="Component requires Administrator permissions to be able to execute.">(<i class="icofont-crown"></i>)</span> <i class="icofont-bug ms-1"></i></span><br>
                     <span class="position-absolute scan-note"><i>{{ form.installed_antivirus.help_text }}</i></span>
                     <input type="checkbox" name="1-{{ form.installed_antivirus.name }}" />
                     <div class="form-checkbox-indicator mt-2"></div>

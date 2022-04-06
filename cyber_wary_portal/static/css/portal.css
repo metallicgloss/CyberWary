@@ -100,6 +100,10 @@ small,
     font-size: 0.7em;
 }
 
+.tooltip-inner {
+    max-width: 450px !important;
+}
+
 
 /*----------------------*\
     2.2 DateTimePicker

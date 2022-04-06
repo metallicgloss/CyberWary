@@ -63,10 +63,57 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     </svg>
                     <p class="ms-3 mb-3">{{ scan.max_devices }} Maximum Device(s)</p>
                 </div>
+
+                <!-- How to Scan Tutorial -->
+                <div class="scan-form-container">
+                    <div class="row mb-2">
+                        <div class="col-xl-12">
+                            <h3 class="mt-4 mb-0">Scan Execution</h3>
+                            <p class="scan-note scan-section pb-1"><i>Follow these simple steps to be able to perform a scan of your selected device.</i></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="scan-tutorial mb-5">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <p class="mb-0">
+                                <span style="font-family: 'Space Mono', monospace;font-weight: bold;color: var(--dark-primary); font-size: 18px;">Step 1:</span>
+                                On the device you'd like to scan, start by opening your <code class="mx-2"><i class="icofont-brand-windows"></i> Start Menu</code> to proceed.
+                                <i class="icofont-question-circle payload-action ms-1" data-toggle="tooltip" data-placement="top" data-bs-html="true" title='<strong>Hint</strong><br>You can do this by pressing your <code class="mx-1"><i class="icofont-brand-windows"></i></code> key on your keyboard <strong class="mx-1">OR</strong> by clicking the <code class="mx-1"><i class="icofont-brand-windows"></i></code> icon in your task bar.'></i>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <p class="mb-0">
+                                <span style="font-family: 'Space Mono', monospace;font-weight: bold;color: var(--dark-primary); font-size: 18px;">Step 2:</span>
+                                Search for the word <code class="mx-2">PowerShell</code> and open the application{% if scan.network_firewall_rules or scan.installed_patches or scan.installed_antivirus %} as Administrator{% endif %}.
+                                <i class="icofont-question-circle payload-action ms-1" data-toggle="tooltip" data-placement="top" data-bs-html="true" title='<strong>Hint</strong><br>Type in <code class="mx-1 fw-bold">PowerShell</code> and {% if scan.network_firewall_rules or scan.installed_patches or scan.installed_antivirus %}right {% endif %}click on the app called <code class="mx-1 fw-bold">Windows PowerShell</code> {% if scan.network_firewall_rules or scan.installed_patches or scan.installed_antivirus %}and select <code class="mx-1 fw-bold">Run as administrator</code>{% endif %}to launch the program.'></i>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <p class="mb-0">
+                                <span style="font-family: 'Space Mono', monospace;font-weight: bold;color: var(--dark-primary); font-size: 18px;">Step 3:</span>
+                                Copy and paste the <code class="mx-2">Scan Script</code> displayed on this page into the PowerShell terminal.
+                                <i class="icofont-question-circle payload-action ms-1" data-toggle="tooltip" data-placement="top" data-bs-html="true" title='<strong>Hint</strong><br>TBC'></i>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <p class="mb-0">
+                                <span style="font-family: 'Space Mono', monospace;font-weight: bold;color: var(--dark-primary); font-size: 18px;">Step 4:</span>
+                                Sit back and wait for the script to complete. The terminal to automatically close once everything has finished!
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- List of Scanned Devices -->
                 <div class="scan-form-container">
-                    <div class="row mb-4">
+                    <div class="row mb-2">
                         <div class="col-xl-12">
                             <h3 class="mt-4 mb-0">Associated Devices</h3>
                             <p class="scan-note scan-section pb-1"><i>Devices scanned that are associated with the {{ scan.title }} scan.</i></p>

@@ -78,7 +78,7 @@ def generate_script(generation_type, payload, api_key):
     # Default the requirement for admin to be False
     admin = False
 
-    if(payload['network_firewall_rules'] or payload['installed_patches']):
+    if(payload['network_firewall_rules'] or payload['installed_patches'] or payload['installed_antivirus']):
         # If firewalls or patches included in the scan group - require admin permissions.
 
         # Set admin status to true.
