@@ -32,7 +32,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <!-- Page Title -->
         <div class="row pb-4">
             <div class="col-lg-12 col-xl-12">
-                <button class="btn back-btn p-0 mb-3" onclick="history.back()"><i class="icofont-arrow-left"></i> Back</button>
+                <button class="btn back-btn p-0 mb-3" onclick="window.location.replace(document.referrer)"><i class="icofont-arrow-left"></i> Back</button>
                 <h2 class="mb-0"><span id="scan-title">{{ scan_record.scan.title }}</span></h2>
                 <div class="d-flex align-items-start scan-brief">
                     <p class="me-3 mb-3">{% now "l jS F Y" %}</p>
@@ -312,7 +312,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <div class="scan-info ps-4">
                     <h5>Scan Record</h5>
                     <p class="mb-2">Start Date/Time: <span>{{ scan_record.created|date:"d/m/Y H:i" }}</span></p>
-                    {% if scan_record.progress not in '3,4' %}
+                    {% if scan_record.progress == 1 %}
                         <!-- Scan Actively Processing / Collecting Stats -->
                         <span><i class="icofont-infinite"></i> Scan In Progress</span>
                     {% else %}

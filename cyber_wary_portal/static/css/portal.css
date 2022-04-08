@@ -68,6 +68,11 @@ h2 {
     font-size: 36px;
 }
 
+hr {
+    background-color: var(--light-border);
+    opacity: 1;
+}
+
 
 /*-------------------------------------------*\
     2. Overrides
@@ -511,14 +516,10 @@ table.dataTable>tbody>tr.child span.dtr-title {
 }
 
 .scan-report-container {
-    height: 70vh;
+    height: 75vh;
     max-height: 75vh;
     overflow-y: scroll;
     overflow-x: hidden;
-}
-
-.scan-report-container {
-    height: 100vh;
 }
 
 #map {
@@ -542,6 +543,17 @@ table.dataTable>tbody>tr.child span.dtr-title {
 
 .stat-parent {
     border-right: 1px solid var(--light-border)
+}
+
+#copy-button {
+    font-size: 12px;
+}
+
+.scan-tutorial span {
+    font-family: 'Space Mono', monospace;
+    font-weight: bold;
+    color: var(--dark-primary);
+    font-size: 18px;
 }
 
 @keyframes rotate {
@@ -858,15 +870,63 @@ table.dataTable>tbody>tr.child span.dtr-title {
     4. Mobile Optmisations
 \*-------------------------------------------*/
 
+@media (max-width: 1600px) {
+    #sidebar {
+        min-width: 250px;
+        max-width: 250px;
+    }
+    #content {
+        width: calc(100% - 250px)
+    }
+    #sidebar.active+#content {
+        width: calc(100% - 0px)
+    }
+    .scan-report-container {
+        height: 60vh;
+    }
+    #content p {
+        font-size: 12px;
+    }
+}
+
 @media (max-width: 768px) {
     #sidebar {
-        min-width: 80px;
-        max-width: 80px;
+        min-width: 120px;
+        max-width: 120px;
         text-align: center;
-        margin-left: -80px !important;
-    }
-    #sidebar.active {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
         margin-left: 0 !important;
+    }
+    .scan-tutorial {
+        font-size: 10px;
+    }
+    .scan-tutorial span {
+        font-size: 12px !important;
+    }
+    .script {
+        display: none;
+    }
+    #copy-button {
+        float: left !important;
+        margin: 10px 0;
+    }
+    #content,
+    #sidebar.active+#content {
+        width: calc(100% - 110px)
+    }
+    #sidebar .sidebar-list li {
+        text-align: center;
+    }
+    #sidebar .sidebar-list a {
+        font-size: 12px;
+        transition: all 0.3s;
+    }
+    #sidebar .sidebar-list i {
+        margin-right: 0 !important;
+        display: block;
+        font-size: 1.5em;
+        margin-bottom: 5px;
     }
     #sidebar .sidebar-header .expanded {
         display: none;
@@ -887,5 +947,9 @@ table.dataTable>tbody>tr.child span.dtr-title {
     }
     #sidebarCollapse span {
         display: none;
+    }
+    .form-radio-toggle+label {
+        min-width: 120px;
+        border: 1px solid var(--dark-primary)
     }
 }
