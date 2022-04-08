@@ -21,10 +21,10 @@
 
 function initMap() {
     const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 4,
+        zoom: 6,
         center: {
             lat: 55,
-            lng: 10
+            lng: -3
         },
         minZoom: 2,
         maxZoom: 10,
@@ -140,3 +140,63 @@ function initMap() {
         });
     }
 }
+
+
+$(document).ready(function() {
+
+    calculatedMax = $('.chart-block').parent().width() / 2 - 25
+    if (calculatedMax < 500) {
+        maxChartHeight = Math.round(calculatedMax * 0.7)
+        maxChartWidth = calculatedMax
+    } else {
+        maxChartHeight = 300
+        maxChartWidth = 500
+    }
+
+    $('#applications, #credentials, #scans').dataTable({
+        "lengthChange": false,
+        "searching": false,
+        "pageLength": 8,
+        "ordering": false,
+        responsive: {
+            details: {
+                type: 'column',
+                target: 'tr'
+            }
+        },
+    });
+
+
+    $('#operating-systems').css('width', maxChartWidth).css('height', maxChartHeight)
+
+    echarts.init(document.getElementById('operating-systems')).setOption({
+        title: {
+            display: true,
+            text: 'Operating Systems Scanned',
+            textStyle: {
+                color: '#272727',
+                fontWeight: 'normal',
+                fontFamily: 'Space Mono',
+                fontSize: 16
+            },
+            left: '48%',
+            textAlign: 'center'
+        },
+        tooltip: {
+            trigger: 'item'
+        },
+        series: [{
+            name: 'Operating Systems Scanned',
+            type: 'pie',
+            radius: ['55%', '65%'],
+            center: ['50%', '50%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+                shadowBlur: 30,
+                shadowColor: 'rgba(0, 0, 0, 0.3)'
+            },
+            data: operatingSystems
+        }]
+    });
+
+})

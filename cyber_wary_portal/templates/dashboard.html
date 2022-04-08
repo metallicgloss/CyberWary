@@ -21,26 +21,148 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 {% endcomment %}
 
+{% block page_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.css" integrity="sha256-YY1izqyhIj4W3iyJOaGWOpXDSwrHWFL4Nfk+W0LyCHE=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-responsive-dt@2.2.9/css/responsive.dataTables.min.css" integrity="sha256-Y/AdBW1nhvzPowuT1lvF4PkY6QR+nqYzBcbmkDCG30Y=" crossorigin="anonymous">
+{% endblock%}
+
 {% block page_content %}
     <h2>Dashboard</h2>
     <div class="row">
-        <div class="col-xl-6">                                        
-           
+        <div class="col-xl-7">
+            <div class="py-3 px-2 mt-3 mb-5 bg-light">
+                <div class="row justify-content-center text-start">
+                    <div class="col-lg-12 col-xl-4 px-4 stat-parent">
+                        <p class="mb-0">API Requests</p>
+                        <h2 class="mb-0 pt-2 d-inline-block">{{ requests }}</h2>
+                        <div class="btn-success float-end py-0 px-3 mt-4 me-1 {% if recent_requests > 0 %}stat-increase{% else %}stat-decrease{% endif %}" data-toggle="tooltip" data-placement="top" title="API requests made in the last 7 days.">
+                            <div class="text-secondary">
+                                {% if recent_requests > 0 %}
+                                    <i class="icofont-arrow-up me-1"></i>{{ recent_requests }}
+                                {% else %}
+                                    <i class="icofont-arrow-down me-1"></i>{{ recent_requests }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-xl-4 px-4 stat-parent">
+                        <p class="mb-0">Scan Records</p>
+                        <h2 class="mb-0 pt-2 d-inline-block">{{ scan_records }}</h2>
+                        <div class="btn-success float-end py-0 px-3 mt-4 me-1 {% if recent_scan_records > 0 %}stat-increase{% else %}stat-decrease{% endif %}" data-toggle="tooltip" data-placement="top" title="Scan records associated with devices created in the last 7 days.">
+                            <div class="text-secondary">
+                                {% if recent_scan_records > 0 %}
+                                    <i class="icofont-arrow-up me-1"></i>{{ recent_scan_records }}
+                                {% else %}
+                                    <i class="icofont-arrow-down me-1"></i>{{ recent_scan_records }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-xl-4 px-4">
+                        <p class="mb-0">Scanned Applications</p>
+                        <h2 class="mb-0 pt-2 d-inline-block">{{ applications }}</h2>
+                        <div class="btn-success float-end py-0 px-3 mt-4 me-1 {% if recent_applications > 0 %}stat-increase{% else %}stat-decrease{% endif %}" data-toggle="tooltip" data-placement="top" title="Applications scanned and checked in the last 7 days.">
+                            <div class="text-secondary">
+                                {% if recent_applications > 0 %}
+                                    <i class="icofont-arrow-up me-1"></i>{{ recent_applications }}
+                                {% else %}
+                                    <i class="icofont-arrow-down me-1"></i>{{ recent_applications }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End of Row -->
+            </div> <!-- End of Box -->
+            <div class="row">
+                <div class="col-xl-6 chart-block">
+                    <!-- Operating Systems Doughnut Chart -->
+                    <div id="operating-systems" style="margin:auto"></div>
+                </div>  
+                <div class="col-xl-6">
+                </div>  
+            </div>
+            <div class="row">
+                <div class="col-xl-4">
+                    <!-- Recently Detected Compromised Passwords List -->
+                    <h5 class="mt-5">Latest High-Risk Credentials</h5>
+                    <table id="credentials" class="display pb-3 w-100">
+                        <thead>
+                            <tr>
+                                <th class="py-2 desktop">Username</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for credential in recent_at_risk_creds %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'report' scan_key=credential.credential_scan.scan_record.scan.scan_key report=credential.credential_scan.scan_record.id  %}" data-toggle="tooltip" data-placement="top" title="Click to view scan record containing credential."> 
+                                            <i class="icofont-info-circle me-1"></i> {{ credential.username|slice:":55" }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>   
+                <div class="col-xl-4">
+                    <!-- Recently Scanned Applications List -->
+                    <h5 class="mt-5">Latest Scanned Software</h5>
+                    <table id="applications" class="display pb-3 w-100">
+                        <thead>
+                            <tr>
+                                <th class="py-2 desktop">Application</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for application in recent_apps %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'report' scan_key=application.scan_record.scan.scan_key report=application.scan_record.id  %}" data-toggle="tooltip" data-placement="top" title="Click to view scan record containing application."> 
+                                            <i class="icofont-info-circle me-1"></i> {{ application.name|slice:":55" }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>  
+                <div class="col-xl-4">
+                    <!-- Recently Scanned Devices List -->
+                    <h5 class="mt-5">Recent Device Scans</h5>
+                    <table id="scans" class="display pb-3 w-100">
+                        <thead>
+                            <tr>
+                                <th class="py-2 desktop">Device</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for device in recent_devices %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'report' scan_key=device.scan.scan_key report=device.id  %}" data-toggle="tooltip" data-placement="top" title="Click to view scan record for device."> 
+                                            <i class="icofont-info-circle me-1"></i> {{ device.name|slice:":32" }} - {{ device.created|date:"d/m/Y - H:i" }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>  
+            </div>
         </div>
-        <div class="col-xl-6">                                        
+        <div class="col-xl-5">                                        
             <!-- Google Maps -->
-            <div id="map" style="width: 100%;height: 250px"></div>
+            <div id="map" style="width: 100%;height: 85vh"></div>
         </div>
     </div>
-    Line race chart for date installed for each device scanned.<br>
-    List - Most recently compromised passwords.<br>
-    List - Scan history (most recent data).<br>
-    Most Common OS Version<br>
-    Number of Scans<br>
 {% endblock %}
 
 {% block page_scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/js/jquery.dataTables.min.js" integrity="sha256-3aHVku6TxTRUkkiibvwTz5k8wc7xuEr1QqTB+Oo5Q7I=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net-responsive@2.2.9/js/dataTables.responsive.min.js" integrity="sha256-f+r2TX3KkC6avpv7F8bRhVZZO8nW7xJhmCKd6k7PqGE=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js" integrity="sha256-iJxB0L7blNZTAFBu/ESTfVaVTqFrTeISeWk7RUEePFY=" crossorigin="anonymous"></script>
     <script>
+        // Google Maps Data
         var markers = [
             {% for location in locations%}
                 [{{ location.0 }},{{ location.1 }}],
@@ -48,6 +170,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         ]  
         var icon = "{% static 'imgs/map.png' %}"
         var title = "Scanned Device"
+
+        // OS Breakdown
+        var operatingSystems = [
+            {% for os in operating_systems %}
+                {
+                    value: {{ os.name__count }},
+                    name: '{{ os.os_install__os__name }}'
+                },
+            {% endfor %}
+        ]
     </script>
     <script src="{% static 'js/dashboard.js' %}"></script>
     <script async src="https://maps.googleapis.com/maps/api/js?key={{ maps_key }}&callback=initMap"></script>

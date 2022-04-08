@@ -50,21 +50,22 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <!-- Sidebar -->
             <nav id="sidebar" class="p-3">
                 <div class="p-2 pt-3 sidebar-header">
-                <svg width="116" height="27" viewBox="0 0 116 27" fill="none" xmlns="http://www.w3.org/2000/svg" class="expanded">
-                    <rect width="27" height="27" fill="white"/>
-                    <path d="M57.5 0L74 27H41L57.5 0Z" fill="white"/>
-                    <circle cx="101.5" cy="13.5" r="13.5" fill="white"/>
-                    <rect y="9" width="116" height="3" fill="#1D1C28"/>
-                    <rect y="14" width="116" height="3" fill="#1D1C28"/>
-                </svg>
-                <div class="small">
-                    <svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="27" height="27" fill="white"></rect>
-                        <rect y="9" width="27" height="3" fill="#1D1C28"></rect>
-                        <rect y="14" width="27" height="3" fill="#1D1C28"></rect>
+                <a href="{% url 'portal' %}">
+                    <svg width="116" height="27" viewBox="0 0 116 27" fill="none" xmlns="http://www.w3.org/2000/svg" class="expanded">
+                        <rect width="27" height="27" fill="white"/>
+                        <path d="M57.5 0L74 27H41L57.5 0Z" fill="white"/>
+                        <circle cx="101.5" cy="13.5" r="13.5" fill="white"/>
+                        <rect y="9" width="116" height="3" fill="#1D1C28"/>
+                        <rect y="14" width="116" height="3" fill="#1D1C28"/>
                     </svg>
-                    </strong>
-                </div>
+                    <div class="small">
+                        <svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="27" height="27" fill="white"></rect>
+                            <rect y="9" width="27" height="3" fill="#1D1C28"></rect>
+                            <rect y="14" width="27" height="3" fill="#1D1C28"></rect>
+                        </svg>
+                    </div>
+                </a>
                 <ul class="sidebar-list list-unstyled py-5">
                     <li class="py-5">
                         <a href="{% url 'portal' %}" {% if request.resolver_match.url_name == 'portal' %}class="text-success"{% endif %}>

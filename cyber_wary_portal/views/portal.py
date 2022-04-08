@@ -73,23 +73,82 @@ from rest_framework.authtoken.models import Token
 
 @login_required
 def index(request):
-    scanned_ips = ScanRecord.objects.filter(
+    scan_records = ScanRecord.objects.filter(
         scan__in=Scan.objects.filter(
             user=request.user
         )
-    ).values("public_ip").distinct()
+    )
+    
+    date_last_week = datetime.now() - timedelta(days=7)
+
+    requests = ApiRequest.objects.filter(
+        user=request.user
+    )
+
+    recent_requests = requests.filter(
+        created__gte=make_aware(date_last_week)
+    )
+
+    recent_scan_records = scan_records.filter(
+        created__gte=make_aware(date_last_week)
+    )
+
+    applications = Software.objects.filter(
+        scan_record__in=scan_records
+    ).order_by('-created')
+
+    recent_applications = applications.filter(
+        created__gte=make_aware(date_last_week)
+    )
 
     locations = []
 
-    for ip in scanned_ips:
+    for ip in scan_records.values("public_ip").distinct():
         locations.append(GeoIP2().lat_lon(ip['public_ip']))
+
+    operating_systems = scan_records.values(
+        'os_install__os__name'
+    ).annotate(
+        Count(
+            'name'
+        )
+    )
+
+    credentials = recent_at_risk_creds = Credential.objects.filter(
+        credential_scan__in=CredentialScan.objects.filter(
+            scan_record__in=scan_records
+        ),
+    ).order_by('-updated')
+
+    recent_at_risk_creds = credentials.filter(
+        compromised=True,
+        created__gte=make_aware(date_last_week)
+    ).all()[:16]
+
+    recent_apps = Software.objects.filter(
+        scan_record__in=scan_records,
+        created__gte=make_aware(date_last_week)
+    ).order_by('-updated').all()[:16]
+
+    recent_devices = scan_records.order_by('-created')[:16]
+
 
     return render(
         request,
         'dashboard.html',
         {
             'maps_key': settings.MAPS_KEY,
-            'locations': locations
+            'locations': locations,
+            'requests': requests.count(),
+            'recent_requests': recent_requests.count(),
+            'scan_records': scan_records.count(),
+            'recent_scan_records': recent_scan_records.count(),
+            'applications': applications.count(),
+            'recent_applications': recent_applications.count(),
+            'operating_systems': operating_systems,
+            'recent_at_risk_creds': recent_at_risk_creds,
+            'recent_apps': recent_apps,
+            'recent_devices': recent_devices
         }
     )
 
@@ -513,7 +572,7 @@ def report(request, scan_key, report):
 
             scan_data['antivirus_detections'] = DefenderDetection.objects.filter(
                 scan_record=scan_record
-            )
+            ).order_by('-created')
 
         except (Credential.DoesNotExist, CredentialScan.DoesNotExist):
             scan_data['browser_passwords'] = None
