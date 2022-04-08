@@ -409,6 +409,13 @@ class DefenderExclusion(DefaultFields):
 class DefenderDetection(DefaultFields):
     # Model to record any detections that a device has recently flagged.
 
+    # The type of action that was performed against the detection.
+    class RemediationType(models.IntegerChoices):
+        EXTENSION = 1
+        IP_ADDRESS = 2
+        PATH = 3
+        PROCESS = 4
+
     scan_record = models.ForeignKey(
         ScanRecord,
         on_delete=models.CASCADE,
@@ -427,10 +434,15 @@ class DefenderDetection(DefaultFields):
     )
 
     reseponse_type = models.IntegerField(
-        default=0,
+        choices=RemediationType.choices,
+        default=RemediationType.EXTENSION,
+        validators=[
+            MaxValueValidator(10),
+            MinValueValidator(1)
+        ],
         help_text="The type of response that was taken to the threat detection (CleaningActionID)."
     )
-
+    
     threat_execution_status = models.IntegerField(
         default=0,
         help_text="The status of the any outstanding threats (CurrentThreatExecutionStatusID)."

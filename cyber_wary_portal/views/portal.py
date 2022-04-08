@@ -21,6 +21,7 @@
 from cyber_wary_portal.forms import AccountModificationForm, ScanFormStep2, AccountDeletionForm
 from cyber_wary_portal.models import *
 from cyber_wary_portal.utils.script_generation import generate_script
+from datetime import timedelta, datetime
 from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -31,10 +32,9 @@ from django.http.response import HttpResponse, HttpResponseRedirect, JsonRespons
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
+from django.utils.timezone import make_aware
 from formtools.wizard.views import SessionWizardView
 from rest_framework.authtoken.models import Token
-from datetime import timedelta, datetime
-from django.utils.timezone import make_aware
 
 
 # --------------------------------------------------------------------------- #
@@ -73,7 +73,25 @@ from django.utils.timezone import make_aware
 
 @login_required
 def index(request):
-    return render(request, 'dashboard.html')
+    scanned_ips = ScanRecord.objects.filter(
+        scan__in=Scan.objects.filter(
+            user=request.user
+        )
+    ).values("public_ip").distinct()
+
+    locations = []
+
+    for ip in scanned_ips:
+        locations.append(GeoIP2().lat_lon(ip['public_ip']))
+
+    return render(
+        request,
+        'dashboard.html',
+        {
+            'maps_key': settings.MAPS_KEY,
+            'locations': locations
+        }
+    )
 
 
 # --------------------------------------------------------------------------- #
@@ -338,7 +356,6 @@ def history(request):
         created__gte=make_aware(date_last_week)
     )
 
-
     return render(
         request,
         'scan/history.html',
@@ -421,16 +438,22 @@ def report(request, scan_key, report):
 
             running_total = 0
 
-            scan_data['install_timeline'] = applications.values("install_date").annotate(Count('install_date')).order_by('install_date').exclude(install_date=None)
+            scan_data['install_timeline'] = applications.values(
+                'install_date'
+            ).annotate(
+                Count('install_date')
+            ).order_by(
+                'install_date'
+            ).exclude(install_date=None)
+
             for date in scan_data['install_timeline']:
                 running_total += date['install_date__count']
                 date['running_total'] = running_total
 
-
             scan_data['installed_applications'] = []
             scan_data['cves'] = 0
-            scan_data['vulnerable_applications']  = 0
-            scan_data['installed_applications_count']  = applications.count()
+            scan_data['vulnerable_applications'] = 0
+            scan_data['installed_applications_count'] = applications.count()
 
             for application in applications.order_by('name'):
                 if application.cpe is not None:
@@ -473,6 +496,28 @@ def report(request, scan_key, report):
 
         except (Credential.DoesNotExist, CredentialScan.DoesNotExist):
             scan_data['browser_passwords'] = None
+
+    if(scan_record.scan.installed_antivirus):
+        try:
+            scan_data['antivirus_status'] = DefenderStatus.objects.filter(
+                scan_record=scan_record
+            )
+
+            scan_data['antivirus_preferences'] = DefenderPreference.objects.filter(
+                scan_record=scan_record
+            )[0]
+
+            scan_data['antivirus_exclusions'] = DefenderExclusion.objects.filter(
+                preference=scan_data['antivirus_preferences']
+            )
+
+            scan_data['antivirus_detections'] = DefenderDetection.objects.filter(
+                scan_record=scan_record
+            )
+
+        except (Credential.DoesNotExist, CredentialScan.DoesNotExist):
+            scan_data['browser_passwords'] = None
+
 
     if(scan_record.scan.system_users):
         try:

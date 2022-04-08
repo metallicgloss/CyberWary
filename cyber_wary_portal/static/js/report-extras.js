@@ -37,7 +37,7 @@ $(document).ready(function() {
         maxChartWidth = 700
     }
 
-    $('#credentials, #system-users').dataTable({
+    $('#credentials, #system-users, #windows-av-exclusions').dataTable({
         "lengthChange": false,
         "searching": false,
         "pageLength": 10,
@@ -50,6 +50,34 @@ $(document).ready(function() {
         },
     });
 });
+
+if (typeof antivirus !== 'undefined') {
+    $(document).ready(function() {
+        $('#windows-av-detections').dataTable({
+            "lengthChange": false,
+            "searching": false,
+            "pageLength": 10,
+            "ordering": false,
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            },
+            "autoWidth": false,
+            columnDefs: [
+                { targets: 0, width: "40%" },
+                { targets: 1, width: "30%" },
+                { targets: 2, width: "30%" }
+            ]
+        });
+    })
+
+    function viewResources(resources) {
+        $('#resources').text(resources)
+        $('#defenderResourceModal').modal('show');
+    }
+}
 
 
 if (typeof cve !== 'undefined') {
@@ -397,7 +425,18 @@ function initMap() {
             lat: latitude,
             lng: longitude
         },
+        minZoom: 2,
+        maxZoom: 10,
+        restriction: {
+            latLngBounds: {
+                north: 85,
+                south: -85,
+                west: -180,
+                east: 180
+            }
+        },
         disableDefaultUI: true,
+        gestureHandling: "cooperative",
         styles: [{
                 "elementType": "geometry",
                 "stylers": [{

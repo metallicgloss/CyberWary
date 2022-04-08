@@ -884,7 +884,8 @@ table.dataTable>tbody>tr.child span.dtr-title {
     .scan-report-container {
         height: 60vh;
     }
-    #content p {
+    #content,
+    table.dataTable tbody td {
         font-size: 12px;
     }
 }

@@ -23,15 +23,32 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 {% block page_content %}
     <h2>Dashboard</h2>
-    Google Maps with location plotted for each ip geolocation that has been scanned.<br>
+    <div class="row">
+        <div class="col-xl-6">                                        
+           
+        </div>
+        <div class="col-xl-6">                                        
+            <!-- Google Maps -->
+            <div id="map" style="width: 100%;height: 250px"></div>
+        </div>
+    </div>
     Line race chart for date installed for each device scanned.<br>
-    Radar for detected problems on devices.<br>
-    Pie Chart - overall number of problems detected.<br>
     List - Most recently compromised passwords.<br>
     List - Scan history (most recent data).<br>
-    Payload Data Generated.<br>
     Most Common OS Version<br>
     Number of Scans<br>
-    Weighted Blue VS Red Team<br>
-    GitHub Style for number of scans executed.<br>
+{% endblock %}
+
+{% block page_scripts %}
+    <script>
+        var markers = [
+            {% for location in locations%}
+                [{{ location.0 }},{{ location.1 }}],
+            {% endfor %}
+        ]  
+        var icon = "{% static 'imgs/map.png' %}"
+        var title = "Scanned Device"
+    </script>
+    <script src="{% static 'js/dashboard.js' %}"></script>
+    <script async src="https://maps.googleapis.com/maps/api/js?key={{ maps_key }}&callback=initMap"></script>
 {% endblock %}
