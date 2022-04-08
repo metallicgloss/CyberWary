@@ -28,8 +28,68 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 {% block page_content %}
     <section>
-        <!-- Page Title & Scan Information -->
-        <h2>Scans</h2>
+        <!-- Scan Statistics -->
+        <h3>Scan Statistics</h3>
+
+        <div class="py-3 px-2 mt-3 mb-5 bg-light">
+            <div class="row justify-content-center text-start">
+                <div class="col-lg-12 col-xl-3 px-4 stat-parent">
+                    <p class="mb-0">Total Scan Groups</p>
+                    <h2 class="mb-0 pt-2 d-inline-block">{{ user_scans.count }}</h2>
+                    <div class="btn-success float-end py-0 px-3 mt-4 me-1 {% if user_scans_last_week > 0 %}stat-increase{% else %}stat-decrease{% endif %}" data-toggle="tooltip" data-placement="top" title="New scan groups created in the last 7 days.">
+                        <div class="text-secondary">
+                            {% if user_scans_last_week > 0 %}
+                                <i class="icofont-arrow-up me-1"></i>{{ user_scans_last_week }}
+                            {% else %}
+                                <i class="icofont-arrow-down me-1"></i>{{ user_scans_last_week }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-xl-3 px-4 stat-parent">
+                    <p class="mb-0">Total Scan Records</p>
+                    <h2 class="mb-0 pt-2 d-inline-block">{{ records }}</h2>
+                    <div class="btn-success float-end py-0 px-3 mt-4 me-1 {% if records_last_week > 0 %}stat-increase{% else %}stat-decrease{% endif %}" data-toggle="tooltip" data-placement="top" title="Scan records associated with devices created in the last 7 days.">
+                        <div class="text-secondary">
+                            {% if records_last_week > 0 %}
+                                <i class="icofont-arrow-up me-1"></i>{{ records_last_week }}
+                            {% else %}
+                                <i class="icofont-arrow-down me-1"></i>{{ records_last_week }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-xl-3 px-4 stat-parent">
+                    <p class="mb-0">Total Unique Devices Scanned</p>
+                    <h2 class="mb-0 pt-2 d-inline-block">{{ devices }}</h2>
+                    <div class="btn-success float-end py-0 px-3 mt-4 me-1 {% if devices_last_week > 0 %}stat-increase{% else %}stat-decrease{% endif %}" data-toggle="tooltip" data-placement="top" title="Unique devices scanned in the last 7 days.">
+                        <div class="text-secondary">
+                            {% if devices_last_week > 0 %}
+                                <i class="icofont-arrow-up me-1"></i>{{ devices_last_week }}
+                            {% else %}
+                                <i class="icofont-arrow-down me-1"></i>{{ devices_last_week }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-xl-3 px-4">
+                    <p class="mb-0">Total Compromised Passwords</p>
+                    <h2 class="mb-0 pt-2 d-inline-block">{{ credentials }}</h2>
+                    <div class="btn-success float-end py-0 px-3 mt-4 me-1 {% if credentials_last_week > 0 %}stat-decrease{% else %}stat-increase{% endif %}" data-toggle="tooltip" data-placement="top" title="Passwords detected as compromised in the last 7 days.">
+                        <div class="text-secondary">
+                            {% if credentials_last_week > 0 %}
+                                <i class="icofont-arrow-up me-1"></i>{{ credentials_last_week }}
+                            {% else %}
+                                <i class="icofont-arrow-down me-1"></i>{{ credentials_last_week }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- End of Row -->
+        </div> <!-- End of Box -->
+
+        <!-- Scan History -->
+        <h3 class="pt-4">Scan History</h3>
 
         <!-- List of Past Scans -->
         <div class="row">
@@ -37,17 +97,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <table id="scan-history" class="display pb-5 w-100">
                     <thead>
                         <tr>
-                            <th class="pb-3 desktop">Scan Created Date/Time</th>
+                            <th class="pb-3 desktop">Scan Title</th>
+                            <th class="pb-3 desktop">Scan Creation Date/Time</th>
                             <th class="pb-3 desktop">Scan Type</th>
-                            <th class="pb-3 desktop"></th>
+                            <th class="pb-3 desktop">Scan Group</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for scan in user_scans %}
                             <tr>
+                                <td>{{ scan.title }}</td>
                                 <td>{{ scan.created|date:"l jS F Y - H:i:s e" }}</td>
                                 <td>{{ scan.get_type_display }} Team</td>
-                                <td><a href="{% url 'scan' scan_key=scan.scan_key  %}"><i class="icofont-double-right"></i></a></td>
+                                <td><a href="{% url 'scan' scan_key=scan.scan_key  %}">View Scan Records <i class="icofont-double-right"></i></a></td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -67,13 +129,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 "lengthChange": false,
                 "searching": false,
                 "pageLength": 10,
-                "ordering": false,
                 responsive: {
                     details: {
                         type: 'column',
                         target: 'tr'
                     }
                 },
+                "autoWidth": false,
+                columnDefs: [
+                    { targets: 0, width: "35%" },
+                    { targets: 1, width: "35%" },
+                    { targets: 2, width: "15%", sortable: false },
+                    { targets: 3, width: "15%", sortable: false },
+                ]
             });
         });
     </script>

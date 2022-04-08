@@ -28,7 +28,14 @@ $(document).ready(function() {
         }
     });
 
-    maxChartDimensions = $('#faqAccordion').parent().width() / 2 - 25
+    calculatedMax = $('#faqAccordion').parent().width() / 2 - 25
+    if (calculatedMax < 700) {
+        maxChartHeight = Math.round(calculatedMax * 0.7)
+        maxChartWidth = calculatedMax
+    } else {
+        maxChartHeight = 400
+        maxChartWidth = 700
+    }
 
     $('#credentials, #system-users').dataTable({
         "lengthChange": false,
@@ -47,8 +54,8 @@ $(document).ready(function() {
 
 if (typeof cve !== 'undefined') {
     $(document).ready(function() {
-        $('#vulnerabilities').css('width', maxChartDimensions).css('height', maxChartDimensions - 50)
-        $('#install-by-time').css('width', maxChartDimensions).css('height', maxChartDimensions - 50)
+        $('#vulnerabilities').css('width', maxChartWidth).css('height', maxChartHeight)
+        $('#install-by-time').css('width', maxChartWidth).css('height', maxChartHeight)
 
         $('#applications').dataTable({
             "lengthChange": false,
@@ -164,7 +171,7 @@ if (typeof cve !== 'undefined') {
             ],
             title: {
                 display: true,
-                text: 'Applications Installed',
+                text: 'Applications Installed by Date',
                 textStyle: {
                     color: '#272727',
                     fontWeight: 'normal',
@@ -262,8 +269,8 @@ if (typeof cve !== 'undefined') {
 
 if (typeof credentials !== 'undefined') {
     $(document).ready(function() {
-        $('#usernames').css('width', maxChartDimensions).css('height', maxChartDimensions - 50)
-        $('#compromised').css('width', maxChartDimensions).css('height', maxChartDimensions - 50)
+        $('#usernames').css('width', maxChartWidth).css('height', maxChartHeight)
+        $('#compromised').css('width', maxChartWidth).css('height', maxChartHeight)
 
         echarts.init(document.getElementById('usernames')).setOption({
             title: {

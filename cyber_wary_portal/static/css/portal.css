@@ -530,6 +530,20 @@ table.dataTable>tbody>tr.child span.dtr-title {
     font-size: 13px;
 }
 
+.stat-increase {
+    background-color: rgba(74, 223, 171, 0.3) !important;
+    border: none
+}
+
+.stat-decrease {
+    background-color: rgba(208, 98, 98, 0.3) !important;
+    border: none
+}
+
+.stat-parent {
+    border-right: 1px solid var(--light-border)
+}
+
 @keyframes rotate {
     from {
         transform: rotate(0deg);

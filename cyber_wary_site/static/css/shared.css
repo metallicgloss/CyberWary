@@ -55,7 +55,7 @@
     --light-primary-alt: #F4F4F4;
     --light-primary: #FFFFFF;
     --success-alt: #4adfab;
-    --success: #34CC96;
+    --success: #34cc96;
     --warning: #E9A464;
 }
 
@@ -215,6 +215,10 @@ a {
 
 .bg-danger {
     background-color: var(--danger) !important;
+}
+
+.bg-light {
+    background-color: var(--light-primary-alt) !important;
 }
 
 .accordion-button:not(.collapsed)::after {

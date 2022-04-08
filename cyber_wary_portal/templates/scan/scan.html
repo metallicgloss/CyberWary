@@ -34,7 +34,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div class="row">
             <div class="col-lg-12 col-xl-5 pt-2">
                 <!-- Page Title & Scan Details -->
-                <h5>Scan Script</h5>
+                <div class="mb-2">
+                    <h5 class="d-inline" style="font-size:22px;">Generated Scan Script</h5>
+                    <a class="btn btn-success float-end d-inline px-2 py-1" style="font-size: 12px" onclick="copyClipboard()"><i class="icofont-copy-invert"></i> Copy Script to Clipboard</a>
+                </div>
                 <div class="p-3 generated-content">
                     <div class="code position-relative mb-3">
                         <div class="hljs-comment">
@@ -97,7 +100,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                             <p class="mb-0">
                                 <span style="font-family: 'Space Mono', monospace;font-weight: bold;color: var(--dark-primary); font-size: 18px;">Step 3:</span>
                                 Copy and paste the <code class="mx-2">Scan Script</code> displayed on this page into the PowerShell terminal.
-                                <i class="icofont-question-circle payload-action ms-1" data-toggle="tooltip" data-placement="top" data-bs-html="true" title='<strong>Hint</strong><br>TBC'></i>
+                                <i class="icofont-question-circle payload-action ms-1" data-toggle="tooltip" data-placement="top" data-bs-html="true" title='<strong>Hint</strong><br>Click the green <code class="mx-1 fw-bold">Copy Script to Clipboard</code> button displayed above the generated script, switch to your <code class="mx-1 fw-bold">PowerShell</code> window, then press <code class="mx-1 fw-bold">SHIFT + INSERT</code> at the same time on your keyboard; this should past the code into the terminal, then just press enter!'></i>
                             </p>
                         </div>
                     </div>
@@ -232,7 +235,28 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             } else {
                 updateInterval = setInterval(checkForUpdates, 10000);
             }
-
         });
+
+        function copyClipboard() {
+            // Copy text contents of the generated script box.
+
+            // Reference https://ref.cyberwary.com/hn4g9
+            var scriptRange = document.createRange();
+            scriptRange.selectNode(
+                document.getElementById("generated-script")
+            );
+
+            // Clear any existing selection range (if user has selected an alternative region of the page)
+            window.getSelection().removeAllRanges();
+
+            // Add selection range.
+            window.getSelection().addRange(scriptRange);
+
+            // Execute copy action for the newly selected range.
+            document.execCommand('copy');
+
+            // Clear any text selection.
+            window.getSelection().removeAllRanges();
+        }
     </script>
 {% endblock%}

@@ -33,6 +33,8 @@ from django.urls import reverse
 from django.utils.crypto import get_random_string
 from formtools.wizard.views import SessionWizardView
 from rest_framework.authtoken.models import Token
+from datetime import timedelta, datetime
+from django.utils.timezone import make_aware
 
 
 # --------------------------------------------------------------------------- #
@@ -296,13 +298,59 @@ def activity(request, scan_key):
 @login_required
 def history(request):
     # List scan history / scan groups.
+    user_scans = Scan.objects.filter(
+        user=request.user
+    ).order_by('-created')
+
+    date_last_week = datetime.now() - timedelta(days=7)
+
+    user_scans_last_week = user_scans.filter(
+        created__gte=make_aware(date_last_week)
+    )
+
+    records = ScanRecord.objects.filter(
+        scan__in=user_scans
+    )
+
+    records_last_week = records.filter(
+        created__gte=make_aware(date_last_week)
+    )
+
+    devices = records.values(
+        'device_id'
+    ).distinct()
+
+    devices_last_week = records_last_week.values(
+        'device_id'
+    ).distinct()
+
+    credentials = Credential.objects.filter(
+        credential_scan__in=CredentialScan.objects.filter(
+            scan_record__in=records
+        ),
+        compromised=True
+    ).values(
+        'url',
+        'username'
+    ).distinct()
+
+    credentials_last_week = credentials.filter(
+        created__gte=make_aware(date_last_week)
+    )
+
+
     return render(
         request,
         'scan/history.html',
         {
-            'user_scans': Scan.objects.filter(
-                user=request.user
-            ).order_by('-created')
+            'user_scans': user_scans,
+            'user_scans_last_week': user_scans_last_week.count(),
+            'records': records.count(),
+            'records_last_week': records_last_week.count(),
+            'devices': devices.count(),
+            'devices_last_week': devices_last_week.count(),
+            'credentials': credentials.count(),
+            'credentials_last_week': credentials_last_week.count()
         }
     )
 
