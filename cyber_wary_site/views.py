@@ -18,14 +18,39 @@
 #
 
 from django.shortcuts import render
+from cyber_wary_portal.models import ApiRequest, Credential, CPE, CVEMatches, FirewallRules, Software, SystemUser
 
 
 def index(request):
-    return render(request, 'index.html')
+    return render(
+        request,
+        'index.html',
+        {
+            'metrics': {
+                'users': SystemUser.objects.all().count(),
+                'applications': Software.objects.all().count(),
+                'passwords': Credential.objects.all().count()
+            }
+        }
+    )
 
 
 def software(request):
-    return render(request, 'software.html')
+    return render(
+        request,
+        'software.html',
+        {
+            'metrics': {
+                'requests': ApiRequest.objects.all().count(),
+                'rules': FirewallRules.objects.all().count(),
+                'vulnerabilities': CVEMatches.objects.filter(
+                    cpe__in=CPE.objects.filter(
+                        id__in=Software.objects.exclude(cpe=None).values_list('cpe')
+                    )
+                ).count()
+            }
+        }
+    )
 
 
 def tos(request):

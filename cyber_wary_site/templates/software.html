@@ -28,8 +28,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <img src="{% static 'imgs/blur-header.svg' %}" alt="Background Blur" class="mx-auto d-block position-absolute blur-effect d-none d-lg-block" />
             <div class="row text-center my-5">
                 <div class="col">
-                    <h1>Industry Leading Features</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <h1>Feature-Packed Platform</h1>
+                    <p>A research project that packs a punch full of industry leading features.</p>
                 </div>
             </div>
             <img src="{% static 'imgs/interface.png' %}" class="w-100 mt-5 d-none d-lg-block" alt="Graphical user interface of software." />
@@ -41,28 +41,28 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div class="container">
             <div class="row text-center my-5">
                 <div class="col-lg-12 col-xl-12">
-                    <h1>Industry Leading Features</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Odio tristique semper consectetur lorem elit tempus tincidunt integer.<br>Nibh facilisi aliquet quis integer dignissim.</p>
+                    <h1>Extensive Modular Scan Components</h1>
+                    <p>CyberWary features multiple scan components available for configuration during<br>a scan, allowing for you to scan the parts of your computer that you're<br>most wary of, or to just scan everything for possible problems!</p>
                 </div>
             </div>
             <div class="stats position-relative text-center">
                 <div class="row">
                     <div class="col-lg-12 col-xl-4">
                         <div class="p-5 position-relative">
-                            <h5><span>99.99%</span></h5>
-                            <p>Statistic</p>
+                            <h5><span>{{ metrics.requests }}</span></h5>
+                            <p>API Requests Handled</p>
                         </div>
                     </div>
                     <div class="col-lg-12 col-xl-4">
                         <div class="p-5 position-relative">
-                            <h5><span>99.99%</span></h5>
-                            <p>Statistic</p>
+                            <h5><span>{{ metrics.rules }}</span></h5>
+                            <p>Firewall Rules Checked</p>
                         </div>
                     </div>
                     <div class="col-lg-12 col-xl-4">
                         <div class="p-5 position-relative">
-                            <h5><span>99.99%</span></h5>
-                            <p>Statistic</p>
+                            <h5><span>{{ metrics.vulnerabilities }}</span></h5>
+                            <p>CVEs Matched</p>
                         </div>
                     </div>
                 </div>
@@ -77,8 +77,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 </svg>
                             </div>
                             <div class="col-11">
-                                <h3 class="ms-1">Code Generation</h3>
-                                <p class="ms-2 mt-3 mb-5 w-75">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio tristique semper consectetur lorem elit tempus tincidunt integer. Nibh facilisi aliquet quis integer dignissim.</p>
+                                <h3 class="ms-1">Script Preview</h3>
+                                <p class="ms-2 mt-3 mb-5 w-75">See a readable copy of the scan script before executing it for peace of mind; the dynamic generation process updates in real-time to reflect your chosen scan components.</p>
                             </div>
                         </div>
                     </div>
@@ -95,10 +95,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div class="container d-none d-lg-block">
             <div class="row">
                 <div class="col-lg-12 col-xl-5">
-                    <p class="mt-5 ms-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <p class="mt-5 ms-5">I'm terrible at writing quotes, so it is a good thing this isn't a published SaaS! I really hope you enjoy the software & project! </p>
                     <div class="d-flex align-items-start ms-5 mt-4 author">
                         <img src="{% static 'imgs/William P.png' %}" width="35px" style="border-radius:100px" class="me-3" alt="Logo of William P" />
-                        <p class="mx-2">William Phillips</p>
+                        <p class="mx-2">William P</p>
                         <svg width="3" height="3" viewBox="0 0 3 3" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect width="3" height="3" fill="#34CC96" />
                         </svg>
@@ -111,29 +111,29 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div id="feature-repeat" class="d-none d-lg-block"></div>
         <div class="container">
             <div class="feature-highlight text-center">
-                <h2 class="mb-5">Awesome Feature</h2>
-                <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Massa mollis non sit dolor sit nullam eget.</p>
+                <h2 class="mb-5">Digital Security</h2>
+                <p class="mb-5">Cyber security is a team sport, and leveraging trusted<br>partners to better serve you enhances the experience and service.</p>
                 <div class="row pt-5">
                     <div class="col-lg-12 col-xl-4">
                         <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-4">
                             <rect width="38" height="38" fill="#34CC96" />
                         </svg>
-                        <h4>Small Title</h4>
-                        <p>Lorem ipsum dolor sit amet,<br>consectetur adipiscing elit.</p>
+                        <h4>OAuth2 Partners</h4>
+                        <p>Google, Microsoft and GitHub OAuth2<br>integrations for fast login and registration.</p>
                     </div>
                     <div class="col-lg-12 col-xl-4">
                         <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-4">
                             <rect width="38" height="38" fill="#34CC96" />
                         </svg>
-                        <h4>Small Title</h4>
-                        <p>Lorem ipsum dolor sit amet,<br>consectetur adipiscing elit.</p>
+                        <h4>Have I Been Pwned</h4>
+                        <p>A vast aggregated collection of datasets<br>containing stolen and leaked credentials.</p>
                     </div>
                     <div class="col-lg-12 col-xl-4">
                         <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-4">
                             <rect width="38" height="38" fill="#34CC96" />
                         </svg>
-                        <h4>Small Title</h4>
-                        <p>Lorem ipsum dolor sit amet,<br>consectetur adipiscing elit.</p>
+                        <h4>NIST ~ NVD</h4>
+                        <p>Public sector vulnerability and disclosure<br>tracking for hardware and software.</p>
                     </div>
                 </div>
             </div>
@@ -143,8 +143,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <div class="feature-comment">
                 <div class="row">
                     <div class="col-lg-12 col-xl-8 comment">
-                        <h2 class="5">Awesome Feature</h2>
-                        <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Massa mollis non sit dolor sit nullam eget.<br>Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Massa mollis non sit dolor sit nullam eget.</p>
+                        <h2 class="5">Open Source & Modular</h2>
+                        <p class="mb-5">Vehemently opposed to any third-party storing your data?<br>Really want to add additional functionality or new component?<br><br>The project code for the CyberWary project is open source! <a href="https://fyp.software" class="text-success">Enjoy!</a></p>
                     </div>
                     <div class="col-4 d-none d-lg-block">
                         <img src="{% static 'imgs/planet.png' %}" class="w-100 mt-5" alt="Floating planet." />
@@ -158,11 +158,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <section class="feature-run">
         <div class="container">
             <div class="run-scan text-center">
-                <h2>Run a scan in 3 minutes</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Massa mollis non sit dolor sit nullam eget.</p>
+                <h2>Get Up and Running in 60 Seconds</h2>
+                <p>It's quick to get setup with an account, and the actual scanning process is usually even quicker! Register an account now to begin!</p>
                 <div class="feature-buttons mt-5">
-                    <a href="" class="primary text-white py-1 px-5 me-4">Get Started</a>
-                    <a href="" class="scan text-white py-1 px-5">Scan Now</a>
+                    <a href="{% url 'account_signup' %}" class="primary text-white py-1 px-5 me-4">Get Started</a>
+                    <a href="{% url 'portal' %}" class="scan text-white py-1 px-5">Scan Now</a>
                 </div>
             </div>
         </div>
@@ -173,7 +173,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <script>
         var text = '';
         for(var i=0; i<10; i++) {
-            text += 'Feature ';
+            text += 'Digital Security ';
         }
         $('#feature-repeat').text(text);
     </script>

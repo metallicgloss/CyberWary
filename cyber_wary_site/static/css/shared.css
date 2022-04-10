@@ -231,8 +231,7 @@ a {
 }
 
 .accordion-button:not(.collapsed) {
-    color: var(--dark-primary);
-    background-color: var(--light-primary)
+    color: var(--dark-primary)
 }
 
 

@@ -128,6 +128,10 @@ body {
     font-size: 12px;
 }
 
+.footer a:hover {
+    color: var(--success) !important;
+}
+
 .footer .copyright {
     color: #c5c5c5;
 }
@@ -170,7 +174,7 @@ body {
 .details p {
     font-size: 16px;
     line-height: 22px;
-    max-width: 400px;
+    max-width: 500px;
 }
 
 .details .intro a {
@@ -194,6 +198,10 @@ body {
 .details .notification-box .notification {
     height: 68px;
     background: var(--light-primary-alt);
+}
+
+.details .notification-box .notification i {
+    font-size: 32px;
 }
 
 .details .notification-box .notification .info p {
@@ -307,6 +315,14 @@ body {
 .faq {
     background-color: #FCFCFC;
     padding: 100px 0;
+}
+
+.faq a {
+    color: var(--dark-primary);
+}
+
+.faq a:hover {
+    color: var(--success)
 }
 
 .get-ready {

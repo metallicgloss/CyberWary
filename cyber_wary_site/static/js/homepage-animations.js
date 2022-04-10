@@ -105,7 +105,8 @@ if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
     notifications.add({
         targets: document.querySelectorAll('.notification-box .notification')[0],
         keyframes: [{
-            opacity: [0, 1]
+            opacity: [0, 1],
+            delay: 100
         }],
         duration: 200 // Define shorter animation as no movement required.
     })
