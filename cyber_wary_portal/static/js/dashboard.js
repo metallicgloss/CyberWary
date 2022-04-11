@@ -20,7 +20,7 @@
 \*-----------------------------------------------------------------------*/
 
 function initMap() {
-    const map = new google.maps.Map(document.getElementById("map"), {
+    const map = new google.maps.Map(document.getElementById("dashboard-map"), {
         zoom: 6,
         center: {
             lat: 55,

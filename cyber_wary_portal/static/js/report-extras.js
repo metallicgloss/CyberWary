@@ -37,7 +37,7 @@ $(document).ready(function() {
         maxChartWidth = 700
     }
 
-    $('#credentials, #system-users, #windows-av-exclusions').dataTable({
+    $('#credentials, #system-users, #windows-av-exclusions, #installed-patches, #pending-patches').dataTable({
         "lengthChange": false,
         "searching": false,
         "pageLength": 10,

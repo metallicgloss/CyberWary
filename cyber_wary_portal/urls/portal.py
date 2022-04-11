@@ -17,9 +17,9 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from cyber_wary_portal.views import portal
+from cyber_wary_portal.views.portal import core, report
 from cyber_wary_portal.forms import ScanFormStep1, ScanFormStep2
-from cyber_wary_portal.views.portal import ScanCreationWizard
+from cyber_wary_portal.views.portal.core import ScanCreationWizard
 from django.conf.urls import include
 from django.urls import path
 from django.views.generic import RedirectView
@@ -27,7 +27,7 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path(
         '',
-        portal.index,
+        core.index,
         name='portal'
     ),
 
@@ -45,31 +45,31 @@ urlpatterns = [
 
         path(
             'script/preview',
-            portal.preview_script,
+            core.preview_script,
             name='preview_script'
         ),
 
         path(
             'history',
-            portal.history,
+            core.history,
             name='history'
         ),
 
         path(
             'activity/<scan_key>',
-            portal.activity,
+            core.activity,
             name='activity'
         ),
 
         path(
             'record/<scan_key>',
-            portal.scan,
+            core.scan,
             name='scan'
         ),
 
         path(
             'record/<scan_key>/<report>',
-            portal.report,
+            report.report,
             name='report'
         ),
     ])),
@@ -83,13 +83,13 @@ urlpatterns = [
 
         path(
             'modify/',
-            portal.modify,
+            core.modify,
             name='account_modify'
         ),
 
         path(
             'delete/',
-            portal.delete,
+            core.delete,
             name='account_delete'
         ),
 

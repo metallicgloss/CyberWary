@@ -556,6 +556,14 @@ table.dataTable>tbody>tr.child span.dtr-title {
     font-size: 18px;
 }
 
+#dashboard-map {
+    height: 85vh;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: var(--light-primary)
+}
+
 @keyframes rotate {
     from {
         transform: rotate(0deg);
@@ -887,6 +895,12 @@ table.dataTable>tbody>tr.child span.dtr-title {
     #content,
     table.dataTable tbody td {
         font-size: 12px;
+    }
+    .dashboard-lists {
+        display: none;
+    }
+    #dashboard-map {
+        height: 75vh;
     }
 }
 

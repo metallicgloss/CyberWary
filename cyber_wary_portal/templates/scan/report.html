@@ -95,7 +95,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <div class="accordion-body">
                                             <!-- Installed Applications Explainer -->
                                             <h5 class="mt-4">Installed Applications</h5>
-                                            <p class="mb-4">Quisque imperdiet lorem eget diam tristique, vel eleifend nulla malesuada. Cras dapibus eu odio ac pharetra. Fusce at tristique erat, nec fermentum sapien. Sed nec egestas nibh. In hac habitasse platea dictumst. Nunc malesuada molestie lacus vitae tristique. Vivamus a neque nunc. Quisque urna libero, pulvinar non gravida eget, suscipit ac leo. Cras eleifend purus et magna tristique, sed vehicula turpis malesuada. Integer consectetur dolor sed dui luctus iaculis. Vivamus at mollis magna. Sed at elementum neque.</p>
+                                            <p class="mb-4">There's a high chance that you've installed at least one third-party application, and you're not relying solely on the Microsoft Store; this component captures a list of all installed applications on your device and then attempts to identify if there are any known vulnerabilities with the version of the software that may indicate that it hasn't been updated.</p>
 
                                             <!-- Installed Applications Metrics / Charts -->
                                             <div class="row">
@@ -171,7 +171,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <div class="accordion-body">
                                             <!-- Credentials Explainer -->
                                             <h5 class="mt-4">Credentials</h5>
-                                            <p class="mb-4">Quisque imperdiet lorem eget diam tristique, vel eleifend nulla malesuada. Cras dapibus eu odio ac pharetra. Fusce at tristique erat, nec fermentum sapien. Sed nec egestas nibh. In hac habitasse platea dictumst. Nunc malesuada molestie lacus vitae tristique. Vivamus a neque nunc. Quisque urna libero, pulvinar non gravida eget, suscipit ac leo. Cras eleifend purus et magna tristique, sed vehicula turpis malesuada. Integer consectetur dolor sed dui luctus iaculis. Vivamus at mollis magna. Sed at elementum neque.</p>
+                                            <p class="mb-4">Have excellent password hygiene? Store passwords securely in your browser rather than on paper? Your passwords are only as secure as your system, and anyone with access to your device can quickly view them all; if you're not using a password manager, this component will scan all passwords available on your system to check their strength and if they've been potentially compromised.</p>
 
                                             <!-- Credentials Metrics / Charts -->
                                             <div class="row">
@@ -233,6 +233,82 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 </div>
                             {% endif %}
 
+                            <!-- Windows Update -->
+                            {% if scan_record.scan.installed_patches and scan_data.patches_installed.count != 0 %}
+                                <div class="accordion-item">
+                                    <!-- Accordion Tab Title -->
+                                    <h2 class="accordion-header" id="heading-installed-patches">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-installed-patches" aria-expanded="false" aria-controls="collapse-installed-patches">
+                                            {% if scan_data.pending_patches.count > 1 or scan_data.installed_patches.count < 5 %}
+                                                <i class="icofont-exclamation-tringle me-2 text-warning"></i>
+                                            {% else %}
+                                                <i class="icofont-check-circled me-2 pt-1 text-success"></i>
+                                            {% endif %}
+                                            Operating System Patches
+                                        </button>
+                                    </h2>
+
+                                    <div id="collapse-installed-patches" class="accordion-collapse collapse" aria-labelledby="heading-installed-patches" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            <!-- Installed Patches Explainer -->
+                                            <h5 class="mt-4">Windows Update</h5>
+                                            <p class="mb-4">The notorious Windows Update; <strike>love it</strike> hate it or hate it, Windows Update is one of the most powerful tools in the Windows ecosystem allowing for security patches to be quickly distributed to all users, and it enables feature <i>improvements</i> to be delivered automatically. This component checks to ensure that you're not clicking "Update Later" too much and are now missing essential updates.</p>
+
+                                            <!-- Installed Patch List -->
+                                            <h5 class="mt-5">Installed Updates</h5>
+                                            <table id="installed-patches" class="display pb-3 w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="py-2 desktop">Date</th>
+                                                        <th class="py-2 desktop">Title</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for patch in scan_data.installed_patches %}
+                                                        <tr>
+                                                            <td>{{ patch.date|date:"l jS F Y - H:i e" }}</td>
+                                                            <td>{{ patch.title }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+
+                                            {% if scan_data.pending_patches.count > 0%}
+                                                <!-- Pending Updates List -->
+                                                <h5 class="mt-5">Pending Updates</h5>
+                                                <table id="pending-patches" class="display pb-3 w-100">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="py-2 desktop text-warning">Title</th>
+                                                            <th class="py-2 desktop text-warning">Downloaded</th>
+                                                            <th class="py-2 desktop text-warning">Mandatory</th>
+                                                            <th class="py-2 desktop text-warning">Security Rating</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for patch in scan_data.pending_patches %}
+                                                            <tr>
+                                                                <td>{{ patch.title }}</td>
+                                                                <td>{% if patch.downloaded %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if patch.mandatory %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{{ patch.security_rating }}</td>
+                                                            
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            {% endif %}
+
+                                            <!-- Accordion Controls -->
+                                            <div class="nav-buttons mt-4">
+                                                <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                                                <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
                             <!-- AntiVirus Settings -->
                             {% if scan_record.scan.installed_antivirus and scan_data.antivirus_preferences != None %}
                                 <div class="accordion-item">
@@ -254,12 +330,69 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <div class="accordion-body">
                                             <!-- Windows Defender Explainer -->
                                             <h5 class="mt-4">Windows Defender</h5>
-                                            <p class="mb-4">Quisque imperdiet lorem eget diam tristique, vel eleifend nulla malesuada. Cras dapibus eu odio ac pharetra. Fusce at tristique erat, nec fermentum sapien. Sed nec egestas nibh. In hac habitasse platea dictumst. Nunc malesuada molestie lacus vitae tristique. Vivamus a neque nunc. Quisque urna libero, pulvinar non gravida eget, suscipit ac leo. Cras eleifend purus et magna tristique, sed vehicula turpis malesuada. Integer consectetur dolor sed dui luctus iaculis. Vivamus at mollis magna. Sed at elementum neque.</p>
+                                            <p class="mb-4">Windows Defender Anti-Virus is enabled by default on all new installations of Windows Home and is usually sufficient in protecting users from all typical problems they may experience. This component does a once-over to ensure that there are no altered settings that may leave your system vulnerable, that there are no exclusions hiding malware, and that you don't have any recent detections. </p>
+
+                                            <div class="row pb-4">
+                                                <div class="col-xl-6">
+                                                    <!-- Windows Defender Status -->
+                                                    <h5 class="mt-5 ">Status Warnings</h5>
+                                                    {% if not scan_data.antivirus_status.behavior_monitoring %}<p class="mb-0">Behaviour monitoring has been manually <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if not scan_data.antivirus_status.tamper_protection %}<p class="mb-0">Tamper protection has been manually <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if not scan_data.antivirus_status.realtime_protection %}<p class="mb-0">Real-time protection has been manually <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if not scan_data.antivirus_status.download_protection %}<p class="mb-0">Download scanning has been manually <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if not scan_data.antivirus_status.access_protection %}<p class="mb-0">Controlled folder access has not yet been activated.</p>{% endif %}
+                                                </div>
+                                                <div class="col-xl-6">
+                                                    <!-- Windows Defender Preferences -->
+                                                    <h5 class="mt-5">Preference Warnings</h5>
+                                                    {% if not scan_data.antivirus_preferences.check_for_signatures_before_running_scan %}<p class="mb-0">Automatic signature checks before scans has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_archive_scanning %}<p class="mb-0">The scanning of archives (compressed files) has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_block_at_first_seen %}<p class="mb-0">Automatic prevention of unknown malware has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_cpu_throttle_on_idle_scans %}<p class="mb-0"><abbr title="Central Processing Unit">CPU</abbr> throttling during a scan has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_datagram_processing %}<p class="mb-0">The scanning of <abbr title="User Datagram Protocol">UDP</abbr> traffic has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_dns_parsing %}<p class="mb-0">The scanning of <abbr title="Domain Name System">DNS</abbr> traffic has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_ftp_parsing %}<p class="mb-0">The scanning of <abbr title="File Transfer Protocol">FTP</abbr> traffic has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_http_parsing %}<p class="mb-0">The scanning of <abbr title="Hypertext Transfer Protocol">HTTP</abbr> traffic has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_tls_parsing %}<p class="mb-0">The scanning of <abbr title="Transport Layer Security">TLS</abbr> traffic has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_ssh_parsing %}<p class="mb-0">The scanning of <abbr title="Secure Shell Protocol">SSH</abbr> traffic has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_rdp_parsing %}<p class="mb-0">The scanning of <abbr title="Remote Desktop Protocol">RDP</abbr> traffic has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_email_scanning %}<p class="mb-0">The scanning of emails has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_inbound_connection_filtering %}<p class="mb-0">Inbound traffic scanning has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_restore_point %}<p class="mb-0">Restore points have been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_scanning_network_files %}<p class="mb-0">The scanning of mapped network drives has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                                    {% if scan_data.antivirus_preferences.disable_script_scanning %}<p class="mb-0">The scanning of PowerShell scripts has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                                               </div>
+                                            </div>
+                                            <hr>
+                                            <div class="row py-4">
+                                                <div class="col-xl-4">
+                                                    <!-- Windows Defender AV Status -->
+                                                    <h5>Anti-Virus</h5>
+                                                    <p class="mb-0"><strong>Status</strong>: {% if scan_data.antivirus_status.av_enabled %}<i class="icofont-check-circled text-success"></i>{% else %}<i class="icofont-close-squared text-danger" data-toggle="tooltip" data-placement="top" title="This service should be running."></i>{% endif %}</p>
+                                                    <p class="mb-0"><strong>Last Updated</strong>: {{ scan_data.antivirus_status.av_signature_update|date:"d/m/Y - H:i e" }}</span>
+                                                    <p class="mb-0"><strong>Signature Version</strong>: {{ scan_data.antivirus_status.av_signature_version }}</p>
+                                                </div>
+                                                <div class="col-xl-4">
+                                                    <!-- Windows Defender AS Preferences -->
+                                                    <h5>Anti-Spyware</h5>
+                                                    <p class="mb-0"><strong>Status</strong>: {% if scan_data.antivirus_status.as_enabled %}<i class="icofont-check-circled text-success"></i>{% else %}<i class="icofont-close-squared text-danger" data-toggle="tooltip" data-placement="top" title="This service should be running."></i>{% endif %}</p>
+                                                    <p class="mb-0"><strong>Last Updated</strong>: {{ scan_data.antivirus_status.as_signature_update|date:"d/m/Y - H:i e" }}</span>
+                                                    <p class="mb-0"><strong>Signature Version</strong>: {{ scan_data.antivirus_status.as_signature_version }}</p>
+                                                </div>
+                                                <div class="col-xl-4">
+                                                    <!-- Windows Defender NRI Preferences -->
+                                                    <h5>Network Inspection</h5>
+                                                    <p class="mb-0"><strong>Status</strong>: {% if scan_data.antivirus_status.nri_enabled %}<i class="icofont-check-circled text-success"></i>{% else %}<i class="icofont-close-squared text-danger" data-toggle="tooltip" data-placement="top" title="This service should be running."></i>{% endif %}</p>
+                                                    <p class="mb-0"><strong>Last Updated</strong>: {{ scan_data.antivirus_status.nri_signature_update|date:"d/m/Y - H:i e" }}</span>
+                                                    <p class="mb-0"><strong>Signature Version</strong>: {{ scan_data.antivirus_status.nri_signature_version }}</p>
+                                                </div>
+                                            </div>
+                                            <hr>
 
                                             {% if scan_data.antivirus_detections.count > 0 %}
                                                 <!-- Windows Defender Detections List -->
                                                 <h5 class="mt-5">Detections</h5>
-                                                <p>Quisque imperdiet lorem eget diam tristique, vel eleifend nulla malesuada. Cras dapibus eu odio ac pharetra. FusceQuisque imperdiet lorem eget diam tristique, vel eleifend nulla malesuada. Cras dapibus eu odio ac pharetra. Fusce</p>
+                                                <p>You've had a recent detection of malware or malicious application on your device; this isn't indicative of the current infection status, but if you're not acutely aware of when/where/why/what the file flagged is, it would be worth reviewing your online habits and try running a full malware scan.</p>
                                                 <table id="windows-av-detections" class="display pb-3 w-100">
                                                     <thead>
                                                         <tr>
@@ -282,14 +415,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                                         {% endfor %}
                                                     </tbody>
                                                 </table>
-
                                                 <hr>
                                             {% endif %}
 
                                             {% if scan_data.antivirus_exclusions.count > 0 %}
                                                 <!-- Windows Defender Exclusions List -->
                                                 <h5 class="mt-4">Exclusions</h5>
-                                                <p>Quisque imperdiet lorem eget diam tristique, vel eleifend nulla malesuada. Cras dapibus eu odio ac pharetra. FusceQuisque imperdiet lorem eget diam tristique, vel eleifend nulla malesuada. Cras dapibus eu odio ac pharetra. Fusce</p>
+                                                <p>Your system has exclusions for files or paths that are not included in malware scans by Windows Defender; it's typically not recommended to have any form of exclusion, but if you have to have some - that's fine. If you're unsure what or why an exclusion exists, remove it, run a full malware scan, and then look into what it is.</p>
                                                 <table id="windows-av-exclusions" class="display pb-3 w-100">
                                                     <thead>
                                                         <tr>
@@ -337,7 +469,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                         <div class="accordion-body">
                                             <!-- System User Explainer -->
                                             <h5 class="mt-4">User Accounts</h5>
-                                            <p class="mb-4">Quisque imperdiet lorem eget diam tristique, vel eleifend nulla malesuada. Cras dapibus eu odio ac pharetra. Fusce at tristique erat, nec fermentum sapien. Sed nec egestas nibh. In hac habitasse platea dictumst. Nunc malesuada molestie lacus vitae tristique. Vivamus a neque nunc. Quisque urna libero, pulvinar non gravida eget, suscipit ac leo. Cras eleifend purus et magna tristique, sed vehicula turpis malesuada. Integer consectetur dolor sed dui luctus iaculis. Vivamus at mollis magna. Sed at elementum neque.</p>
+                                            <p class="mb-4">This component reviews your current system settings to ensure that there are no enabled systems accounts and that your account settings are configured correctly; a check is also performed to ensure that user-created profiles have been converted to a Microsoft account to allow for easy local password bypass attacks to take place.</p>
 
                                             <!-- System User List -->
                                             <h5 class="mt-5">System Users</h5>
