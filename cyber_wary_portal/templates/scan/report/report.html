@@ -1,0 +1,155 @@
+{% extends "structure/portal.html" %}
+
+{% load static %}
+
+{% comment %}
+GNU General Public License v3.0
+Cyber Wary - <https://github.com/metallicgloss/CyberWary>
+Copyright (C) 2022 - William P - <hello@metallicgloss.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% block page_head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/css/jquery.dataTables.min.css" integrity="sha256-YY1izqyhIj4W3iyJOaGWOpXDSwrHWFL4Nfk+W0LyCHE=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-responsive-dt@2.2.9/css/responsive.dataTables.min.css" integrity="sha256-Y/AdBW1nhvzPowuT1lvF4PkY6QR+nqYzBcbmkDCG30Y=" crossorigin="anonymous">
+{% endblock%}
+
+{% block page_content %}
+    <section>
+        <!-- Page Title -->
+        <div class="row pb-4">
+            <div class="col-lg-12 col-xl-12">
+                <button class="btn back-btn p-0 mb-3" onclick="window.location.replace(document.referrer)"><i class="icofont-arrow-left"></i> Back</button>
+                <h2 class="mb-0"><span id="scan-title">{{ scan_record.scan.title }}</span></h2>
+                <div class="d-flex align-items-start scan-brief">
+                    <p class="me-3 mb-3">{% now "l jS F Y" %}</p>
+                    <svg width="3" height="3" viewBox="0 0 3 3" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="3" height="3" fill="#34CC96" />
+                    </svg>
+                    <p class="ms-3 mb-3"><span id="scan-type" class="{% if scan_record.scan.type == "B" %}text-info{% else %}text-danger-alt{% endif %}">{% if scan_record.scan.type == "B" %}Blue{% else %}Red{% endif %} Team</span> Scan</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Content -->
+        <div class="row">
+            <!-- Report Details -->
+            <div class="col-lg-12 col-xl-9">
+                <div class="scan-report-container">
+                    <div class="scan-report pe-4">
+                        <!-- Report Accordion -->
+                        <div class="accordion accordion-flush" id="faqAccordion">
+
+                            <!-- Scan Overview -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="flush-headingOne">
+                                    <!-- Accordion Tab Title -->
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                        <i class="icofont-check-circled me-2 pt-1 text-success"></i> Overview
+                                    </button>
+                                </h2>
+                                <div id="flush-collapseOne" class="accordion-collapse collapse show" aria-labelledby="flush-headingOne" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <div class="row pt-4">
+                                            <div class="col-xl-5 scan-info">
+                                                <h4 class="mt-3">{{ scan_record.name }}</h4>
+                                                <p class="mb-1">Device Identifier: <span>{{ scan_record.device_id }}</span></p>
+                                                <p class="mb-1">Serial Number: <span>{{ scan_record.os_install.serial }}</span></p>
+                                                <p class="mb-1">Public IP Address: <span>{{ scan_record.public_ip }}</span></p>
+                                                <p class="mb-1">OS Install Date: <span>{{ scan_record.os_install.install_date|date:"d/m/Y" }}</span></p>
+                                                <p class="mb-1">Last Boot: <span>{{ scan_record.boot_time|date:"l jS F Y - H:i e" }}</span> </p>
+                                                <p class="mb-1">Configured Timezone: <span>{{ scan_record.os_install.timezone }}</span></p>
+                                                <p class="mb-1">Installed Bios: <span>{{ scan_record.bios_install.bios.version }} - {{ scan_record.bios_install.bios.manufacturer }}</span></p>
+                                            </div>
+                                            <div class="col-xl-7">
+                                                <!-- Google Maps -->
+                                                <div id="map"></div>
+                                                <p class="text-end"><small>Geolocational data supplied by GeoLite2, a <a href="https://www.maxmind.com" class="text-success">MaxMind</a> product.</small></p>
+                                            </div>
+                                        </div>                                       
+
+                                        <!-- Accordion Controls -->
+                                        <div class="nav-buttons mt-3">
+                                            <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                                            <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Installed Applications -->
+                            {% include "scan/report/components/installed_applications.html" %}
+
+                            <!-- Browser Passwords -->
+                            {% include "scan/report/components/browser_passwords.html" %}
+
+                            <!-- Windows Update -->
+                            {% include "scan/report/components/installed_patches.html" %}
+
+                            <!-- AntiVirus Settings -->
+                            {% include "scan/report/components/installed_antivirus.html" %}
+
+                            <!-- Windows Firewall -->
+                            {% include "scan/report/components/network_firewall_rules.html" %}
+                            
+                            <!-- System Users -->
+                            {% include "scan/report/components/system_users.html" %}
+
+                        </div> <!-- End of Accordion -->
+                    </div> <!-- End of Report -->
+                </div> <!-- End of Container -->
+            </div> <!-- End of Column -->
+            
+            <!-- Scan Metrics -->
+            <div class="col-lg-12 col-xl-3">
+                <div class="scan-info ps-4">
+                    <h5>Scan Record</h5>
+                    <p class="mb-2">Scan Start: <span>{{ scan_record.created|date:"d/m/Y H:i" }}</span></p>
+                    {% if scan_record.progress == 1 %}
+                        <!-- Scan Actively Processing / Collecting Stats -->
+                        <span><i class="icofont-infinite"></i> Scan In Progress</span>
+                    {% else %}
+                        <!-- Scan Completed -->
+                        <p class="mb-1">Scan Completion: <span>{{ scan_record.updated|date:"d/m/Y H:i" }}</span></p>
+                        <p class="mb-1">Scan Duration: <span>{{ scan_duration.0 }}m {{ scan_duration.1 }}s</span></p>
+                        <hr>
+                        <h5>System Details</h5>
+                        <p class="mb-1">Device Name: <span>{{ scan_record.name }}</span></p>
+                        <p class="mb-1">Active User: <span>{{ scan_record.current_user }}</span></p>
+                        <p class="mb-1">Virtual Machine: <span>{% if scan_record.os_install.virtual_machine %}Yes{% else %}No{% endif %}</span></p>
+                        <p class="mb-1">Portable Installation: <span>{% if scan_record.os_install.portable %}Yes{% else %}No{% endif %}</span></p>
+                    {% endif %}
+                </div>
+            </div> <!-- End of Column -->
+        </div> <!-- End of Row -->
+    </section>
+{% endblock %}
+
+
+{% block page_scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/datatables@1.10.18/media/js/jquery.dataTables.min.js" integrity="sha256-3aHVku6TxTRUkkiibvwTz5k8wc7xuEr1QqTB+Oo5Q7I=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net-responsive@2.2.9/js/dataTables.responsive.min.js" integrity="sha256-f+r2TX3KkC6avpv7F8bRhVZZO8nW7xJhmCKd6k7PqGE=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js" integrity="sha256-iJxB0L7blNZTAFBu/ESTfVaVTqFrTeISeWk7RUEePFY=" crossorigin="anonymous"></script>
+    <script>
+        // Dynamic variable declaration
+        var latitude = {{ coords.0 }}
+        var longitude = {{ coords.1 }}
+        var icon = "{% static 'imgs/map.png' %}"
+        var title = "{{ scan_record.name }}"
+        var csrfToken = "{{ csrf_token }}"
+    </script>
+    <script src="{% static 'js/report-extras.js' %}"></script>
+    <script async src="https://maps.googleapis.com/maps/api/js?key={{ maps_key }}&callback=initMap"></script>
+{% endblock %}

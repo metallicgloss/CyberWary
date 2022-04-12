@@ -22,9 +22,9 @@
 $(document).ready(function() {
     $('.accordion-body button').click(function() {
         if ($(this).is('.next')) {
-            $(this).closest('.accordion-item').next().find('.accordion-collapse').collapse('show')
+            $(this).closest('.accordion-item').nextAll('.accordion-item:first').find('.accordion-collapse').collapse('show')
         } else {
-            $(this).closest('.accordion-item').prev().find('.accordion-collapse').collapse('show')
+            $(this).closest('.accordion-item').prevAll('.accordion-item:first').find('.accordion-collapse').collapse('show')
         }
     });
 
@@ -51,7 +51,37 @@ $(document).ready(function() {
     });
 });
 
-if (typeof antivirus !== 'undefined') {
+if (typeof firewall !== 'undefined') {
+    $(document).ready(function() {
+        $('#firewall-rules').dataTable({
+            "lengthChange": false,
+            "searching": false,
+            "pageLength": 10,
+            "ordering": true,
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 'tr'
+                }
+            },
+            "autoWidth": false,
+            columnDefs: [
+                { targets: 0, width: "40%" },
+                { targets: 1, width: "20%" },
+                { targets: 2, width: "10%" },
+                { targets: 2, width: "20%" },
+                { targets: 2, width: "10%" },
+            ]
+        });
+    })
+
+    function viewResources(resources) {
+        $('#resources').text(resources)
+        $('#defenderResourceModal').modal('show');
+    }
+}
+
+if (typeof install_antivirus !== 'undefined') {
     $(document).ready(function() {
         $('#windows-av-detections').dataTable({
             "lengthChange": false,

@@ -1,0 +1,80 @@
+{% comment %}
+GNU General Public License v3.0
+Cyber Wary - <https://github.com/metallicgloss/CyberWary>
+Copyright (C) 2022 - William P - <hello@metallicgloss.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% if scan_record.scan.network_firewall_rules and scan_data.firewall_rules.count != 0 %}
+    <div class="accordion-item">
+        <!-- Accordion Tab Title -->
+        <h2 class="accordion-header" id="heading-firewall-rules">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-firewall-rules" aria-expanded="false" aria-controls="collapse-firewall-rules">
+                {% if scan_data.firewall_rules.count < 50 %}
+                    <i class="icofont-exclamation-tringle me-2 text-warning"></i>
+                {% else %}
+                    <i class="icofont-check-circled me-2 pt-1 text-success"></i>
+                {% endif %}
+                Windows Defender Firewall
+            </button>
+        </h2>
+
+        <div id="collapse-firewall-rules" class="accordion-collapse collapse" aria-labelledby="heading-firewall-rules" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+                <!-- Firewall Explainer -->
+                <h5 class="mt-4">Firewall</h5>
+                <p class="mb-4">Windows firewall tends to get a little out of hand, with automated rules added when installing new applications or starting networked services. This component reviews how many third-party rules you have to ensure you're not leaving yourself more exposed to the open internet than you have to be.</p>
+
+                <!-- Firewall List -->
+                <h5 class="mt-5">Configured Rules</h5>
+                <table id="firewall-rules" class="display pb-3 w-100">
+                    <thead>
+                        <tr>
+                            <th class="py-2 desktop">Name</th>
+                            <th class="py-2 desktop">Type</th>
+                            <th class="py-2 desktop">Remote IP:Port</th>
+                            <th class="py-2 desktop">Direction</th>
+                            <th class="py-2 desktop">Local IP:Port</th>
+                            <th class="py-2 desktop">Protocol</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rule in scan_data.firewall_rules %}
+                            <tr>
+                                <td>{{ rule.name }}</td>
+                                <td>{% if rule.action == 1 %}Block{% else %}Allow{% endif %}</td>
+                                <td>{{ rule.remote_address }}:{{ rule.remote_port }}</td>
+                                <td>{% if rule.direction == 1 %}<i class="icofont-arrow-right"></i>{% else %}<i class="icofont-arrow-left"></i>{% endif %}</td>
+                                <td>{{ rule.local_address }}:{{ rule.local_port }}</td>
+                                <td>{% if rule.protocol == 1 %}UDP{% elif rule.protocol == 2 %}TCP{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Accordion Controls -->
+                <div class="nav-buttons mt-4">
+                    <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                    <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Windows Defender Firewall dynamic variables
+        var firewall = true
+    </script>
+{% endif %}

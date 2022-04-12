@@ -74,79 +74,89 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </div> <!-- End of Row -->
             </div> <!-- End of Box -->
             <div class="row">
-                <div class="col-xl-6 chart-block">
+                <div class="col-xl-12 chart-block">
                     <!-- Operating Systems Doughnut Chart -->
                     <div id="operating-systems" style="margin:auto"></div>
-                </div>  
-                <div class="col-xl-6">
                 </div>  
             </div>
             <div class="row dashboard-lists">
                 <div class="col-xl-4">
                     <!-- Recently Detected Compromised Passwords List -->
                     <h5 class="mt-5">Latest High-Risk Credentials</h5>
-                    <table id="credentials" class="display pb-3 w-100">
-                        <thead>
-                            <tr>
-                                <th class="py-2 desktop">Username</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for credential in recent_at_risk_creds %}
+                    {% if recent_at_risk_creds.count == 0 %}
+                        <p class="text-center mt-3">No Available Data...</p>
+                    {% else %}
+                        <table id="credentials" class="display pb-3 w-100">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <a href="{% url 'report' scan_key=credential.credential_scan.scan_record.scan.scan_key report=credential.credential_scan.scan_record.id  %}" data-toggle="tooltip" data-placement="top" title="Click to view scan record containing credential."> 
-                                            <i class="icofont-info-circle me-1"></i> {{ credential.username|slice:":55" }}
-                                        </a>
-                                    </td>
+                                    <th class="py-2 desktop">Username</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for credential in recent_at_risk_creds %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'report' scan_key=credential.credential_scan.scan_record.scan.scan_key report=credential.credential_scan.scan_record.id  %}" data-toggle="tooltip" data-placement="top" title="Click to view scan record containing credential."> 
+                                                <i class="icofont-info-circle me-1"></i> {{ credential.username|slice:":55" }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
                 </div>   
                 <div class="col-xl-4">
                     <!-- Recently Scanned Applications List -->
                     <h5 class="mt-5">Latest Scanned Software</h5>
-                    <table id="applications" class="display pb-3 w-100">
-                        <thead>
-                            <tr>
-                                <th class="py-2 desktop">Application</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for application in recent_apps %}
+                    {% if recent_apps.count == 0 %}
+                        <p class="text-center mt-3">No Available Data...</p>
+                    {% else %}
+                        <table id="applications" class="display pb-3 w-100">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <a href="{% url 'report' scan_key=application.scan_record.scan.scan_key report=application.scan_record.id  %}" data-toggle="tooltip" data-placement="top" title="Click to view scan record containing application."> 
-                                            <i class="icofont-info-circle me-1"></i> {{ application.name|slice:":55" }}
-                                        </a>
-                                    </td>
+                                    <th class="py-2 desktop">Application</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for application in recent_apps %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'report' scan_key=application.scan_record.scan.scan_key report=application.scan_record.id  %}" data-toggle="tooltip" data-placement="top" title="Click to view scan record containing application."> 
+                                                <i class="icofont-info-circle me-1"></i> {{ application.name|slice:":55" }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
                 </div>  
                 <div class="col-xl-4">
                     <!-- Recently Scanned Devices List -->
                     <h5 class="mt-5">Recent Device Scans</h5>
-                    <table id="scans" class="display pb-3 w-100">
-                        <thead>
-                            <tr>
-                                <th class="py-2 desktop">Device</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for device in recent_devices %}
+                    {% if recent_apps.count == 0 %}
+                        <p class="text-center mt-3">No Available Data...</p>
+                    {% else %}
+                        <table id="scans" class="display pb-3 w-100">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <a href="{% url 'report' scan_key=device.scan.scan_key report=device.id  %}" data-toggle="tooltip" data-placement="top" title="Click to view scan record for device."> 
-                                            <i class="icofont-info-circle me-1"></i> {{ device.name|slice:":32" }} - {{ device.created|date:"d/m/Y - H:i" }}
-                                        </a>
-                                    </td>
+                                    <th class="py-2 desktop">Device</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for device in recent_devices %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'report' scan_key=device.scan.scan_key report=device.id  %}" data-toggle="tooltip" data-placement="top" title="Click to view scan record for device."> 
+                                                <i class="icofont-info-circle me-1"></i> {{ device.name|slice:":32" }} - {{ device.created|date:"d/m/Y - H:i" }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
                 </div>  
             </div>
         </div>

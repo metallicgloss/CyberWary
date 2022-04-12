@@ -1,0 +1,86 @@
+{% comment %}
+GNU General Public License v3.0
+Cyber Wary - <https://github.com/metallicgloss/CyberWary>
+Copyright (C) 2022 - William P - <hello@metallicgloss.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+{% endcomment %}
+{% if scan_record.scan.system_users and scan_data.system_users.count != 0 %}
+    <div class="accordion-item">
+        <!-- Accordion Tab Title -->
+        <h2 class="accordion-header" id="heading-system-users">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-system-users" aria-expanded="false" aria-controls="collapse-system-users">
+                {% if scan_data.enabled_defaults > 0 or scan_data.system_users.count > 5 %}
+                    <i class="icofont-exclamation-tringle me-2 text-warning"></i>
+                {% else %}
+                    <i class="icofont-check-circled me-2 pt-1 text-success"></i>
+                {% endif %}
+                System Users
+            </button>
+        </h2>
+
+        <div id="collapse-system-users" class="accordion-collapse collapse" aria-labelledby="heading-system-users" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+                <!-- System User Explainer -->
+                <h5 class="mt-4">User Accounts</h5>
+                <p class="mb-4">This component reviews your current system settings to ensure that there are no enabled systems accounts and that your account settings are configured correctly; a check is also performed to ensure that user-created profiles have been converted to a Microsoft account to allow for easy local password bypass attacks to take place.</p>
+
+                <!-- System User List -->
+                <h5 class="mt-5">System Users</h5>
+                <table id="system-users" class="display pb-3 w-100">
+                    <thead>
+                        <tr>
+                            <th class="py-2 desktop">Name</th>
+                            <th class="py-2 desktop">Type</th>
+                            <th class="py-2 desktop">Last Login</th>
+                            <th class="py-2 desktop">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in scan_data.system_users %}
+                            <tr>
+                                <td>{{ user.name }} {% if user.full_name %}({{ user.full_name }}){% endif %}</td>
+                                <td>
+                                    {% if user.name not in 'Administrator,DefaultAccount,Guest,WDAGUtilityAccount' and user.source != 2 %}
+                                        <span class="text-warning" data-toggle="tooltip" data-placement="top" title="Account should be converted to a Microsoft login to improve security."><i class="icofont-info-circle me-1"></i>
+                                    {% else %}
+                                        <span class="text-success">
+                                    {% endif %}
+                                        {{ user.get_source_display }}
+                                    </span>
+                                </td>
+                                <td>{% if user.last_logon %}{{ user.last_logon|date:"l jS F Y - H:i e" }}{% else %}Never Logged In{% endif %}</td>
+                                <td>
+                                    {% if user.name in 'Administrator,DefaultAccount,Guest,WDAGUtilityAccount' and user.enabled %}
+                                        <span class="text-danger" data-toggle="tooltip" data-placement="top" title="Default system accounts should not be enabled."><i class="icofont-info-circle me-1"></i>
+                                    {% else %}
+                                        <span class="text-success">
+                                    {% endif %}
+                                            {% if user.enabled %}Enabled</span>{% else %}Disabled{% endif %}
+                                        </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Accordion Controls -->
+                <div class="nav-buttons mt-4">
+                    <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                    <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

@@ -1,0 +1,157 @@
+{% comment %}
+GNU General Public License v3.0
+Cyber Wary - <https://github.com/metallicgloss/CyberWary>
+Copyright (C) 2022 - William P - <hello@metallicgloss.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% if scan_record.scan.installed_applications and scan_data.installed_applications.count != 0 %}
+    <div class="accordion-item">
+        <!-- Accordion Tab Title -->
+        <h2 class="accordion-header" id="heading-applications">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-applications" aria-expanded="false" aria-controls="collapse-applications">
+                {% if scan_data.cves > 0 %}
+                    <i class="icofont-exclamation-tringle me-2 text-warning"></i>
+                {% else %}
+                    <i class="icofont-check-circled me-2 pt-1 text-success"></i>
+                {% endif %}
+                Installed Applications
+            </button>
+        </h2>
+
+        <div id="collapse-applications" class="accordion-collapse collapse" aria-labelledby="heading-applications" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+                <!-- Installed Applications Explainer -->
+                <h5 class="mt-4">Installed Applications</h5>
+                <p class="mb-4">There's a high chance that you've installed at least one third-party application, and you're not relying solely on the Microsoft Store; this component captures a list of all installed applications on your device and then attempts to identify if there are any known vulnerabilities with the version of the software that may indicate that it hasn't been updated.</p>
+
+                <!-- Installed Applications Metrics / Charts -->
+                <div class="row">
+                    <div class="col-xl-6">
+                        <div id="vulnerabilities" style="margin:auto"></div>
+                    </div>
+                    <div class="col-xl-6">
+                        <div id="install-by-time" style="margin:auto"></div>
+                    </div>
+                </div>
+
+                <!-- Installed Applications List -->
+                <h5 class="mt-5">Applications</h5>
+                <table id="applications" class="display pb-3 w-100">
+                    <thead>
+                        <tr>
+                            <th class="py-2 desktop">Application</th>
+                            <th class="py-2 desktop">Publisher</th>
+                            <th class="py-2 desktop">Version</th>
+                            <th class="py-2 desktop">Install Date</th>
+                            <th class="py-2 desktop">Vulnerabilities</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for application in scan_data.installed_applications %}
+                            <tr>
+                                <td>{{ application.name }}</td>
+                                <td>{{ application.publisher.name }}</td>
+                                <td>{{ application.version }}</td>
+                                <td>{% if application.install_date %}{{ application.install_date }}{% else %}Not Set{% endif %}</td>
+                                <td>
+                                    {% if application.cve_match %}
+                                        <span class="cve-action text-danger" onclick="viewCVE('{{ application.cpe.identifier }}')" data-toggle="tooltip" data-placement="top" title="Click for full record.">
+                                            <i class="icofont-exclamation-tringle me-1"></i> Known Vulnerabilities
+                                        </span>
+                                    {% else %}
+                                        <span class="text-success">Not Detected in Dataset</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Accordion Controls -->
+                <div class="nav-buttons mt-4">
+                    <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                    <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CVE Popup Modal -->
+    <div class="modal fade" id="cveModal" tabindex="-1" aria-labelledby="cveModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title">Associated CVE Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+    
+                <!-- Modal Body / Contents -->
+                <div class="modal-body">
+                    <div class="scan-info">
+                        <!-- CVE Explainer Details -->
+                        <p class="mb-2"><i class="icofont-info-circle me-2"></i><span>Details:</span> ipsum lorem</p>
+                        <p class="mb-2"><i class="icofont-flag me-2"></i><span>Recommended Action:</span> Update or Remove Application</p>
+                    </div>
+                    
+                    <!-- Horizontal Divider -->
+                    <hr>
+    
+                    <!-- CVE List -->
+                    <table id="cve-modal-table" class="display pb-3 w-100">
+                        <thead>
+                            <tr>
+                                <th class="py-2 desktop">CVE Identifier</th>
+                                <th class="py-2 desktop">Severity Rating</th>
+                                <th class="py-2 desktop">Severity Score</th>
+                                <th class="py-2 desktop">Published</th>
+                                <th class="py-2 desktop">References</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Credential dynamic variables
+        var cve = true
+        var cveURL = "{% url 'cve' %}"
+
+        var totalApplications = {{ scan_data.installed_applications_count }}
+        var totalCVEs = {{ scan_data.cves }}
+        var vulnerableApplications = {{ scan_data.vulnerable_applications }}
+
+        // Chart Timeline Data
+        var installTimeline = [
+            [
+                "Installed",
+                "Installed Applications",
+                "Day"
+            ],
+            {% for record in scan_data.install_timeline %}
+                [
+                    "Installed Applications",
+                    {{ record.running_total }},
+                    "{{ record.install_date }}"
+                ],
+            {% endfor %}
+        ]
+    </script>
+{% endif %}

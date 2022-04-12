@@ -1,0 +1,184 @@
+{% comment %}
+GNU General Public License v3.0
+Cyber Wary - <https://github.com/metallicgloss/CyberWary>
+Copyright (C) 2022 - William P - <hello@metallicgloss.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% if scan_record.scan.installed_antivirus and scan_data.antivirus_preferences != None %}
+    <div class="accordion-item">
+        <!-- Accordion Tab Title -->
+        <h2 class="accordion-header" id="heading-windows-defender">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-windows-defender" aria-expanded="false" aria-controls="collapse-windows-defender">
+                {% if scan_data.antivirus_detections.count > 0 %}
+                    <i class="icofont-exclamation-tringle me-2 text-danger"></i>
+                {% elif scan_data.antivirus_exclusions.count > 0 %}
+                    <i class="icofont-exclamation-tringle me-2 text-warning"></i>
+                {% else %}
+                    <i class="icofont-check-circled me-2 pt-1 text-success"></i>
+                {% endif %}
+                Windows Defender Anti-Virus
+            </button>
+        </h2>
+
+        <div id="collapse-windows-defender" class="accordion-collapse collapse" aria-labelledby="heading-windows-defender" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+                <!-- Windows Defender Explainer -->
+                <h5 class="mt-4">Windows Defender</h5>
+                <p class="mb-4">Windows Defender Anti-Virus is enabled by default on all new installations of Windows Home and is usually sufficient in protecting users from all typical problems they may experience. This component does a once-over to ensure that there are no altered settings that may leave your system vulnerable, that there are no exclusions hiding malware, and that you don't have any recent detections. </p>
+
+                <div class="row pb-4">
+                    <div class="col-xl-6">
+                        <!-- Windows Defender Status -->
+                        <h5 class="mt-5 ">Status Warnings</h5>
+                        {% if not scan_data.antivirus_status.behavior_monitoring %}<p class="mb-0">Behaviour monitoring has been manually <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if not scan_data.antivirus_status.tamper_protection %}<p class="mb-0">Tamper protection has been manually <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if not scan_data.antivirus_status.realtime_protection %}<p class="mb-0">Real-time protection has been manually <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if not scan_data.antivirus_status.download_protection %}<p class="mb-0">Download scanning has been manually <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if not scan_data.antivirus_status.access_protection %}<p class="mb-0">Controlled folder access has not yet been activated.</p>{% endif %}
+                    </div>
+                    <div class="col-xl-6">
+                        <!-- Windows Defender Preferences -->
+                        <h5 class="mt-5">Preference Warnings</h5>
+                        {% if not scan_data.antivirus_preferences.check_for_signatures_before_running_scan %}<p class="mb-0">Automatic signature checks before scans has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_archive_scanning %}<p class="mb-0">The scanning of archives (compressed files) has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_block_at_first_seen %}<p class="mb-0">Automatic prevention of unknown malware has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_cpu_throttle_on_idle_scans %}<p class="mb-0"><abbr title="Central Processing Unit">CPU</abbr> throttling during a scan has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_datagram_processing %}<p class="mb-0">The scanning of <abbr title="User Datagram Protocol">UDP</abbr> traffic has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_dns_parsing %}<p class="mb-0">The scanning of <abbr title="Domain Name System">DNS</abbr> traffic has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_ftp_parsing %}<p class="mb-0">The scanning of <abbr title="File Transfer Protocol">FTP</abbr> traffic has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_http_parsing %}<p class="mb-0">The scanning of <abbr title="Hypertext Transfer Protocol">HTTP</abbr> traffic has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_tls_parsing %}<p class="mb-0">The scanning of <abbr title="Transport Layer Security">TLS</abbr> traffic has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_ssh_parsing %}<p class="mb-0">The scanning of <abbr title="Secure Shell Protocol">SSH</abbr> traffic has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_rdp_parsing %}<p class="mb-0">The scanning of <abbr title="Remote Desktop Protocol">RDP</abbr> traffic has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_email_scanning %}<p class="mb-0">The scanning of emails has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_inbound_connection_filtering %}<p class="mb-0">Inbound traffic scanning has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_restore_point %}<p class="mb-0">Restore points have been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_scanning_network_files %}<p class="mb-0">The scanning of mapped network drives has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                        {% if scan_data.antivirus_preferences.disable_script_scanning %}<p class="mb-0">The scanning of PowerShell scripts has been <span class="text-danger">disabled</span>.</p>{% endif %}
+                    </div>
+                </div>
+                <hr>
+                <div class="row py-4">
+                    <div class="col-xl-4">
+                        <!-- Windows Defender AV Status -->
+                        <h5>Anti-Virus</h5>
+                        <p class="mb-0"><strong>Status</strong>: {% if scan_data.antivirus_status.av_enabled %}<i class="icofont-check-circled text-success"></i>{% else %}<i class="icofont-close-squared text-danger" data-toggle="tooltip" data-placement="top" title="This service should be running."></i>{% endif %}</p>
+                        <p class="mb-0"><strong>Last Updated</strong>: {{ scan_data.antivirus_status.av_signature_update|date:"d/m/Y - H:i e" }}</span>
+                        <p class="mb-0"><strong>Signature Version</strong>: {{ scan_data.antivirus_status.av_signature_version }}</p>
+                    </div>
+                    <div class="col-xl-4">
+                        <!-- Windows Defender AS Preferences -->
+                        <h5>Anti-Spyware</h5>
+                        <p class="mb-0"><strong>Status</strong>: {% if scan_data.antivirus_status.as_enabled %}<i class="icofont-check-circled text-success"></i>{% else %}<i class="icofont-close-squared text-danger" data-toggle="tooltip" data-placement="top" title="This service should be running."></i>{% endif %}</p>
+                        <p class="mb-0"><strong>Last Updated</strong>: {{ scan_data.antivirus_status.as_signature_update|date:"d/m/Y - H:i e" }}</span>
+                        <p class="mb-0"><strong>Signature Version</strong>: {{ scan_data.antivirus_status.as_signature_version }}</p>
+                    </div>
+                    <div class="col-xl-4">
+                        <!-- Windows Defender NRI Preferences -->
+                        <h5>Network Inspection</h5>
+                        <p class="mb-0"><strong>Status</strong>: {% if scan_data.antivirus_status.nri_enabled %}<i class="icofont-check-circled text-success"></i>{% else %}<i class="icofont-close-squared text-danger" data-toggle="tooltip" data-placement="top" title="This service should be running."></i>{% endif %}</p>
+                        <p class="mb-0"><strong>Last Updated</strong>: {{ scan_data.antivirus_status.nri_signature_update|date:"d/m/Y - H:i e" }}</span>
+                        <p class="mb-0"><strong>Signature Version</strong>: {{ scan_data.antivirus_status.nri_signature_version }}</p>
+                    </div>
+                </div>
+                <hr>
+
+                {% if scan_data.antivirus_detections.count > 0 %}
+                    <!-- Windows Defender Detections List -->
+                    <h5 class="mt-5">Detections</h5>
+                    <p>You've had a recent detection of malware or malicious application on your device; this isn't indicative of the current infection status, but if you're not acutely aware of when/where/why/what the file flagged is, it would be worth reviewing your online habits and try running a full malware scan.</p>
+                    <table id="windows-av-detections" class="display pb-3 w-100">
+                        <thead>
+                            <tr>
+                                <th class="py-2 desktop text-danger">Detection Time</th>
+                                <th class="py-2 desktop text-danger">Active User</th>
+                                <th class="py-2 desktop text-danger">Detected Resources</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detection in scan_data.antivirus_detections %}
+                                <tr>
+                                    <td>{{ detection.detection_time|date:"l jS F Y - H:i e" }}</td>
+                                    <td>{{ detection.active_user }}</td>
+                                    <td>
+                                        <span class="payload-action" onclick="viewResources('{{ detection.detected_resources }}')" data-toggle="tooltip" data-placement="top" title="Click for detected resources.">
+                                            <i class="icofont-exclamation-tringle me-2 text-danger"></i> View Resources
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <hr>
+                {% endif %}
+
+                {% if scan_data.antivirus_exclusions.count > 0 %}
+                    <!-- Windows Defender Exclusions List -->
+                    <h5 class="mt-4">Exclusions</h5>
+                    <p>Your system has exclusions for files or paths that are not included in malware scans by Windows Defender; it's typically not recommended to have any form of exclusion, but if you have to have some - that's fine. If you're unsure what or why an exclusion exists, remove it, run a full malware scan, and then look into what it is.</p>
+                    <table id="windows-av-exclusions" class="display pb-3 w-100">
+                        <thead>
+                            <tr>
+                                <th class="py-2 desktop text-warning">Exclusion Type</th>
+                                <th class="py-2 desktop text-warning">Excluded Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for exclusion in scan_data.antivirus_exclusions %}
+                                <tr>
+                                    <td>{{ exclusion.get_type_display }}</td>
+                                    <td>{{ exclusion.value }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+
+                <!-- Accordion Controls -->
+                <div class="nav-buttons mt-4">
+                    <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                    <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Defender Resources Popup Modal -->
+    <div class="modal fade" id="defenderResourceModal" tabindex="-1" aria-labelledby="defenderResourceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title">Detected Resources</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body / Contents -->
+                <div class="modal-body">
+                    <div class="scan-info">
+                        <p class="mb-2">The following resources have been previously detected on your system;</p>
+                        <p id="resources"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Credential dynamic variables
+        var install_antivirus = true
+    </script>
+{% endif %}

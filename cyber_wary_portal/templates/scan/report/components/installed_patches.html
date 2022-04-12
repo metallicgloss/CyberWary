@@ -1,0 +1,93 @@
+{% comment %}
+GNU General Public License v3.0
+Cyber Wary - <https://github.com/metallicgloss/CyberWary>
+Copyright (C) 2022 - William P - <hello@metallicgloss.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% if scan_record.scan.installed_patches and scan_data.patches_installed.count != 0 %}
+    <div class="accordion-item">
+        <!-- Accordion Tab Title -->
+        <h2 class="accordion-header" id="heading-installed-patches">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-installed-patches" aria-expanded="false" aria-controls="collapse-installed-patches">
+                {% if scan_data.pending_patches.count > 1 or scan_data.installed_patches.count < 5 %}
+                    <i class="icofont-exclamation-tringle me-2 text-warning"></i>
+                {% else %}
+                    <i class="icofont-check-circled me-2 pt-1 text-success"></i>
+                {% endif %}
+                Operating System Patches
+            </button>
+        </h2>
+
+        <div id="collapse-installed-patches" class="accordion-collapse collapse" aria-labelledby="heading-installed-patches" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+                <!-- Installed Patches Explainer -->
+                <h5 class="mt-4">Windows Update</h5>
+                <p class="mb-4">The notorious Windows Update; <strike>love it</strike> hate it or hate it, Windows Update is one of the most powerful tools in the Windows ecosystem allowing for security patches to be quickly distributed to all users, and it enables feature <i>improvements</i> to be delivered automatically. This component checks to ensure that you're not clicking "Update Later" too much and are now missing essential updates.</p>
+
+                <!-- Installed Patch List -->
+                <h5 class="mt-5">Installed Updates</h5>
+                <table id="installed-patches" class="display pb-3 w-100">
+                    <thead>
+                        <tr>
+                            <th class="py-2 desktop">Date</th>
+                            <th class="py-2 desktop">Title</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patch in scan_data.installed_patches %}
+                            <tr>
+                                <td>{{ patch.date|date:"l jS F Y - H:i e" }}</td>
+                                <td>{{ patch.title }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {% if scan_data.pending_patches.count > 0%}
+                    <!-- Pending Updates List -->
+                    <h5 class="mt-5">Pending Updates</h5>
+                    <table id="pending-patches" class="display pb-3 w-100">
+                        <thead>
+                            <tr>
+                                <th class="py-2 desktop text-warning">Title</th>
+                                <th class="py-2 desktop text-warning">Downloaded</th>
+                                <th class="py-2 desktop text-warning">Mandatory</th>
+                                <th class="py-2 desktop text-warning">Security Rating</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for patch in scan_data.pending_patches %}
+                                <tr>
+                                    <td>{{ patch.title }}</td>
+                                    <td>{% if patch.downloaded %}Yes{% else %}No{% endif %}</td>
+                                    <td>{% if patch.mandatory %}Yes{% else %}No{% endif %}</td>
+                                    <td>{{ patch.security_rating }}</td>
+                                
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+
+                <!-- Accordion Controls -->
+                <div class="nav-buttons mt-4">
+                    <button class="back btn bg-primary text-white text-uppercase px-4 py-1">Prev</button>
+                    <button class="next btn bg-success text-white text-uppercase px-4 py-1 float-end">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

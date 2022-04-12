@@ -173,18 +173,19 @@ def firewall_ips(request):
     for ip_address in data:
         # For each IP address defined in the payload.
         try:
-            # Get the associated Firewall Rule.
-            firewall_rule = FirewallRules.objects.get(
-                scan_record=scan_record,
-                rule_id=ip_address.get('InstanceID')
-            )
+            if 'value' not in ip_address.get('RemoteAddress'):
+                # Get the associated Firewall Rule.
+                firewall_rule = FirewallRules.objects.get(
+                    scan_record=scan_record,
+                    rule_id=ip_address.get('InstanceID')
+                )
 
-            # Update the firewall rule to include any associated IP address configurations.
-            firewall_rule.local_address = ip_address.get('LocalAddress')
-            firewall_rule.local_ip = ip_address.get('LocalIP')
-            firewall_rule.remote_address = ip_address.get('RemoteAddress')
-            firewall_rule.remote_ip = ip_address.get('RemoteIP')
-            firewall_rule.save()
+                # Update the firewall rule to include any associated IP address configurations.
+                firewall_rule.local_address = ip_address.get('LocalAddress')
+                firewall_rule.local_ip = ip_address.get('LocalIP')
+                firewall_rule.remote_address = ip_address.get('RemoteAddress')
+                firewall_rule.remote_ip = ip_address.get('RemoteIP')
+                firewall_rule.save()
 
         except (FirewallRules.DoesNotExist, KeyError):
             # Missing / Malformed data that differs to the default Windows output; skip record.

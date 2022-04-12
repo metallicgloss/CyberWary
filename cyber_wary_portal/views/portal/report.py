@@ -139,6 +139,15 @@ def report(request, scan_key, report):
         except (UpdateInstalled.DoesNotExist, UpdatePending.DoesNotExist):
             scan_data['installed_patches'] = None
 
+    if(scan_record.scan.network_firewall_rules):
+        try:
+            scan_data['firewall_rules'] = FirewallRules.objects.filter(
+                scan_record=scan_record
+            ).order_by('name')
+
+        except (FirewallRules.DoesNotExist):
+            scan_data['firewall_rules'] = None
+
     if(scan_record.scan.installed_antivirus):
         try:
             scan_data['antivirus_status'] = DefenderStatus.objects.filter(
@@ -180,7 +189,7 @@ def report(request, scan_key, report):
 
     return render(
         request,
-        'scan/report.html',
+        'scan/report/report.html',
         {
             'coords': GeoIP2().lat_lon(scan_record.public_ip),
             'maps_key': settings.MAPS_KEY,
