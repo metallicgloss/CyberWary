@@ -47,6 +47,7 @@ class Command(BaseCommand):
     # ----------------------------------------------------------------------- #
 
     def add_arguments(self, parser):
+        # Reference - https://ref.cyberwary.com/4z7lt
         # Define Common Platform Enumeration Flag
         parser.add_argument(
             '--cpe',
@@ -85,6 +86,8 @@ class Command(BaseCommand):
             # If CPE flag set, import CPE data.
 
             # Get set of cpe-item's in the GZipped XML file from NIST.
+            # Reference - https://ref.cyberwary.com/17rnd
+            # Reference - https://ref.cyberwary.com/ps5a7
             cpe_database = ET.parse(
                 gzip.GzipFile(
                     fileobj=io.BytesIO(
@@ -119,6 +122,8 @@ class Command(BaseCommand):
             # If CWE flag set, import CWE data.
 
             # Get set of weaknesses in the XML file contained within the ZIP file from MITRE.
+            # Reference - https://ref.cyberwary.com/ifz5h
+            # Reference - https://ref.cyberwary.com/hkkla
             cwe_database = ET.parse(
                 ZipFile(
                     io.BytesIO(

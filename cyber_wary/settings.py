@@ -203,6 +203,7 @@ AUTHENTICATION_BACKENDS = (
 
 
 # Django AllAuth Configuration
+# Reference - https://ref.cyberwary.com/fujti
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
@@ -222,6 +223,7 @@ ACCOUNT_FORMS = {
 }
 
 # Django AllAuth Providers
+# Reference - https://ref.cyberwary.com/8gmr6
 SOCIALACCOUNT_PROVIDERS = {
     'github': {
         'SCOPE': [
@@ -257,6 +259,7 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # Django Mail Configuration (SendGrid)
+# Reference - https://ref.cyberwary.com/3mwv4
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 SENDGRID_API_KEY = os.environ.get('CYBERWARY_SENDGRID_API_KEY')
 SENDGRID_SANDBOX_MODE_IN_DEBUG = False

@@ -69,6 +69,7 @@ def generate_script(generation_type, payload, api_key):
     script_contents += '$scanKey = "' + scan_key + '"\r\n'
 
     # Get device ID from system.
+    # Reference - https://ref.cyberwary.com/2wdys
     script_contents += '$deviceID = Get-ItemProperty HKLM:SOFTWARE\Microsoft\SQMClient | Select -ExpandProperty MachineID\r\n\r\n'
 
     # ----------------------------------------------------------------------- #
@@ -86,9 +87,13 @@ def generate_script(generation_type, payload, api_key):
 
         # Comment informing user
         script_contents += '# Script requires administrator permissions; verify correct access.\r\n'
+
         # Get the current admin status for user
+        # Reference - https://ref.cyberwary.com/czhjy
         script_contents += '$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())\r\n'
+        
         # If not user, launch popup box.
+        # Reference - https://ref.cyberwary.com/ycv8n
         script_contents += 'if ( $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator) -eq $false ) { Add-Type -AssemblyName System.Windows.Forms;[System.Windows.Forms.MessageBox]::Show("Please re-launch powershell as Administrator.", "CyberWary", "Ok", "Error");stop-process -Id $PID }\r\n\r\n'
 
     # ----------------------------------------------------------------------- #
@@ -107,6 +112,8 @@ def generate_script(generation_type, payload, api_key):
     # ----------------------------------------------------------------------- #
 
     if(payload['installed_applications']):
+        # Reference - https://ref.cyberwary.com/zbixl
+
         # Comment to inform the user of the additional variables.
         script_contents += '# Generate List of Installed Applications on the Device \r\n'
 
@@ -120,8 +127,12 @@ def generate_script(generation_type, payload, api_key):
             'Capture List of Installed Applications Without Registered Symbol',
             'applications_installed',
             'applications',
-            '($software | ConvertTo-Json) -replace("$([char]0x00AE)", "")'
+            '($software | ConvertTo-Json) -replace("$([char]0x00AE)", "")' # Reference - https://ref.cyberwary.com/da2hi
         )
+
+        # Inspiration Reference - https://ref.cyberwary.com/o566z
+        # Inspiration Reference - https://ref.cyberwary.com/i1vhq
+
 
     # ----------------------------------------------------------------------- #
     #                            Browser Passwords                            #
@@ -132,6 +143,7 @@ def generate_script(generation_type, payload, api_key):
         script_contents += '# Setup formatting and hashing objects to ensure safe transmission.\r\n'
 
         # Define SHA-1 Hash Object
+        # Reference - https://ref.cyberwary.com/3c1pi
         script_contents += '$sha1 = New-Object -TypeName System.Security.Cryptography.SHA1CryptoServiceProvider\r\n'
 
         # Define UTF-8 Encoding Object
@@ -148,6 +160,7 @@ def generate_script(generation_type, payload, api_key):
             script_contents += 'cd /;'
 
         # Downloaded developer copy of WebBrowserPassView
+        # Reference - https://ref.cyberwary.com/a7tj1
         script_contents += 'wget ' + url + '/static/downloads/WebBrowserPassView.exe -OutFile WebBrowserPassView.exe;'
 
         # Generate CSV containing all credentials on the system.
@@ -157,6 +170,7 @@ def generate_script(generation_type, payload, api_key):
         script_contents += 'Start-Sleep 1;'
         
         # Loop through each line in the CSV file; if password isn't blank, replace and override with SHA1 hash.
+        # Reference - https://ref.cyberwary.com/s8uwb
         script_contents += '(Import-Csv ".\credentials.csv" -Delimiter ",") | ForEach-Object { if ($_.Password -ne "") { $_.Password = ([System.BitConverter]::ToString($sha1.ComputeHash($utf8.GetBytes($_.Password))).Replace("-", "")) } $_ } | Export-Csv ".\credentials.csv" -Delimiter "," -NoType; $credentials = (Import-Csv ".\credentials.csv" -Delimiter ",")\r\n\r\n'
 
         script_contents += get_data(
@@ -174,6 +188,7 @@ def generate_script(generation_type, payload, api_key):
     # ----------------------------------------------------------------------- #
 
     if(payload['installed_patches']):
+        # Reference - https://ref.cyberwary.com/cw30o
         script_contents += get_data(
             'Capture List of Pending Updates',
             'patches/pending',
@@ -187,6 +202,7 @@ def generate_script(generation_type, payload, api_key):
         # Enable execution of remote scripts to allow for PSWindowsUpdate to execute correctly.
         script_contents += 'Set-ExecutionPolicy Unrestricted -force\r\n\r\n'
 
+        # Reference - https://ref.cyberwary.com/cgnj3
         script_contents += get_data(
             'Capture List of Installed Updates',
             'patches/installed',

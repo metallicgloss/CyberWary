@@ -82,6 +82,7 @@ class SystemUser(AbstractUser):
 
     # Return gravatar image URL based on the email address of the user.
     def get_gravatar_image(self):
+        # Reference - https://ref.cyberwary.com/vbz61
         return 'http://www.gravatar.com/avatar/{}'.format(md5(self.email.encode()).hexdigest())
 
 

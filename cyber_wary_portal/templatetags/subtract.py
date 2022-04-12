@@ -23,4 +23,5 @@ register = template.Library()
 
 @register.filter
 def subtract(value, arg):
+    # Reference - https://ref.cyberwary.com/ixfln
     return value - arg

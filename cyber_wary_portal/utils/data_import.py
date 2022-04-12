@@ -53,7 +53,7 @@ import requests
 #                            3.1 Search CPE                                   #
 #                            3.2 Search CPE by Version                        #
 #                            3.3 Search CPE by Remote                         #
-#                            3.4 Search CPE by Manual Override                #                                                                             #
+#                            3.4 Search CPE by Manual Override                #
 # --------------------------------------------------------------------------- #
 
 
@@ -65,12 +65,17 @@ import requests
 
 def setup_request(request, type, field, convert=False):
     if(convert):
+        # If data is not formatted in Json
+
+        # Parse Json
         payload = json.loads(request.data[field])
     else:
         payload = request.data[field]
 
+    # Strip chracters from device ID returned
     device = request.data['device_id'].replace('{', '').replace('}', '')
 
+    # Create API requst object.
     api_request = ApiRequest.objects.create(
         user=request.user,
         type=type,
@@ -79,19 +84,24 @@ def setup_request(request, type, field, convert=False):
     )
 
     try:
+        # Attempt to get scan associated with the key.
         scan = Scan.objects.get(
             user=request.user,
             scan_key=request.data['scan_key']
         )
+
     except Scan.DoesNotExist:
+        # Key does not match any existing scan for the user.
         scan = False
 
     try:
+        # Attempt to get scan record associated with the device.
         scan_record = ScanRecord.objects.get(
             scan=scan,
             device_id=device
         )
     except ScanRecord.DoesNotExist:
+        # No scan record found.
         scan_record = False
 
     return [api_request, device, scan, scan_record, payload]
@@ -223,6 +233,7 @@ def check_credential(credential_sha1):
     # Perform remote check on HaveIBeenPwned Passwords API for compromise
 
     # Get API request payload.
+    # Reference - https://ref.cyberwary.com/y3v4x
     password_data = requests.get(
         # Pass first 5 characters of SHA1 hash.
         "https://api.pwnedpasswords.com/range/" + credential_sha1[0:5],
@@ -400,6 +411,7 @@ def search_cpe_by_remote(name, version):
     # Check for CPE on the remote hosted instance.
 
     # Get returned payload from API request.
+    # Reference - https://ref.cyberwary.com/xl2jc
     remote_cpe = requests.get(
         "https://services.nvd.nist.gov/rest/json/cpes/1.0/",
         headers={

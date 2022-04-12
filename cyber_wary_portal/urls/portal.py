@@ -17,6 +17,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
+# Module/Library Import
 from cyber_wary_portal.views.portal import core, report
 from cyber_wary_portal.forms import ScanFormStep1, ScanFormStep2
 from cyber_wary_portal.views.portal.core import ScanCreationWizard
@@ -25,6 +26,7 @@ from django.urls import path
 from django.views.generic import RedirectView
 
 urlpatterns = [
+    # Portal Homepage - Dashboard
     path(
         '',
         core.index,
@@ -42,7 +44,6 @@ urlpatterns = [
             ),
             name='create'
         ),
-
         path(
             'script/preview',
             core.preview_script,
@@ -92,7 +93,6 @@ urlpatterns = [
             core.delete,
             name='account_delete'
         ),
-
 
         # Void two unneeded URLs included within allauth
         path(

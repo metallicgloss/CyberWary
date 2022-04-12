@@ -17,9 +17,36 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 #
 
-from django.shortcuts import render
+# Module/Library Import
 from cyber_wary_portal.models import ApiRequest, Credential, CPE, CVEMatches, FirewallRules, Software, SystemUser
+from django.shortcuts import render
 
+# --------------------------------------------------------------------------- #
+#                                                                             #
+#                                  SITE VIEWS                                 #
+#                                                                             #
+#                Views associated with the public facing site.                #
+#                                                                             #
+# --------------------------------------------------------------------------- #
+
+# --------------------------------------------------------------------------- #
+#                                   CONTENTS                                  #
+# --------------------------------------------------------------------------- #
+#                                                                             #
+#                        1. General Views                                     #
+#                            1.1 Index                                        #
+#                            1.2 Software                                     #
+#                            1.3 Privacy Policy                               #
+#                            1.4 Terms of Service                             #
+#                                                                             #
+# --------------------------------------------------------------------------- #
+
+
+# --------------------------------------------------------------------------- #
+#                              1. General Views                               #
+# --------------------------------------------------------------------------- #
+#                                  1.1 Index                                  #
+# --------------------------------------------------------------------------- #
 
 def index(request):
     return render(
@@ -35,6 +62,10 @@ def index(request):
     )
 
 
+# --------------------------------------------------------------------------- #
+#                                1.2 Software                                 #
+# --------------------------------------------------------------------------- #
+
 def software(request):
     return render(
         request,
@@ -45,7 +76,9 @@ def software(request):
                 'rules': FirewallRules.objects.all().count(),
                 'vulnerabilities': CVEMatches.objects.filter(
                     cpe__in=CPE.objects.filter(
-                        id__in=Software.objects.exclude(cpe=None).values_list('cpe')
+                        id__in=Software.objects.exclude(
+                            cpe=None
+                        ).values_list('cpe')
                     )
                 ).count()
             }
@@ -53,9 +86,17 @@ def software(request):
     )
 
 
-def tos(request):
-    return render(request, 'tos.html')
-
+# --------------------------------------------------------------------------- #
+#                              1.3 Privacy Policy                             #
+# --------------------------------------------------------------------------- #
 
 def pp(request):
     return render(request, 'pp.html')
+
+
+# --------------------------------------------------------------------------- #
+#                            1.4 Terms of Service                             #
+# --------------------------------------------------------------------------- #
+
+def tos(request):
+    return render(request, 'tos.html')

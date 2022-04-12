@@ -20,6 +20,9 @@
 \*-----------------------------------------------------------------------*/
 
 function initMap() {
+    // Dashboard Graphic Initialisation
+
+    // Reference - https://ref.cyberwary.com/fhil5
     const map = new google.maps.Map(document.getElementById("dashboard-map"), {
         zoom: 6,
         center: {
@@ -39,6 +42,7 @@ function initMap() {
         disableDefaultUI: true,
         gestureHandling: "cooperative",
         zoomControl: true,
+        // Reference - https://ref.cyberwary.com/6mmle
         styles: [{
                 "elementType": "geometry",
                 "stylers": [{
@@ -129,10 +133,12 @@ function initMap() {
     });
 
     for (var i = 0; i < markers.length; i++) {
+        // For each marker, create market on the map
+
         new google.maps.Marker({
             position: {
-                lat: markers[i][0],
-                lng: markers[i][1]
+                lat: markers[i][0], // Latitude
+                lng: markers[i][1] // Longitude
             },
             map,
             icon: icon,
@@ -143,32 +149,23 @@ function initMap() {
 
 
 $(document).ready(function() {
-
+    // Determine the max dimensions of the graph.
     calculatedMax = $('.chart-block').parent().width() / 2 - 25
+
     if (calculatedMax < 500) {
+        // If less than 500px width, base values on calculations
         maxChartHeight = Math.round(calculatedMax * 0.7)
         maxChartWidth = calculatedMax
     } else {
+        // If larger, fix max size.
         maxChartHeight = 300
         maxChartWidth = 500
     }
 
-    $('#applications, #credentials, #scans').dataTable({
-        "lengthChange": false,
-        "searching": false,
-        "pageLength": 8,
-        "ordering": false,
-        responsive: {
-            details: {
-                type: 'column',
-                target: 'tr'
-            }
-        },
-    });
-
-
+    // Set max dimensions for chart.
     $('#operating-systems').css('width', maxChartWidth).css('height', maxChartHeight)
 
+    // Initialise the chart to show comparison of operating systems.
     echarts.init(document.getElementById('operating-systems')).setOption({
         title: {
             display: true,
@@ -199,4 +196,17 @@ $(document).ready(function() {
         }]
     });
 
+    // Initialise datatables for the three tables.
+    $('#applications, #credentials, #scans').dataTable({
+        "lengthChange": false,
+        "searching": false,
+        "pageLength": 8,
+        "ordering": false,
+        responsive: {
+            details: {
+                type: 'column',
+                target: 'tr'
+            }
+        },
+    });
 })
