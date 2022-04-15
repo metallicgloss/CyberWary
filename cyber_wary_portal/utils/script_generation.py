@@ -91,7 +91,7 @@ def generate_script(generation_type, payload, api_key):
         # Get the current admin status for user
         # Reference - https://ref.cyberwary.com/czhjy
         script_contents += '$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())\r\n'
-        
+
         # If not user, launch popup box.
         # Reference - https://ref.cyberwary.com/ycv8n
         script_contents += 'if ( $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator) -eq $false ) { Add-Type -AssemblyName System.Windows.Forms;[System.Windows.Forms.MessageBox]::Show("Please re-launch powershell as Administrator.", "CyberWary", "Ok", "Error");stop-process -Id $PID }\r\n\r\n'
@@ -127,12 +127,12 @@ def generate_script(generation_type, payload, api_key):
             'Capture List of Installed Applications Without Registered Symbol',
             'applications_installed',
             'applications',
-            '($software | ConvertTo-Json) -replace("$([char]0x00AE)", "")' # Reference - https://ref.cyberwary.com/da2hi
+            # Reference - https://ref.cyberwary.com/da2hi
+            '($software | ConvertTo-Json) -replace("$([char]0x00AE)", "")'
         )
 
         # Inspiration Reference - https://ref.cyberwary.com/o566z
         # Inspiration Reference - https://ref.cyberwary.com/i1vhq
-
 
     # ----------------------------------------------------------------------- #
     #                            Browser Passwords                            #
@@ -161,14 +161,15 @@ def generate_script(generation_type, payload, api_key):
 
         # Downloaded developer copy of WebBrowserPassView
         # Reference - https://ref.cyberwary.com/a7tj1
-        script_contents += 'wget ' + url + '/static/downloads/WebBrowserPassView.exe -OutFile WebBrowserPassView.exe;'
+        script_contents += 'wget ' + url + \
+            '/static/downloads/WebBrowserPassView.exe -OutFile WebBrowserPassView.exe;'
 
         # Generate CSV containing all credentials on the system.
         script_contents += '.\\WebBrowserPassView.exe /scomma credentials.csv;'
 
         # Wait for 1 second to allow for disk writing for CSV to complete
         script_contents += 'Start-Sleep 1;'
-        
+
         # Loop through each line in the CSV file; if password isn't blank, replace and override with SHA1 hash.
         # Reference - https://ref.cyberwary.com/s8uwb
         script_contents += '(Import-Csv ".\credentials.csv" -Delimiter ",") | ForEach-Object { if ($_.Password -ne "") { $_.Password = ([System.BitConverter]::ToString($sha1.ComputeHash($utf8.GetBytes($_.Password))).Replace("-", "")) } $_ } | Export-Csv ".\credentials.csv" -Delimiter "," -NoType; $credentials = (Import-Csv ".\credentials.csv" -Delimiter ",")\r\n\r\n'
@@ -198,7 +199,7 @@ def generate_script(generation_type, payload, api_key):
 
         # Comment to inform user what the script is doing.
         script_contents += '# Temporarily enable PowerShell modules\r\n'
-        
+
         # Enable execution of remote scripts to allow for PSWindowsUpdate to execute correctly.
         script_contents += 'Set-ExecutionPolicy Unrestricted -force\r\n\r\n'
 
@@ -209,10 +210,10 @@ def generate_script(generation_type, payload, api_key):
             'patches',
             'Install-Module -Name PSWindowsUpdate -Force; Get-WUHistory -MaxDate (Get-Date).AddDays(-180) -Last 500'
         )
-        
+
         # Comment to inform user what the script is doing.
         script_contents += '# Set the execution of scripts to restricted\r\n'
-        
+
         # Disable the execution of scripts - should remain restricted by default.
         script_contents += 'Set-ExecutionPolicy Restricted -force\r\n\r\n'
 

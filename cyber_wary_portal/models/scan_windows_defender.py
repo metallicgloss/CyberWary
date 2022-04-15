@@ -315,7 +315,7 @@ class DefenderPreference(DefaultFields):
 
     dns_sinkhole = models.BooleanField(
         default=False,
-        help_text="The flag to identify if DNS sinkhole on malicous traffic detection has been enabled (EnableDnsSinkhole)."
+        help_text="The flag to identify if DNS sinkhole on malicious traffic detection has been enabled (EnableDnsSinkhole)."
     )
 
     file_hash_computation = models.BooleanField(
@@ -433,7 +433,7 @@ class DefenderDetection(DefaultFields):
         help_text="The signature version used to detect the incident (AMProductVersion)."
     )
 
-    reseponse_type = models.IntegerField(
+    response_type = models.IntegerField(
         choices=RemediationType.choices,
         default=RemediationType.EXTENSION,
         validators=[

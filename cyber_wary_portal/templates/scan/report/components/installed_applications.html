@@ -103,7 +103,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <div class="modal-body">
                     <div class="scan-info">
                         <!-- CVE Explainer Details -->
-                        <p class="mb-2"><i class="icofont-info-circle me-2"></i><span>Details:</span> ipsum lorem</p>
+                        <p class="mb-2"><i class="icofont-info-circle me-2"></i><span>Details:</span> This software has known vulnerabilities, and continued use of this application exposes your device to unnecessary risk.</p>
                         <p class="mb-2"><i class="icofont-flag me-2"></i><span>Recommended Action:</span> Update or Remove Application</p>
                     </div>
                     
@@ -134,7 +134,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         var cve = true
         var cveURL = "{% url 'cve' %}"
 
-        var totalApplications = {{ scan_data.installed_applications_count }}
+        var totalApplications = {{ scan_data.installed_applications.count }}
         var totalCVEs = {{ scan_data.cves }}
         var vulnerableApplications = {{ scan_data.vulnerable_applications }}
 

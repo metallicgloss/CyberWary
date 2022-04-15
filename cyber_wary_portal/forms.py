@@ -21,9 +21,8 @@
 # Module/Library Import
 from cyber_wary_portal.models import SystemUser, Scan
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import MaxValueValidator, MinValueValidator
-from email.policy import default
 
 # --------------------------------------------------------------------------- #
 #                                                                             #
@@ -287,7 +286,7 @@ class ScanFormStep1(forms.ModelForm):
     )
 
     max_devices = forms.IntegerField(
-        label='Maxmimum Associated Devices',
+        label='Maximum Associated Devices',
         required=True,
         initial=1,
         min_value=1,

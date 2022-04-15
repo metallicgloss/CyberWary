@@ -494,7 +494,7 @@ if (typeof credentials !== 'undefined') {
             }]
         });
 
-        // Initialise doughtnut chart.
+        // Initialise doughnut chart.
         echarts.init(document.getElementById('compromised')).setOption({
             title: {
                 display: true,

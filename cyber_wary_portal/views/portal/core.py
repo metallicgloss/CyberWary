@@ -72,39 +72,85 @@ from rest_framework.authtoken.models import Token
 
 @login_required
 def index(request):
+    # Retrieve all scan records associated with all scan groups created by the user.
     scan_records = ScanRecord.objects.filter(
         scan__in=Scan.objects.filter(
             user=request.user
         )
     )
-    
-    date_last_week = datetime.now() - timedelta(days=7)
 
+    # Retrieve all API requests initiated by the user.
     requests = ApiRequest.objects.filter(
         user=request.user
     )
 
-    recent_requests = requests.filter(
-        created__gte=make_aware(date_last_week)
-    )
-
-    recent_scan_records = scan_records.filter(
-        created__gte=make_aware(date_last_week)
-    )
-
+    # Retrieve all applications associated with the scan records.
     applications = Software.objects.filter(
         scan_record__in=scan_records
     ).order_by('-created')
 
+    # Retrieve all credential metrics associated with scan records.
+    credentials = recent_at_risk_creds = Credential.objects.filter(
+        credential_scan__in=CredentialScan.objects.filter(
+            scan_record__in=scan_records
+        ),
+    ).order_by('-updated')
+
+    # Define date 7 days ago.
+    date_last_week = datetime.now() - timedelta(days=7)
+
+    #
+    # Filters for Numerical Metrics
+    #
+
+    # Extend scan records requests filter to restrict data to only those in the last 7 days.
+    recent_scan_records = scan_records.filter(
+        created__gte=make_aware(date_last_week)
+    )
+
+    # Extend API requests filter to restrict data to only those in the last 7 days.
+    recent_requests = requests.filter(
+        created__gte=make_aware(date_last_week)
+    )
+
+    # Extend applications filter to restrict data to only those in the last 7 days.
     recent_applications = applications.filter(
         created__gte=make_aware(date_last_week)
     )
 
+    #
+    # Filters for Dashboard Lists
+    #
+
+    # Extend credentials filter to only compromised credentials in the last 7 days.
+    recent_at_risk_creds = credentials.filter(
+        compromised=True,
+        created__gte=make_aware(date_last_week)
+    ).all()[:16]  # Restrict to max of 16 records.
+
+    # Sort applications by date.
+    recent_apps = recent_applications.order_by(
+        '-updated'
+    ).all()[:16]  # Restrict to max of 16 records.
+
+    # Get recent scan records.
+    recent_devices = scan_records.order_by('-created')[:16]
+
+    #
+    # Map Data Generation
+    #
+
     locations = []
 
     for ip in scan_records.values("public_ip").distinct():
+        # For each unique IP address, add lat and long.
         locations.append(GeoIP2().lat_lon(ip['public_ip']))
 
+    #
+    # OS Chart Data
+    #
+
+    # Annotate scan record dataset to add count values for each unique OS.
     operating_systems = scan_records.values(
         'os_install__os__name'
     ).annotate(
@@ -112,25 +158,6 @@ def index(request):
             'name'
         )
     )
-
-    credentials = recent_at_risk_creds = Credential.objects.filter(
-        credential_scan__in=CredentialScan.objects.filter(
-            scan_record__in=scan_records
-        ),
-    ).order_by('-updated')
-
-    recent_at_risk_creds = credentials.filter(
-        compromised=True,
-        created__gte=make_aware(date_last_week)
-    ).all()[:16]
-
-    recent_apps = Software.objects.filter(
-        scan_record__in=scan_records,
-        created__gte=make_aware(date_last_week)
-    ).order_by('-updated').all()[:16]
-
-    recent_devices = scan_records.order_by('-created')[:16]
-
 
     return render(
         request,
@@ -378,28 +405,35 @@ def history(request):
         user=request.user
     ).order_by('-created')
 
+    # Get the date 7 days ago.
     date_last_week = datetime.now() - timedelta(days=7)
 
+    # Apply additional filter to only retrieve scans in the last week.
     user_scans_last_week = user_scans.filter(
         created__gte=make_aware(date_last_week)
     )
 
+    # Capture a list of all user scans.
     records = ScanRecord.objects.filter(
         scan__in=user_scans
     )
 
+    # Apply additional filter to only retrieve records in the last week.
     records_last_week = records.filter(
         created__gte=make_aware(date_last_week)
     )
 
+    # Capture a list of all unique device names.
     devices = records.values(
         'device_id'
     ).distinct()
 
+    # Apply additional filter to only retrieve devices scanned in the last week.
     devices_last_week = records_last_week.values(
         'device_id'
     ).distinct()
 
+    # Capture a list of credentials, filtering only to unique values of the url and username that have been compromised.
     credentials = Credential.objects.filter(
         credential_scan__in=CredentialScan.objects.filter(
             scan_record__in=records
@@ -410,6 +444,7 @@ def history(request):
         'username'
     ).distinct()
 
+    # Apply additional filter to only credentials scanned in the last week.
     credentials_last_week = credentials.filter(
         created__gte=make_aware(date_last_week)
     )
@@ -437,6 +472,7 @@ def history(request):
 @login_required
 def scan(request, scan_key):
     try:
+        # If scan exists, get data.
         scan = Scan.objects.get(
             user=request.user,
             scan_key=scan_key
@@ -444,6 +480,7 @@ def scan(request, scan_key):
     except Scan.DoesNotExist:
         return HttpResponseNotFound()
 
+    # Render the second step of the scan to get the data stored in it.
     scan_form = ScanFormStep2(scan)
 
     return render(
@@ -451,12 +488,12 @@ def scan(request, scan_key):
         'scan/scan.html',
         {
             'scan': scan,
-            'script': generate_script(
+            'script': generate_script(  # Generate the script for displaying.
                 'live',
                 scan_form.data.__dict__,
                 Token.objects.get_or_create(
                     user=request.user
-                )[0].key
+                )[0].key  # Get the user's API key.
             ),
             'records': ScanRecord.objects.filter(
                 scan=scan

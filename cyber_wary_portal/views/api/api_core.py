@@ -238,7 +238,7 @@ def cve(request):
         if cve_matches.exists():
             # If the CPE has at least one CVE.
 
-            for match in cve_matches:    
+            for match in cve_matches:
                 # For each detected CVE.
 
                 if('CVSS' in match.cve.cvss):
@@ -256,7 +256,7 @@ def cve(request):
                     'severity_rating': vector.severities()[0],
                     'severity_score': vector.scores()[0],
                     'references': []
-                }                    
+                }
 
                 # Lookup all references and support links associated with the CVE.
                 cve_references = CVEReference.objects.filter(
@@ -274,7 +274,7 @@ def cve(request):
                                 'url': reference.url,
                                 'source': reference.source,
                                 'tags': reference.tags
-                            }                            
+                            }
                         )
 
         return JsonResponse(
@@ -329,7 +329,7 @@ def start_scan(request):
                 )[0],
                 owner=data.get('CsPrimaryOwnerName'),
                 logon_server=data.get('LogonServer'),
-                installed_memory=data.get('CsPhyicallyInstalledMemory'),
+                installed_memory=data.get('CsPhysicallyInstalledMemory'),
                 domain=data.get('CsPartOfDomain'),
                 portable=data.get('OsPortableOperatingSystem'),
                 virtual_machine=data.get('HyperVisorPresent'),
@@ -340,7 +340,9 @@ def start_scan(request):
                     name=data.get('BiosName'),
                     version=data.get('BiosVersion'),
                     manufacturer=data.get('BiosManufacturer'),
-                    release_date=convert_unix_to_dt(data.get('BiosReleaseDate'))
+                    release_date=convert_unix_to_dt(
+                        data.get('BiosReleaseDate')
+                    )
                 )[0],
                 install_date=convert_unix_to_dt(data.get('BiosInstallDate')),
                 install_status=data.get('BiosStatus'),

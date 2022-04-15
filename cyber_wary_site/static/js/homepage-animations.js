@@ -22,7 +22,7 @@
 var played = false;
 
 if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
-    // If on a portable device (targetting mobile devices).
+    // If on a portable device (targeting mobile devices).
 
     function elementInView(element) {
         // Function to check if the element is in the browser view.

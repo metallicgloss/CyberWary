@@ -30,7 +30,7 @@ import threading
 #                                                                             #
 #                              SOFTWARE API VIEWS                             #
 #                                                                             #
-#     Views associated with the installed and startup softwarre API calls.    #
+#     Views associated with the installed and startup software API calls.     #
 #                                                                             #
 # --------------------------------------------------------------------------- #
 
@@ -85,22 +85,38 @@ def applications_installed(request):
             # If software has a valid name and version (filters our base firmware).
             software.append(
                 Software.objects.create(
-                    scan_record = scan_record,
-                    name = application.get('DisplayName'),
-                    version = re.sub("[^\d\.]", "", application.get('DisplayVersion')),
-                    version_major = application.get('VersionMajor'),
-                    version_minor = application.get('VersionMinor'),
-                    publisher = Publisher.objects.get_or_create( 
-                        name=application.get('Publisher')
+                    scan_record=scan_record,
+                    name=application.get(
+                        'DisplayName'
+                    ),
+                    version=re.sub(
+                        "[^\d\.]",
+                        "",
+                        application.get(
+                            'DisplayVersion'
+                        )
+                    ),
+                    version_major=application.get(
+                        'VersionMajor'
+                    ),
+                    version_minor=application.get(
+                        'VersionMinor'
+                    ),
+                    publisher=Publisher.objects.get_or_create(
+                        name=application.get(
+                            'Publisher'
+                        )
                     )[0],
-                    install_path = install_path,
-                    install_date = convert_date(
-                        application.get('InstallDate')
+                    install_path=install_path,
+                    install_date=convert_date(
+                        application.get(
+                            'InstallDate'
+                        )
                     )
                 )
             )
 
-    # Execute in thread to detact from main import process.
+    # Execute in thread to detach from main import process.
     import_thread = threading.Thread(
         target=search_cpe,
         args=[software]

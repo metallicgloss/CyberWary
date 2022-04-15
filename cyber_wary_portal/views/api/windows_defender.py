@@ -337,47 +337,104 @@ def antivirus_preferences(request):
         preferences = DefenderPreference.objects.create(
             scan_record=scan_record,
             check_for_signatures_before_running_scan=data.get(
-                'CheckForSignaturesBeforeRunningScan'),
-            disable_archive_scanning=data.get('DisableArchiveScanning'),
-            disable_auto_exclusions=data.get('DisableAutoExclusions'),
-            disable_behavior_monitoring=data.get('DisableBehaviorMonitoring'),
-            disable_block_at_first_seen=data.get('DisableBlockAtFirstSeen'),
+                'CheckForSignaturesBeforeRunningScan'
+            ),
+            disable_archive_scanning=data.get(
+                'DisableArchiveScanning'
+            ),
+            disable_auto_exclusions=data.get(
+                'DisableAutoExclusions'
+            ),
+            disable_behavior_monitoring=data.get(
+                'DisableBehaviorMonitoring'
+            ),
+            disable_block_at_first_seen=data.get(
+                'DisableBlockAtFirstSeen'
+            ),
             disable_cpu_throttle_on_idle_scans=data.get(
-                'DisableCpuThrottleOnIdleScans'),
-            disable_datagram_processing=data.get('DisableDatagramProcessing'),
-            disable_dns_over_tcp_parsing=data.get('DisableDnsOverTcpParsing'),
-            disable_dns_parsing=data.get('DisableDnsParsing'),
-            disable_email_scanning=data.get('DisableEmailScanning'),
-            disable_ftp_parsing=data.get('DisableFtpParsing'),
-            disable_gradual_release=data.get('DisableGradualRelease'),
-            disable_http_parsing=data.get('DisableHttpParsing'),
+                'DisableCpuThrottleOnIdleScans'
+            ),
+            disable_datagram_processing=data.get(
+                'DisableDatagramProcessing'
+            ),
+            disable_dns_over_tcp_parsing=data.get(
+                'DisableDnsOverTcpParsing'
+            ),
+            disable_dns_parsing=data.get(
+                'DisableDnsParsing'
+            ),
+            disable_email_scanning=data.get(
+                'DisableEmailScanning'
+            ),
+            disable_ftp_parsing=data.get(
+                'DisableFtpParsing'
+            ),
+            disable_gradual_release=data.get(
+                'DisableGradualRelease'
+            ),
+            disable_http_parsing=data.get(
+                'DisableHttpParsing'
+            ),
             disable_inbound_connection_filtering=data.get(
-                'DisableInboundConnectionFiltering'),
-            disable_ioav_protection=data.get('DisableIOAVProtection'),
-            disable_privacy_mode=data.get('DisablePrivacyMode'),
-            disable_rdp_parsing=data.get('DisableRdpParsing'),
-            disable_realtime_monitoring=data.get('DisableRealtimeMonitoring'),
+                'DisableInboundConnectionFiltering'
+            ),
+            disable_ioav_protection=data.get(
+                'DisableIOAVProtection'
+            ),
+            disable_privacy_mode=data.get(
+                'DisablePrivacyMode'
+            ),
+            disable_rdp_parsing=data.get(
+                'DisableRdpParsing'
+            ),
+            disable_realtime_monitoring=data.get(
+                'DisableRealtimeMonitoring'
+            ),
             disable_removable_drive_scanning=data.get(
-                'DisableRemovableDriveScanning'),
-            disable_restore_point=data.get('DisableRestorePoint'),
+                'DisableRemovableDriveScanning'
+            ),
+            disable_restore_point=data.get(
+                'DisableRestorePoint'
+            ),
             disable_scanning_mapped_network_drives_for_full_scan=data.get(
                 'DisableScanningMappedNetworkDrivesForFullScan'
             ),
             disable_scanning_network_files=data.get(
-                'DisableScanningNetworkFiles'),
-            disable_script_scanning=data.get('DisableScriptScanning'),
-            disable_ssh_parsing=data.get('DisableSshParsing'),
-            disable_tls_parsing=data.get('DisableTlsParsing'),
-            controlled_folder_access=data.get('EnableControlledFolderAccess'),
-            dns_sinkhole=data.get('EnableDnsSinkhole'),
-            file_hash_computation=data.get('EnableFileHashComputation'),
+                'DisableScanningNetworkFiles'
+            ),
+            disable_script_scanning=data.get(
+                'DisableScriptScanning'
+            ),
+            disable_ssh_parsing=data.get(
+                'DisableSshParsing'
+            ),
+            disable_tls_parsing=data.get(
+                'DisableTlsParsing'
+            ),
+            controlled_folder_access=data.get(
+                'EnableControlledFolderAccess'
+            ),
+            dns_sinkhole=data.get(
+                'EnableDnsSinkhole'
+            ),
+            file_hash_computation=data.get(
+                'EnableFileHashComputation'
+            ),
             full_scan_on_battery_power=data.get(
-                'EnableFullScanOnBatteryPower'),
+                'EnableFullScanOnBatteryPower'
+            ),
             randomize_schedule_task_times=data.get(
-                'RandomizeScheduleTaskTimes'),
-            avg_load=data.get('ScanAvgCPULoadFactor'),
-            only_if_idle=data.get('ScanOnlyIfIdleEnabled'),
-            ui_lockdown=data.get('UILockdown')
+                'RandomizeScheduleTaskTimes'
+            ),
+            avg_load=data.get(
+                'ScanAvgCPULoadFactor'
+            ),
+            only_if_idle=data.get(
+                'ScanOnlyIfIdleEnabled'
+            ),
+            ui_lockdown=data.get(
+                'UILockdown'
+            )
         )
 
     except KeyError:
@@ -455,28 +512,43 @@ def antivirus_detections(request):
             detections.append(
                 DefenderDetection(
                     scan_record=scan_record,
-                    action_success=detection.get('ActionSuccess'),
-                    av_version=detection.get('AMProductVersion'),
-                    reseponse_type=detection.get('CleaningActionID'),
+                    action_success=detection.get(
+                        'ActionSuccess'
+                    ),
+                    av_version=detection.get(
+                        'AMProductVersion'
+                    ),
+                    response_type=detection.get(
+                        'CleaningActionID'
+                    ),
                     threat_execution_status=detection.get(
-                        'CurrentThreatExecutionStatusID'),
-                    detection_identifier=detection.get('DetectionID'),
-                    active_user=detection.get('DomainUser'),
+                        'CurrentThreatExecutionStatusID'
+                    ),
+                    detection_identifier=detection.get(
+                        'DetectionID'
+                    ),
+                    active_user=detection.get(
+                        'DomainUser'
+                    ),
                     detection_time=convert_unix_to_dt(
                         detection.get('InitialDetectionTime')
                     ),
                     remediation_time=convert_unix_to_dt(
-                        detection.get('RemediationTime')),
+                        detection.get('RemediationTime')
+                    ),
                     last_threat_status_change_time=convert_unix_to_dt(
                         detection.get('LastThreatStatusChangeTime')
                     ),
-                    detection_process=detection.get('ProcessName'),
-                    detected_resources=detection.get('Resources')
-                    # .replace(
-                    #    "file:_",
-                    #    "",
-                    #    1
-                    # ).split(" file:_")
+                    detection_process=detection.get(
+                        'ProcessName'
+                    ),
+                    detected_resources=detection.get(
+                        'Resources'
+                    ).replace(
+                        "file:_",
+                        "",
+                        1
+                    ).split(" file:_")
                 )
             )
 

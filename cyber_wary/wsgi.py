@@ -20,7 +20,12 @@
 # Module/Library Import
 from django.contrib.staticfiles.handlers import StaticFilesHandler
 from django.core.wsgi import get_wsgi_application
-import os
+import os, sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../cyber_wary")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../cyber_wary_portal")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../cyber_wary_site")))
 
 os.environ.setdefault(
     'DJANGO_SETTINGS_MODULE',

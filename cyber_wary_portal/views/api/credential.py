@@ -71,7 +71,9 @@ def browser_passwords(request):
 
         if(credential.get('Password') != ""):
             # If password isn't blank, check hashed credential against the HaveIBeenPwned dataset.
-            compromised, occurrence = check_credential(credential.get('Password'))
+            compromised, occurrence = check_credential(
+                credential.get('Password')
+            )
         else:
             compromised, occurrence = [False, 0]
 

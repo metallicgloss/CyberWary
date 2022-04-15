@@ -67,20 +67,43 @@ def system_users(request):
             system_users.append(
                 User(
                     scan_record=scan_record,
-                    name=user.get('Name'),
-                    full_name=user.get('FullName'),
-                    description=user.get('Description'),
-                    sid=user.get('SID'),
-                    source=user.get('PrincipalSource'),
-                    last_logon=convert_unix_to_dt(user.get('LastLogon')),
-                    enabled=user.get('Enabled'),
+                    name=user.get(
+                        'Name'
+                    ),
+                    full_name=user.get(
+                        'FullName'
+                    ),
+                    description=user.get(
+                        'Description'
+                    ),
+                    sid=user.get(
+                        'SID'
+                    ),
+                    source=user.get(
+                        'PrincipalSource'
+                    ),
+                    last_logon=convert_unix_to_dt(
+                        user.get(
+                            'LastLogon'
+                        )
+                    ),
+                    enabled=user.get(
+                        'Enabled'
+                    ),
                     password_changeable=convert_unix_to_dt(
                         user.get('PasswordChangeableDate')
-                        ),
-                    password_expiry=convert_unix_to_dt(user.get('PasswordExpires')),
-                    password_permission=user.get('UserMayChangePassword'),
-                    password_required=user.get('PasswordRequired'),
-                    password_last_set=convert_unix_to_dt(user.get('PasswordLastSet'))
+                    ),
+                    password_expiry=convert_unix_to_dt(
+                        user.get('PasswordExpires')
+                    ),
+                    password_permission=user.get(
+                        'UserMayChangePassword'
+                    ),
+                    password_required=user.get(
+                        'PasswordRequired'
+                    ),
+                    password_last_set=convert_unix_to_dt(
+                        user.get('PasswordLastSet'))
                 )
             )
 
