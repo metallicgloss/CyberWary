@@ -18,7 +18,7 @@
 #
 
 # Module/Library Import
-from cyber_wary_portal.models import ApiRequest, Credential, CPE, CVEMatches, FirewallRules, Software, SystemUser
+from cyber_wary_portal.models import ApiRequest, Credential, CPE, CVEMatches, FirewallRules, Software, CyberWaryUser
 from django.shortcuts import render
 
 # --------------------------------------------------------------------------- #
@@ -54,7 +54,7 @@ def index(request):
         'index.html',
         {
             'metrics': {
-                'users': SystemUser.objects.all().count(),
+                'users': CyberWaryUser.objects.all().count(),
                 'applications': Software.objects.all().count(),
                 'passwords': Credential.objects.all().count()
             }

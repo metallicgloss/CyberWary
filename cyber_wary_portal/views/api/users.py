@@ -48,7 +48,7 @@ def system_users(request):
         'users'
     )
 
-    if(check_existing(scan, scan_record, User)):
+    if(check_existing(scan, scan_record, WindowsUser)):
         # If scan or scan_record aren't valid, or an existing import exists.
         return bad_request(api_request)
 
@@ -60,12 +60,12 @@ def system_users(request):
 
         if(user.get('PrincipalSource') == 4):
             # If account source is 4, update to Microsoft.
-            user['PrincipalSource'] = User.AccountType.MICROSOFT
+            user['PrincipalSource'] = WindowsUser.AccountType.MICROSOFT
 
         try:
             # Create user object and append to list for mass creation.
             system_users.append(
-                User(
+                WindowsUser(
                     scan_record=scan_record,
                     name=user.get(
                         'Name'
@@ -112,6 +112,6 @@ def system_users(request):
             pass
 
     # Bulk create defined objects.
-    User.objects.bulk_create(system_users)
+    WindowsUser.objects.bulk_create(system_users)
 
     return HttpResponse('Success')

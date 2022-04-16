@@ -18,11 +18,11 @@
 #
 
 # Module/Library Import
-from .models import SystemUser
+from .models import CyberWaryUser
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 admin.site.register(
-    SystemUser,
+    CyberWaryUser,
     UserAdmin
 )

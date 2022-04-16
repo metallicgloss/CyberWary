@@ -196,7 +196,7 @@ def modify(request):
 
         if form.is_valid():
             # Get existing user.
-            user = SystemUser.objects.get(
+            user = CyberWaryUser.objects.get(
                 pk=request.user.pk
             )
 
@@ -206,7 +206,7 @@ def modify(request):
 
             try:
                 # Check for existing user.
-                existing_user = SystemUser.objects.get(
+                existing_user = CyberWaryUser.objects.get(
                     email=form.data.get('email')
                 )
 
@@ -217,7 +217,7 @@ def modify(request):
                         "There is already an existing user with that email address, so it could not be updated."
                     )
 
-            except SystemUser.DoesNotExist:
+            except CyberWaryUser.DoesNotExist:
                 # User doesn't exist with that email - its completely free to be used.
                 user.email = form.data.get('email')
 
@@ -242,7 +242,7 @@ def modify(request):
     else:
         # Standard GET request, load AccountDetailsForm form and populate with user data.
         form = AccountModificationForm(
-            instance=SystemUser.objects.get(
+            instance=CyberWaryUser.objects.get(
                 pk=request.user.pk
             )
         )
@@ -275,7 +275,7 @@ def delete(request):
 
         if form.is_valid():
             # Get existing user.
-            user = SystemUser.objects.get(
+            user = CyberWaryUser.objects.get(
                 pk=request.user.pk
             )
 

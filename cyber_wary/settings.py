@@ -183,7 +183,7 @@ TEMPLATE_DIRS = [
 
 # Authentication Settings
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth
-AUTH_USER_MODEL = 'cyber_wary_portal.SystemUser'
+AUTH_USER_MODEL = 'cyber_wary_portal.CyberWaryUser'
 LOGIN_URL = '/portal/account/login'
 LOGIN_REDIRECT_URL = 'portal'
 LOGOUT_REDIRECT_URL = 'index'

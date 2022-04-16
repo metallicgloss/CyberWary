@@ -37,7 +37,7 @@ from django.db import models
 #                                   1.1 User                                  #
 # --------------------------------------------------------------------------- #
 
-class User(DefaultFields):
+class WindowsUser(DefaultFields):
     # Model to store an individual account associated with a scanned device.
 
     # The type of account that can be installed.

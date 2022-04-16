@@ -19,7 +19,7 @@
 #
 
 # Module/Library Import
-from cyber_wary_portal.models import SystemUser, Scan
+from cyber_wary_portal.models import CyberWaryUser, Scan
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -116,8 +116,8 @@ class AccountDetailsForm(UserCreationForm):
     )
 
     class Meta:
-        # Associate with the SystemUser Model
-        model = SystemUser
+        # Associate with the CyberWaryUser Model
+        model = CyberWaryUser
         # Map Fields
         fields = (
             'username',
@@ -198,8 +198,8 @@ class AccountModificationForm(UserCreationForm):
     )
 
     class Meta:
-        # Associate with the SystemUser Model
-        model = SystemUser
+        # Associate with the CyberWaryUser Model
+        model = CyberWaryUser
         # Map Fields
         fields = (
             'first_name',

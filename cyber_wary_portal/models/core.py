@@ -39,7 +39,7 @@ from hashlib import md5
 #                                                                             #
 #                        1. System Models                                     #
 #                            1.1 Default Fields                               #
-#                            1.2 System User                                  #
+#                            1.2 CyberWary User                               #
 #                            1.3 API Request                                  #
 #                            1.4 Language                                     #
 #                        2. Operating System                                  #
@@ -74,10 +74,10 @@ class DefaultFields(models.Model):
 
 
 # --------------------------------------------------------------------------- #
-#                            1.2 System User Class                            #
+#                           1.2 CyberWary User Class                          #
 # --------------------------------------------------------------------------- #
 
-class SystemUser(AbstractUser):
+class CyberWaryUser(AbstractUser):
     # Define the name for the custom Django user.
 
     # Return gravatar image URL based on the email address of the user.
