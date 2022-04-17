@@ -508,6 +508,18 @@ def antivirus_detections(request):
     for detection in data:
         # For each detection in the payload.
         try:
+            detected_resources = detection.get(
+                'Resources'
+            )
+
+            if not isinstance(detection.get('Resources'), list):
+                # Resources passed as a string; format and split string into usable list.
+                detected_resources = detected_resources.replace(
+                    "file:_",
+                    "",
+                    1
+                ).split(" file:_")
+
             # Define detection and append to list for mass creation.
             detections.append(
                 DefenderDetection(
@@ -542,13 +554,7 @@ def antivirus_detections(request):
                     detection_process=detection.get(
                         'ProcessName'
                     ),
-                    detected_resources=detection.get(
-                        'Resources'
-                    ).replace(
-                        "file:_",
-                        "",
-                        1
-                    ).split(" file:_")
+                    detected_resources=detected_resources
                 )
             )
 

@@ -34,9 +34,6 @@ SECRET_KEY = os.environ.get('CYBERWARY_SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# Registration Status
-REGISTRATION_OPEN = False
-
 # Authorised URLS.
 ALLOWED_HOSTS = ['*']
 

@@ -234,7 +234,7 @@ def report(request, scan_key, report):
 
         try:
             # Get list of all system users.
-            scan_data['system_users'] = User.objects.filter(
+            scan_data['system_users'] = WindowsUser.objects.filter(
                 scan_record=scan_record
             )
 
@@ -249,7 +249,7 @@ def report(request, scan_key, report):
                 enabled=True
             ).count()
 
-        except (User.DoesNotExist):
+        except (WindowsUser.DoesNotExist):
             scan_data['system_users'] = None
 
     return render(
