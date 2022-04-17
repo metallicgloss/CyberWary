@@ -20,6 +20,7 @@
 # Module/Library Import
 from cyber_wary_portal.models import ApiRequest, Credential, CPE, CVEMatches, FirewallRules, Software, CyberWaryUser
 from django.shortcuts import render
+import os
 
 # --------------------------------------------------------------------------- #
 #                                                                             #
@@ -91,7 +92,17 @@ def software(request):
 # --------------------------------------------------------------------------- #
 
 def pp(request):
-    return render(request, 'pp.html')
+    return render(
+        request,
+        'pp.html',
+        {
+            'organisation': os.environ.get('CYBERWARY_ORGANISATION'),
+            'number': os.environ.get('CYBERWARY_COMPANY_NUMBER'),
+            'trading_as': os.environ.get('CYBERWARY_TRADING_AS'),
+            'url': os.environ.get('CYBERWARY_URL'),
+            'address': os.environ.get('CYBERWARY_ADDRESS')
+        }
+    )
 
 
 # --------------------------------------------------------------------------- #
@@ -99,4 +110,14 @@ def pp(request):
 # --------------------------------------------------------------------------- #
 
 def tos(request):
-    return render(request, 'tos.html')
+    return render(
+        request,
+        'tos.html',
+        {
+            'organisation': os.environ.get('CYBERWARY_ORGANISATION'),
+            'number': os.environ.get('CYBERWARY_COMPANY_NUMBER'),
+            'trading_as': os.environ.get('CYBERWARY_TRADING_AS'),
+            'url': os.environ.get('CYBERWARY_URL'),
+            'address': os.environ.get('CYBERWARY_ADDRESS')
+        }
+    )

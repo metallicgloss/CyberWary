@@ -22,7 +22,7 @@ from cyber_wary_portal.models import CPE, CWE, CVE, CVEReference
 from cyber_wary_portal.models.scan_software import CVEMatches, CVEReference
 from datetime import datetime
 from django.core.management.base import BaseCommand
-from django.db.utils import IntegrityError
+from django.db.utils import IntegrityError, OperationalError
 from zipfile import ZipFile
 import argparse
 import gzip
@@ -112,7 +112,7 @@ class Command(BaseCommand):
                         ).text  # Get text content from inside tag.
                     )
 
-                except IntegrityError:
+                except (IntegrityError, OperationalError):
                     # Already imported / conflict on CPE identifier.
 
                     # Try-except used instead of get_or_create due to significant performance difference.

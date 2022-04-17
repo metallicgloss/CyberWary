@@ -25,49 +25,33 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <!-- Page Header -->
     {% include "structure/header.html" with title="Privacy Policy" subtitle="A set of guidelines that the hosted instance of this platform follows for storing your data." %}
 
-    {% comment %}
-
-    # --------------------------------------------------------------------------- #
-    #                                                                             #
-    #                                   NOTICE                                    #
-    #                                                                             #
-    #  This privacy policy ONLY applies to the official instance of Cyberwary     #
-    #  hosted at https://www.cyberwary.com associated with Encrypted Laser LTD.   #
-    #  All other hosted instances or copies made from the project repository      #
-    #  hosted on GitHub are required to replace this page to remain compliant     #
-    #  with local laws if public.                                                 #
-    #                                                                             #
-    # --------------------------------------------------------------------------- #
-
-    {% endcomment %}
-
     <!-- Text Content -->
     <section class="legal-section">
         <div class="container">
             <div class="row my-5">
                 <div class="col-lg-12 col-xl-12">
                     <h1>Privacy Policy</h1>
-                    <p><small>Last Modified 12/04/22</small></p>
+                    <p><small>Last Modified 17/04/22</small></p>
                     <hr>
-                    <p>This Privacy Policy covers the website hosting, data handling procedures, data collection procedures and associated services provided by Encrypted Laser Limited, a company registered in England, with its registered number 10286642 and its registered address at 024 River Mill One, Station Road, London, SE13 5FL.</p>
-                    <p>Encrypted Laser Limited will be referred to within this document as ('CyberWary') and using first-person pronouns.</p>
+                    <p>This Privacy Policy covers the website hosting, data handling procedures, data collection procedures and associated services provided by {{ organisation }}, a company registered in England, with its registered number {{ number }} and its registered address at {{ address }}.</p>
+                    <p>{{ organisation }} will be referred to within this document as ('{{ trading_as }}') and using first-person pronouns.</p>
                     <p>The Client will be referred to within this document as ('Customer'), ('Client'), ('You'), ('Your'), ('The Client'), ('User') and using second-person pronouns.</p>
-                    <p>This privacy policy applies between you, the User of this Website and CyberWary, the owner and provider of this Website. CyberWary takes the privacy of your information very seriously. This privacy policy applies to our use of any and all Data collected by us or provided by you in relation to your use of the Website. Your use of any website, network or services owned or operated by CyberWary, including without limitation cyberwary.com [and elhostingservices.com] (each referred to as 'this site' or 'this website') signifies Your acceptance and understanding of this Privacy Policy. </p>
-                    <p>CyberWary is registered and fully compliant with the Data Protection Act 2018 and the General Data Protection Regulation 2016. Registration number with the Data Commissioner is: "<a href="https://ico.org.uk/ESDWebPages/Entry/ZA231865">ZA231865</a>".</p>
-                    <p>This privacy policy should be read alongside, and in addition to, our Terms of Service, that can be found <a href="https://www.cyberwary.com/tos">here</a>.</p>
+                    <p>This privacy policy applies between you, the User of this Website and {{ trading_as }}, the owner and provider of this Website. {{ trading_as }} takes the privacy of your information very seriously. This privacy policy applies to our use of any and all Data collected by us or provided by you in relation to your use of the Website. Your use of any website, network or services owned or operated by {{ trading_as }}, including without limitation cyberwary.com [and elhostingservices.com] (each referred to as 'this site' or 'this website') signifies Your acceptance and understanding of this Privacy Policy. </p>
+                    <p>{{ trading_as }} is registered and fully compliant with the Data Protection Act 2018 and the General Data Protection Regulation 2016.</p>
+                    <p>This privacy policy should be read alongside, and in addition to, our Terms of Service, that can be found <a href="{{ url }}/tos">here</a>.</p>
                     <hr>
                     <h4>1. Definitions and Interpretation</h4>
                     <ol>
                         <li>
                             In this privacy policy, the following definitions are used:
                             <ol type="a">
-                                <li><b>Data</b> - collectively all information that you submit to CyberWary via the Website. This definition incorporates, where applicable, the definitions provided in the Data Protection Laws;</li>
+                                <li><b>Data</b> - collectively all information that you submit to {{ trading_as }} via the Website. This definition incorporates, where applicable, the definitions provided in the Data Protection Laws;</li>
                                 <li><b>Cookies</b> - a small text file placed on your computer by this Website when you visit certain parts of the Website and/or when you use certain features of the Website. Details of the cookies used by this Website are set out in the clause below (Cookies);</li>
                                 <li><b>Data Protection Laws</b> - any applicable law relating to the processing of personal Data, including but not limited to the Directive 96/46/EC (Data Protection Directive) or the GDPR, and any national implementing laws, regulations and secondary legislation, for as long as the GDPR is effective in the UK;</li>
                                 <li><b>GDPR</b> - the General Data Protection Regulation (EU) 2016/679;</li>
-                                <li><b>Encrypted Laser Limited</b> - a company incorporated in England and Wales with registered number 10286642 whose registered office is at 024 River Mill One, Station Road, London, SE13 5FL;</li>
+                                <li><b>{{ organisation }}</b> - a company incorporated in England and Wales with registered number {{ number }} whose registered office is at {{ address }};</li>
                                 <li><b>UK and EU Cookie Law</b> - the Privacy and Electronic Communications (EC Directive) Regulations 2003 as amended by the Privacy and Electronic Communications (EC Directive) (Amendment) Regulations 2011;</li>
-                                <li><b>User or you</b> - any third party that accesses the Website and is not either (i) employed by CyberWary and acting in the course of their employment or (ii) engaged as a consultant or otherwise providing services to CyberWary and accessing the Website in connection with the provision of such services; and</li>
+                                <li><b>User or you</b> - any third party that accesses the Website and is not either (i) employed by {{ trading_as }} and acting in the course of their employment or (ii) engaged as a consultant or otherwise providing services to {{ trading_as }} and accessing the Website in connection with the provision of such services; and</li>
                                 <li><b>Website</b> - the website that you are currently using, cyberwary.com, and any sub-domains of this site unless expressly excluded by their own terms and conditions.</li>
                             </ol>
                         </li>
@@ -86,13 +70,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <hr>
                     <h4>2. Scope of this Privacy Policy</h4>
                     <ol>
-                        <li>This privacy policy applies only to the actions of CyberWary and Users with respect to this Website and direct services provided to you. It does not extend to any websites that can be accessed from this Website including, but not limited to, any links we may provide to social media websites. For purposes of the applicable Data Protection Laws, CyberWary is the "data controller". This means that CyberWary determines the purposes for which and the manner in which, your Data is processed.</li>
+                        <li>This privacy policy applies only to the actions of {{ trading_as }} and Users with respect to this Website and direct services provided to you. It does not extend to any websites that can be accessed from this Website including, but not limited to, any links we may provide to social media websites. For purposes of the applicable Data Protection Laws, {{ trading_as }} is the "data controller". This means that {{ trading_as }} determines the purposes for which and the manner in which, your Data is processed.</li>
                     </ol>
                     <hr>
                     <h4>3. Information Collected</h4>
                     <ol>
                         <li>
-                            CyberWary will only collect and use personal information solely for the utilisation of the account holder's profile and to render the listed service. Information we may collect, but not limited to, which includes personal Data, from you in each case, in accordance with this privacy policy:
+                            {{ trading_as }} will only collect and use personal information solely for the utilisation of the account holder's profile and to render the listed service. Information we may collect, but not limited to, which includes personal Data, from you in each case, in accordance with this privacy policy:
                             <ol type="a">
                                 <li>full name;</li>
                                 <li>contact information such as email addresses and telephone numbers;</li>
@@ -194,7 +178,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <h4>8. Data Retention, Storage &amp; Transfers</h4>
                     <ol>
                         <li>Unless a longer retention period is required or permitted by law, we will only hold your Data on our systems for the period necessary to fulfil the purposes outlined in this privacy policy or until you request that the Data be deleted.</li>
-                        <li>All data associated with this research project is stored according to the guidelines defined by the University of Greenwich. CyberWary will irrevocably delete all data stored on or before the 30th of July 2022. The platform will implement a revised privacy policy for users wishing to use the service beyond this point.</li>
+                        <li>All data associated with this research project is stored according to the guidelines defined by the University of Greenwich. {{ trading_as }} will irrevocably delete all data stored on or before the 30th of July 2022. The platform will implement a revised privacy policy for users wishing to use the service beyond this point.</li>
                         <li>
                             Data which we collect from you may be stored and processed in and transferred to countries outside of the European Economic Area (EEA). For example, this could occur if our servers are located in a country outside the EEA or one of our service providers is situated in a country outside the EEA. Current backup storage locations include:
                             <ol type="a">
@@ -231,16 +215,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <hr>
                     <h4>11. Links to other websites</h4>
                     <ol>
-                        <li>CyberWary may, from time to time, expand or reduce our business and this may involve the sale and/or the transfer of control of all or part of Encrypted Laser Limited. Data provided by Users will, where it is relevant to any part of our business so transferred, be transferred along with that part and the new owner or newly controlling party will, under the terms of this privacy policy, be permitted to use the Data for the purposes for which it was originally supplied to us.</li>
+                        <li>{{ trading_as }} may, from time to time, expand or reduce our business and this may involve the sale and/or the transfer of control of all or part of {{ organisation }}. Data provided by Users will, where it is relevant to any part of our business so transferred, be transferred along with that part and the new owner or newly controlling party will, under the terms of this privacy policy, be permitted to use the Data for the purposes for which it was originally supplied to us.</li>
                         <li>We may also disclose Data to a prospective purchaser of our business or any part of it.</li>
                         <li>In the above instances, we will take steps with the aim of ensuring your privacy is protected.</li>
                     </ol>
                     <hr>
                     <h4>12. Cookies</h4>
                     <ol>
-                        <li>This Website may place and access certain Cookies on your computer. CyberWary uses Cookies to improve your experience of using the Website and to improve our range of services. CyberWary has carefully chosen these Cookies and has taken steps to ensure that your privacy is protected and respected at all times.</li>
+                        <li>This Website may place and access certain Cookies on your computer. {{ trading_as }} uses Cookies to improve your experience of using the Website and to improve our range of services. {{ trading_as }} has carefully chosen these Cookies and has taken steps to ensure that your privacy is protected and respected at all times.</li>
                         <li>All Cookies used by this Website are used in accordance with current UK and EU Cookie Law.</li>
-                        <li>Before the Website places Cookies on your computer, you will be presented with a message bar requesting your consent to set those Cookies. By giving your consent to the placing of Cookies, you are enabling CyberWary to provide a better experience and service to you. You may, if you wish, deny consent to the placing of Cookies; however certain features of the Website may not function fully or as intended.</li>
+                        <li>Before the Website places Cookies on your computer, you will be presented with a message bar requesting your consent to set those Cookies. By giving your consent to the placing of Cookies, you are enabling {{ trading_as }} to provide a better experience and service to you. You may, if you wish, deny consent to the placing of Cookies; however certain features of the Website may not function fully or as intended.</li>
                         <li>
                             This Website may place the following Cookies:
                             <ol type="a">
@@ -281,19 +265,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                             </ol>
                                         </li>
                                         <li>
-                                            <b>csrftoken</b> (CyberWary)
+                                            <b>csrftoken</b> ({{ trading_as }})
                                             <ol type="a">
                                                 <li>Used to identify individual clients for request security.</li>
                                             </ol>
                                         </li>
                                         <li>
-                                            <b>sessionid</b> (CyberWary)
+                                            <b>sessionid</b> ({{ trading_as }})
                                             <ol type="a">
                                                 <li>Used to identify individual clients with an active authenticated session on the platform.</li>
                                             </ol>
                                         </li>
                                         <li>
-                                            <b>messages</b> (CyberWary)
+                                            <b>messages</b> ({{ trading_as }})
                                             <ol type="a">
                                                 <li>Used to transmit data and information between the platform and the user's browser.</li>
                                             </ol>
@@ -314,7 +298,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <hr>
                     <h4>14. Changes to this Privacy Policy</h4>
                     <ol>
-                        <li>CyberWary reserves the right to change this privacy policy as we may deem necessary from time to time or as may be required by law. Any changes will be immediately posted on the Website and you are deemed to have accepted the terms of the privacy policy on your first use of the Website following the alterations. </li>
+                        <li>{{ trading_as }} reserves the right to change this privacy policy as we may deem necessary from time to time or as may be required by law. Any changes will be immediately posted on the Website and you are deemed to have accepted the terms of the privacy policy on your first use of the Website following the alterations. </li>
                     </ol>
                     <hr>
                     <h4>15. Attribution</h4>
@@ -323,7 +307,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     </ol>
                     <hr>
                     <h4>Data Protection Officer</h4>
-                    <p>Mr William Phillips (Company Director)<br>Encrypted Laser Limited<br>024 River Mill One, SE13 5FL<br>dpo@encryptedlaser.com</p>
+                    <p>Mr William Phillips (Company Director)<br>{{ organisation }}<br>024 River Mill One, SE13 5FL<br>dpo@encryptedlaser.com</p>
                 </div>
             </div>
         </div>
