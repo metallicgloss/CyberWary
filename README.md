@@ -29,7 +29,7 @@
 <br>
 <h2>CyberWary Project Overview</h2>
 <p>
-    The project that this application is associated with explores the inherent risks associated with the executable-based architecture that forms the foundation of the Windows platform and the subsequent identification of methods aimed toward the advancement of security awareness for its users. Centred on the research of recurrent threats that it is frequently subjected to, this project encompasses developing a proposed solution utilising a Software as a Service approach to convey critical information associated with users' devices. This repository contains a successfully fabricated product to aid navigate the complexities of software vulnerability identification, browser password storage insecurities and data handling intricacies to deliver a prototype capable of achieving all defined objectives.
+    The project that this application is associated with explores the inherent risks surrounding the executable-based architecture that forms the foundation of the Windows platform, and the subsequent identification of methods aimed toward the advancement of security awareness for its users. Centred on the research of recurrent threats that it is frequently subjected to, this project encompasses developing a proposed solution utilising a Software as a Service approach to convey critical information associated with users' devices. This repository contains a successfully fabricated product to aid navigate the complexities of software vulnerability identification, browser password storage insecurities and data handling intricacies to deliver a prototype capable of achieving all defined objectives.
 </p>
 <br>
 <h2>Getting Started</h2>
